@@ -1,0 +1,148 @@
+<%
+--[[
+    Info    互联网首页
+    Author    peng.kang  <peng.kang@hiwif.tw>
+    Copyright    2015
+]]--
+local ver  = require "luci.version"
+local i18n = require "luci.i18n"
+%>
+<% include('admin_web/header') %>
+<link rel="stylesheet" type="text/css" href="<%=resource%>/v2/style/net.css?v=<%=ver.svnRevNum%>">
+<div id="bd">
+    <div class="com-main clearfix">
+        <div id="right_part" class="G-rightSide">
+            <div>
+                <h2 class="J_view_right" style="visibility: hidden;">恭喜！路由器已稳定运行</h2>
+                <div class="side-bd">
+                    <div class="side-panel online-info J_view_right" style="visibility: hidden;">
+                        <p class="time" id="days_num"><span>天</span></p>
+                        <p class="service-info" id="serviced_info">累计服务1台设备</p>
+                        <div class="ctr-list">
+                            <ul>
+                                <li>
+                                    <a href="javascript:;" class="icon icon2"  id="lan_ip"><span class="G-handle">后台地址：</span></a>
+                                </li>
+                                <%if i18n.is_empty("query_warranty_visible") then%>
+                                <li>
+                                    <a href="<%=luci.dispatcher.build_url("admin_web","passport","guarantee")%>" target="_blank" class="icon icon3"><span>查询保修时间</span></a>
+                                </li>
+                                <%end%>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="G-power-panel">
+                    <a href="javascript:;" class="icon power G-handle J_system_restart" style="display:none;"></a>
+                    <p class="J_system_restart G-handle" style="display:none;">重启路由器</p>
+                </div>
+            </div>
+        </div>
+        <% include('admin_web/menu/menu_left') %>
+        <div class="G-main" id="loading_view">
+                <div class="G-page-loading"></div>
+        </div>
+        <!-- 设置上网方式首屏展示部分 -->
+        <div class="G-main" id="middle_part" style="display: none;">
+            <div id="main_view" style="display: none;">
+                <div class="G-main-panel" style="visibility: hidden;">
+                    <div class="G-gray-panel">
+                    <div class="G-main-panel-hd">当前上网方式</div>
+                    <div class="G-main-panel-bd">
+                        <div class="net-status" id="network_stauts_area">
+                            <div class="G-panel-loading"></div>
+                            <table style="display: none;">
+                                <col width="30%"/>
+                                <col width="*"/>
+                                <col width="90"/>
+                                <tr>
+                                    <td id="current_way"></td>
+                                    <td id="current_network_status"><span class="icon icon-x"></span><span></span></td>
+                                    <td><a href="javascript:;" class="btn-normal" id="current_set">设置</a> </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    </div>
+                    <p class="switch-model" id="switch_model" style="visibility: hidden;"><span>切换上网方式：</span>   <a href="javascript:;" id="pppoe_setup_bt">宽带拨号</a>   |   <a href="javascript:;" id="dhcp_setup_bt">自动上网</a>   |   <a href="javascript:;" id="wisp_setup_bt">无线中继</a>   |   <a href="javascript:;" id="ip_setup_bt">静态IP</a></p>
+                </div>
+
+                <div class="G-main-panel setting-box" style="visibility: hidden;">
+                    <div class="G-main-panel-hd"><span class="icon setting"></span><span>高级设置</span></div>
+                    <div class="G-main-panel-bd G-btn-list setting-list">
+                        <ul id="advanced_setup">
+                            <li><a href="javascript:;" id="lan_dhcp_bt">局域网DHCP服务</a></li>
+                            <li><a href="javascript:;" id="qos_setup_bt">智能QoS</a></li>
+                            <li><a href="javascript:;" id="port_forward_bt">超级端口转发</a></li>
+                            <!-- <li><a href="javascript:;" id="routing_table_bt">静态路由表</a></li> -->
+                            <li><a href="javascript:;" id="mac_clone_bt">MAC地址克隆</a></li>
+                            <li><a href="javascript:;" id="mtu_setup_bt">网络MTU</a></li>
+                            <li><a href="javascript:;" id="l2tp_pptp_bt">L2TP / PPTP</a></li>
+                            <li><a href="javascript:;" id="upnp_setup_bt">UPNP状态</a></li>
+                            <li><a href="javascript:;" id="ppp_setup_bt">PPP高级设置</a></li>
+                            <%if i18n.is_empty("ruijie_view_visible") then%>
+                            <li><a href="<%=luci.dispatcher.build_url("admin_web","plugin","mentohust")%>" target="_blank">锐捷认证</a></li>
+                            <%end%>
+                            <%if i18n.is_empty("huasan_view_visible") then%>
+                            <li><a href="<%=luci.dispatcher.build_url("admin_web","plugin","hua_san")%>" target="_blank">华三认证</a></li>
+                            <%end%>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- DHCP上网设置部分 -->
+            <% include('admin_web/network/dhcp_setup') %>
+
+            <!-- STATIC IP上网设置部分 -->
+            <% include('admin_web/network/static_ip_setup') %>
+
+            <!-- WISP上网设置部分 -->
+            <% include('admin_web/network/wisp_setup') %>
+
+            <!-- PPPOE上网设置部分 -->
+            <% include('admin_web/network/pppoe_setup') %>
+
+            <!-- 局域网DHCP服务 -->
+            <% include('admin_web/network/lan_dhcp') %>
+
+            <!-- 智能Qos -->
+            <% include('admin_web/network/qos_setup') %>
+
+            <!-- 超级端口转发 -->
+            <% include('admin_web/network/port_forward') %>
+
+            <!-- 静态路由表 -->
+            <%
+                --include('admin_web/network/static_routing_table')
+            %>
+
+            <!-- MAC地址克隆 -->
+            <% include('admin_web/network/mac_clone') %>
+
+            <!-- 网络MTU -->
+            <% include('admin_web/network/mtu_setup') %>
+
+            <!-- L2TP / PPTP -->
+            <% include('admin_web/network/l2tp_pptp') %>
+
+            <!-- UPNP状态 -->
+            <% include('admin_web/network/upnp_setup') %>
+
+            <!-- PPP高级设置 -->
+            <% include('admin_web/network/ppp_setup') %>
+
+            <!-- shadowsocks -->
+            <% include('admin_web/network/shadowsocks') %>
+        </div>
+    </div>
+    <div class="G-tip-pop J_pppoe_tip_text" style="width: 160px;height: 25px;display: none">开启后，系统会尝试使用连上本机的设备MAC进行拨号</div>
+    <div class="G-tip-pop J_vpn_tip_text" style="width: 170px;height: 16px;display: none">多次连接失败时，可以尝试开启</div>
+</div>
+<% include('admin_web/footer') %>
+<!-- 通用模块的专属js -->
+<script type="text/javascript" src="<%=resource%>/v2/js/admin_web/general_module.js?v=<%=ver.svnRevNum%>"></script>
+<!-- 网络设置页的专属js -->
+<script type="text/javascript" src="<%=resource%>/v2/js/admin_web/network.js?v=<%=ver.svnRevNum%>"></script>
+</body>
+</html>
