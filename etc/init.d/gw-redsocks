@@ -1,0 +1,88 @@
+#!/bin/sh /etc/rc.common
+
+#START=80
+APP=gw_redsocks
+PID_FILE=/var/run/$APP.pid
+
+#export SERVICE_DAEMONIZE=1
+#export SERVICE_WRITE_PID=1
+
+appname=gw-shadowsocks
+appdir=/etc/gw-redsocks/$appname
+
+rs_getconfig() {
+	lan_ip=$(uci get network.lan.ipaddr)
+	source /lib/functions/network.sh
+	network_get_ipaddr wanip wan
+	local_ip=127.0.0.1
+
+	rs_port_tcp=$(uci get shadowsocks.shadowsocks.rs_port)
+	mode=$(uci get shadowsocks.shadowsocks.defaultroute)
+	server_ip=$(uci get shadowsocks.shadowsocks.server)
+    user_urls=$(uci get shadowsocks.adv.url)
+}
+
+rs_iptables_add() {
+	echo -n > /dev/null
+	iptables -t nat -N $appname 
+	iptables -t nat -A PREROUTING -i br-lan -j $appname
+	iptables -t nat -A OUTPUT -j $appname
+	iptables -t nat -A $appname -m salist --salist local --match-dip -j RETURN 
+	iptables -t nat -A $appname -m salist --salist hiwifi --match-dip -j RETURN 
+	iptables -t nat -A $appname -d $lan_ip/24 -j RETURN
+	iptables -t nat -A $appname -d $wanip/24 -j RETURN
+	iptables -t nat -A $appname -d $server_ip/32 -j RETURN
+
+	[ "$mode" != "1" ] && {
+		iptables -t nat -A $appname -m salist --salist china --match-dip -j RETURN
+	}
+	
+    iptables -t nat -A $appname -p tcp -j DNAT --to-destination $lan_ip:$rs_port_tcp
+}
+
+rs_iptables_del() {
+	echo -n > /dev/null
+	iptables -t nat -D PREROUTING -i br-lan -j $appname
+	iptables -t nat -D OUTPUT -j $appname
+	iptables -t nat -F $appname
+	iptables -t nat -X $appname
+}
+
+rs_getconfig
+
+start() {
+	service_start /usr/bin/$APP -c /etc/gw-redsocks.conf
+	#start-stop-daemon -S -x $APP -p $PID_FILE -m -b -- -c /etc/redsocks.conf
+	rs_iptables_add
+
+    echo > /tmp/dnsmasq.d/$appname.usr.dnslist
+    for url in $user_urls
+    do
+        echo "server=/$url/127.0.0.1#53535" >> /tmp/dnsmasq.d/$appname.usr.dnslist
+    done
+
+	cp $appdir/$appname.dnslist /tmp/dnsmasq.d/
+	[ "$mode" == "1" ] && {
+        cat >> /tmp/dnsmasq.d/$appname.dnslist << EOF
+no-resolv
+server=127.0.0.1#53535
+EOF
+    }
+
+	/etc/init.d/dnsmasq restart
+}
+
+stop() {
+	#start-stop-daemon -K -x $APP -s TERM
+	rs_iptables_del
+	
+	rm /tmp/dnsmasq.d/$appname.dnslist
+    rm /tmp/dnsmasq.d/$appname.usr.dnslist
+	/etc/init.d/dnsmasq restart
+	killall -q $APP
+}
+
+restart() {
+   stop
+   start
+}

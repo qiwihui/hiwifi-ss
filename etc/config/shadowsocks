@@ -1,0 +1,13 @@
+config ssproxy 'shadowsocks'
+		option enable 			'0'
+		option server           ''
+		option rs_port      	'3088'
+        option server_port      ''
+        option local_port       '61080'
+        option password         ''
+        option timeout          '600'
+        option method           'aes-256-cfb'
+		option defaultroute		'0'
+		option dnsserver		'8.8.4.4'
+
+config advance 'adv'

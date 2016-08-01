@@ -1,0 +1,52 @@
+#!/bin/sh /etc/rc.common
+# Copyright (C) 2007-2011 OpenWrt.org
+
+START=80
+export SERVICE_DAEMONIZE=1
+export SERVICE_WRITE_PID=1
+
+start() {
+	local server
+	local server_port
+	local local_port
+	local password
+	local timeout
+	local method
+	local enable
+    local dnsserver
+
+	local section='shadowsocks'
+
+	config_load 'shadowsocks'
+
+	config_get enable "$section" 'enable'
+	if [ "$enable" == "1" ]
+	then
+		config_get server "$section" 'server'
+		config_get server_port "$section" 'server_port'
+		config_get local_port "$section" 'local_port'
+		config_get password "$section" 'password'
+		config_get timeout "$section" 'timeout'
+		config_get method "$section" 'method'
+		config_get dnsserver "$section" 'dnsserver'
+
+		service_start /usr/bin/ss-local -s $server -p $server_port -l $local_port -k $password -t $timeout -m $method
+		
+        #/etc/init.d/dnscrypt-proxy start
+		service_start /usr/sbin/dns2socks 127.0.0.1:$local_port $dnsserver 127.0.0.1:53535 -d -q
+		/etc/init.d/gw-redsocks start
+	fi
+}
+
+stop() {
+	/etc/init.d/gw-redsocks stop
+    #/etc/init.d/dnscrypt-proxy stop
+	
+	service_stop /usr/sbin/dns2socks
+	service_stop /usr/bin/ss-local
+}
+
+restart() {
+   stop
+   start
+}

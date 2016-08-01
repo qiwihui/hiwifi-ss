@@ -1,0 +1,283 @@
+﻿<%
+--[[
+	Info	shadowsocks 加速设置
+	Author	WangChao  <chao03346368@gmail.com>
+	Copyright	2014
+]]--
+
+local ver  = require "luci.version"
+local adv_menu = luci.util.get_adv_menu()
+local request_uri = luci.http.getenv("REQUEST_URI")
+%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="format-detection" content="telephone=no" />
+<title>HiWiFi 路由器</title>
+<link rel="stylesheet" href="<%=resource%>/web/css/style.css?v=<%=ver.svnRevNum%>" type="text/css"/>
+<script type="text/javascript" src="<%=resource%>/web/js/jquery-1.8.1.min.js?v=<%=ver.svnRevNum%>"></script>
+<script type="text/javascript" src="<%=resource%>/web/js/artDialog/jquery.artDialog.js?skin=blueskin"></script>
+<script src="<%=resource%>/web/js/artDialog/plugins/iframeTools.source.js?v=<%=ver.svnRevNum%>"></script>
+</head>
+
+<style type="text/css">
+	table.zone td.tor{
+		text-align: right;
+		width:120px;
+		line-height:14px;
+	}
+	#con_stauts{
+		width:300px;
+	}
+    	.error-box {
+        text-align: center;
+        color: #d84613;
+        font-size: 14px;
+    }
+</style>
+<body>
+<div class="title">
+	<h2>高级设置<i>设置路由器安全 , 及其他高级设置</i></h2>
+</div>
+<div class="menu">
+	<% include("admin_web/menu/adv_menu") %>
+</div>
+
+<div class="box setup_box">
+	<form id="form1"> 
+		<ul class="ullist" style="position:relative">
+		    <li class="error-box">
+                <div class="info">
+                    <p><label><a href="https://foxacc.com" target=_blank>获取加速账号</a></label></p>
+                </div>
+            </li>
+
+	<ul class="ullist" style="position:relative">
+	<li class="ipt_from">
+    <div class="memu row">
+        <p class="item-txt"><span class="on-off" style="font-size:14px;">开关<button type="button" class="on" style="margin-left:20px;">开关</button></span></p>
+        <input type="hidden" value="" name="enable"/>
+    </div>
+    <div style="display:none;"  class="memu row" id="cfg_box">
+        <p><label>服务器地址</label><input type="text" name="server" id="" class="txt" value=""/></p>
+        <p><label>端口</label><input type="text" name="port" id="" class="txt" value=""/></p>
+        <p>
+        <label>密码</label><input type="password" name="password" id="password" class="txt" value=""/>
+        <input type="checkbox" id="show_passwd" value="true" class="checkbox" />
+        <label for="show_passwd"><%:显示%></label>
+        </p>
+        <p><label>超时时间</label><input type="text" name="timeout" id="" class="txt" value=""/></p>
+
+        <p><label class="label">加密方式</label>
+        <span>
+            <select name="enctype" class="txt-input select txt" style="width:158px;">
+                <option value="aes-256-cfb">aes-256-cfb</option>
+                <option value="aes-192-cfb">aes-192-cfb</option>
+                <option value="aes-128-cfb">aes-128-cfb</option>
+                <option value="table">table</option>
+                <option value="rc4">rc4</option>
+                <option value="rc4-md5">rc4-md5</option>
+                <option value="bf-cfb">bf-cfb</option>
+                <option value="camellia-128-cfb">camellia-128-cfb</option>
+                <option value="camellia-192-cfb">camellia-192-cfb</option>
+                <option value="camellia-256-cfb">camellia-256-cfb</option>
+                <option value="cast5-cfb">cast5-cfb</option>
+                <option value="des-cfb">des-cfb</option>
+                <option value="idea-cfb">idea-cfb</option>
+                <option value="rc2-cfb">rc2-cfb</option>
+                <option value="seed-cfb">seed-cfb</option>
+            </select>
+        </span>
+        </p> 
+
+        <p><label class="label">模式</label>
+        <span>
+            <select name="defaultroute" class="txt-input select txt" style="width:158px;">
+                <option value="0">智能模式</option>
+                <option value="1">全局模式</option>
+            </select>
+        </span>
+        </p> 
+
+        <p><label class="label">加速DNS</label>
+        <span>
+            <select name="dnsserver" class="txt-input select txt" style="width:158px;">
+                <option value="8.8.4.4">谷歌</option>
+                <option value="60.32.112.42">日本</option>
+                <option value="168.95.1.1">台湾</option>
+                <option value="202.181.224.2">香港</option>
+                <option value="168.126.63.1">韩国</option>
+                <option value="208.67.222.222">openDns</option>
+            </select>
+        </span>
+        </p> 
+
+        <p><label>状态:</label>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+        <span id="con_stauts">读取中... </span>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp  
+        </p>
+    </div>
+    </li>
+    <li>
+    <div class="memu row" style="display:none;color:gray;" id="prompt_box">
+        <p style="margin:auto;line-height:20px;height:auto;">避免冲突，请关闭所有翻墙软件，并且检查网卡是否为自动获取ip和DNS</p>
+    </div>
+    </li>
+    <li  class="ipt_from">
+    <div class="btnbox" style="display:none;" id="shadowsocks_btn_box">
+        <input type="button" value="<%:保存%>" class="btn" id="submit_btn" />
+        <img style="display:none;" id="loading2" src="<%=resource%>/web/js/artDialog/skins/icons/loading.gif" alt="HiWiFi 路由器" />
+    </div>
+    </li>
+    <li>
+    <div class="memu row">
+        <table width="300" border="0" cellspacing="0" cellpadding="0">
+            <tr>
+                <td><a style="line-height:32px;font-size:14px" href="<%=luci.dispatcher.build_url("api","geewan","cfg_import")%>">导入配置文件(json格式)</a></td>
+                <td><a style="display:none;line-height:32px;font-size:14px" id="adv_cfg" href="<%=luci.dispatcher.build_url("api","geewan","ss_adv")%>">高级设置</a></td>
+            </tr>
+        </table>
+    </div>
+    </li>
+</ul>
+    </form>
+</div>
+<script type="text/javascript">
+var t;
+$(function(){
+        var request_date = {}; 
+        $.getJSON("<%=luci.dispatcher.build_url("api", "geewan","get_shadowsocks")%>",request_date,function(rsp) 
+            { 
+            $("#submit_btn").attr("disabled",false);
+            if (rsp.code == 0){
+            $("input[name='port']").val(rsp.server_port);
+            $("input[name='password']").val(rsp.password);
+            $("input[name='server']").val(rsp.server);
+            $("input[name='timeout']").val(rsp.timeout);
+
+            $("select[name='defaultroute']").val(rsp.defaultroute);
+            $("select[name='enctype']").val(rsp.enctype);
+            $("select[name='dnsserver']").val(rsp.dnsserver);
+
+            var enable = rsp.enable;
+            if (enable == "1"){
+                switch_status(1);
+            } else {
+                switch_status(0);
+            }
+			if(rsp.status == "stopped"){
+				rsp.status = "<span style='color:red'>未运行</span>";
+				//$("#start_shadowsocks").show();
+				//$("#shutdown_shadowsocks").hide();
+			} else if (rsp.status == "running") {
+				rsp.status = "运行中";
+				//$("#start_shadowsocks").hide();
+				//$("#shutdown_shadowsocks").show();
+			} else {
+				rsp.status = "未知";
+			}
+			$("#con_stauts").html(rsp.status);
+	 	}
+	})
+
+	$(".on-off").click(function(){
+        var switch_b = $(this).children("button");
+        var status_now = switch_b.attr("class");
+        var enable = "";
+        if(status_now == "on"){
+            enable="0";
+        } else {
+            enable="1";
+        }
+        $("#loading2").show();
+        $("input[name='enable']").val(enable);
+        
+        var request_date = $("#form1").serializeArray(); 
+        $.getJSON("<%=luci.dispatcher.build_url("api", "geewan","set_shadowsocks_switch")%>",request_date,function(rsp) 
+        {
+            if(status_now == "on"){
+                switch_status(0);
+            } else {
+                switch_status(1);
+            }
+            $("#loading2").hide();  
+        })
+    })
+	
+	function switch_status(status){
+        if (status == 1 || status == "1"){
+            $("#loading").hide();
+            $("#cfg_box").show();
+            $("#adv_cfg").show();
+            $("#shadowsocks_btn_box").show();
+            $("#prompt_box").show();
+            var switch_b = $(".on-off").children("button");
+            switch_b.addClass("on");
+            switch_b.removeClass("off");
+			t = setInterval("update_status()", 7000);
+        } else {
+            $("#loading").html("shadowsocks 加速未打开").show();
+            $("#cfg_box").hide();
+            $("#adv_cfg").hide();
+            $("#shadowsocks_btn_box").hide();
+            $("#prompt_box").hide();
+            var switch_b = $(".on-off").children("button");
+            switch_b.addClass("off");
+            switch_b.removeClass("on");
+			clearInterval(t);
+        }
+    }
+	
+	$("#show_passwd").click(function(){
+            if ($(this).attr('checked')) {
+                $('#password').clone().attr('type','text').insertAfter('#password').prev().remove();
+            } else {
+                $('#password').clone().attr('type','password').insertAfter('#password').prev().remove();
+            }
+     })
+	
+	//提交
+	$("#submit_btn").click(function(){
+		
+		$("#loading2").show();
+		$("#submit_btn").attr("disabled",true);
+		
+		var request_date =  $("#form1").serializeArray(); 
+		$.getJSON("<%=luci.dispatcher.build_url("api", "geewan","set_shadowsocks")%>",request_date,function(rsp) 
+		{ 
+			
+			if(rsp.code == 0){
+				art.dialog({icon:"succeed",title:false,content:"设置成功!"}).lock().time(4);
+			} else {
+				art.dialog({icon:"error",title:false,content:rsp.msg}).lock().time(4);
+			}
+			
+			$("#loading2").hide();
+			$("#submit_btn").attr("disabled",false);
+		})
+	})
+});
+
+function update_status() {
+	var request_date = {};
+	$.getJSON("<%=luci.dispatcher.build_url("api", "geewan","get_shadowsocks_status")%>",request_date,function(rsp)
+	{
+        var status = "";
+		if (rsp.code == 0){
+			if(rsp.status == "stopped"){
+				status = "<span style='color:red'>未运行</span>";
+			} else if (rsp.status == "running") {
+                if (rsp.accel == "yes")
+                    status = "运行中 <span style='color:green'>已加速</span>";
+                else
+                    status = "运行中 <span style='color:red'>未加速</span>";
+			} else {
+				status = "未知";
+			}
+			$("#con_stauts").html(status);
+		}
+	})
+}
+</script>
+</body>
+</html>
