@@ -21,21 +21,21 @@ local request_uri = luci.http.getenv("REQUEST_URI")
 <script src="<%=resource%>/web/js/artDialog/plugins/iframeTools.source.js?v=<%=ver.svnRevNum%>"></script>
 </head>
 
-<!--<style type="text/css">-->
-	<!--table.zone td.tor{-->
-		<!--text-align: right;-->
-		<!--width:120px;-->
-		<!--line-height:14px;-->
-	<!--}-->
-	<!--#con_stauts{-->
-		<!--width:300px;-->
-	<!--}-->
-    	<!--.error-box {-->
-        <!--text-align: center;-->
-        <!--color: #d84613;-->
-        <!--font-size: 14px;-->
-    <!--}-->
-<!--</style>-->
+<style type="text/css">
+	table.zone td.tor{
+		text-align: right;
+		width:120px;
+		line-height:14px;
+	}
+	#con_stauts{
+		width:300px;
+	}
+    	.error-box {
+        text-align: center;
+        color: #d84613;
+        font-size: 14px;
+    }
+</style>
 <body>
 <div>
 	<form id="form1">
@@ -51,7 +51,10 @@ local request_uri = luci.http.getenv("REQUEST_URI")
 	        <ul class="ullist" style="position:relative">
 	          <li class="ipt_from">
               <div class="memu row">
-                  <p class="item-txt"><span class="on-off" style="font-size:14px;">开关<button type="button" class="on" style="margin-left:20px;">开关</button></span></p>
+                  <p class="item-txt">
+                    <span class="on-off label" style="font-size:14px;">开关</span>
+                    <a href="javascript:;" class="on G-switch-btn btn" id="switch_btn" style="margin-left: 10px"><span></span></a>
+                  </p>
                   <input type="hidden" value="" name="enable"/>
               </div>
 
@@ -66,26 +69,26 @@ local request_uri = luci.http.getenv("REQUEST_URI")
               <p><label>超时时间</label><input type="text" name="timeout" id="" class="txt" value="" style="width:200px;"/></p>
 
               <p><label class="label">加密方式</label>
-        <span>
-            <select name="enctype" class="txt-input select txt" style="width:200px;">
-                <option value="aes-256-cfb">aes-256-cfb</option>
-                <option value="aes-192-cfb">aes-192-cfb</option>
-                <option value="aes-128-cfb">aes-128-cfb</option>
-                <option value="table">table</option>
-                <option value="rc4">rc4</option>
-                <option value="rc4-md5">rc4-md5</option>
-                <option value="bf-cfb">bf-cfb</option>
-                <option value="camellia-128-cfb">camellia-128-cfb</option>
-                <option value="camellia-192-cfb">camellia-192-cfb</option>
-                <option value="camellia-256-cfb">camellia-256-cfb</option>
-                <option value="cast5-cfb">cast5-cfb</option>
-                <option value="des-cfb">des-cfb</option>
-                <option value="idea-cfb">idea-cfb</option>
-                <option value="rc2-cfb">rc2-cfb</option>
-                <option value="seed-cfb">seed-cfb</option>
-            </select>
-        </span>
-        </p>
+                <span>
+                    <select name="enctype" class="txt-input select txt" style="width:200px;">
+                        <option value="aes-256-cfb">aes-256-cfb</option>
+                        <option value="aes-192-cfb">aes-192-cfb</option>
+                        <option value="aes-128-cfb">aes-128-cfb</option>
+                        <option value="table">table</option>
+                        <option value="rc4">rc4</option>
+                        <option value="rc4-md5">rc4-md5</option>
+                        <option value="bf-cfb">bf-cfb</option>
+                        <option value="camellia-128-cfb">camellia-128-cfb</option>
+                        <option value="camellia-192-cfb">camellia-192-cfb</option>
+                        <option value="camellia-256-cfb">camellia-256-cfb</option>
+                        <option value="cast5-cfb">cast5-cfb</option>
+                        <option value="des-cfb">des-cfb</option>
+                        <option value="idea-cfb">idea-cfb</option>
+                        <option value="rc2-cfb">rc2-cfb</option>
+                        <option value="seed-cfb">seed-cfb</option>
+                    </select>
+                </span>
+              </p>
 
               <p><label class="label">模式</label>
               <span>
@@ -143,26 +146,24 @@ local request_uri = luci.http.getenv("REQUEST_URI")
 <script type="text/javascript">
 var t;
 $(function(){
-        var request_date = {}; 
-        $.getJSON("<%=luci.dispatcher.build_url("api", "geewan","get_shadowsocks")%>",request_date,function(rsp)
-            { 
-            $("#submit_btn").attr("disabled",false);
-            if (rsp.code == 0){
-            $("input[name='port']").val(rsp.server_port);
-            $("input[name='password']").val(rsp.password);
-            $("input[name='server']").val(rsp.server);
-            $("input[name='timeout']").val(rsp.timeout);
-
-            $("select[name='defaultroute']").val(rsp.defaultroute);
-            $("select[name='enctype']").val(rsp.enctype);
-            $("select[name='dnsserver']").val(rsp.dnsserver);
-
-            var enable = rsp.enable;
-            if (enable == "1"){
-                switch_status(1);
-            } else {
-                switch_status(0);
-            }
+  var request_date = {};
+  $.getJSON("<%=luci.dispatcher.build_url("api", "geewan","get_shadowsocks")%>",request_date,function(rsp)
+  {
+    $("#submit_btn").attr("disabled",false);
+    if (rsp.code == 0){
+      $("input[name='port']").val(rsp.server_port);
+      $("input[name='password']").val(rsp.password);
+      $("input[name='server']").val(rsp.server);
+      $("input[name='timeout']").val(rsp.timeout);
+      $("select[name='defaultroute']").val(rsp.defaultroute);
+      $("select[name='enctype']").val(rsp.enctype);
+      $("select[name='dnsserver']").val(rsp.dnsserver);
+      var enable = rsp.enable;
+      if (enable == "1"){
+        switch_status(1);
+      } else {
+        switch_status(0);
+      }
 			if(rsp.status == "stopped"){
 				rsp.status = "<span style='color:red'>未运行</span>";
 				//$("#start_shadowsocks").show();
@@ -178,61 +179,63 @@ $(function(){
 	 	}
 	})
 
-	$(".on-off").click(function(){
-        var switch_b = $(this).children("button");
-        var status_now = switch_b.attr("class");
-        var enable = "";
-        if(status_now == "on"){
-            enable="0";
-        } else {
-            enable="1";
-        }
-        $("#loading2").show();
-        $("input[name='enable']").val(enable);
-        
-        var request_date = $("#form1").serializeArray(); 
-        $.getJSON("<%=luci.dispatcher.build_url("api", "geewan","set_shadowsocks_switch")%>",request_date,function(rsp)
-        {
-            if(status_now == "on"){
-                switch_status(0);
-            } else {
-                switch_status(1);
-            }
-            $("#loading2").hide();  
-        })
+	$("#switch_btn").click(function(){
+    var status_now = $(this).attr("class");
+    var enable = "";
+    var is_on = status_now.indexOf("on")>-1;
+    if(is_on){
+      enable="0";
+    } else {
+      enable="1";
+    }
+    console.log(enable)
+    $("#loading2").show();
+    $("input[name='enable']").val(enable);
+
+    var request_date = $("#form1").serializeArray();
+    $.getJSON("<%=luci.dispatcher.build_url("api", "geewan","set_shadowsocks_switch")%>",request_date,function(rsp)
+    {
+      is_on = status_now.indexOf("on")>-1;
+      if(is_on){
+        switch_status(0);
+      } else {
+        switch_status(1);
+      }
+      $("#loading2").hide();
     })
+  })
 	
 	function switch_status(status){
-        if (status == 1 || status == "1"){
-            $("#loading").hide();
-            $("#cfg_box").show();
-            $("#adv_cfg").show();
-            $("#shadowsocks_btn_box").show();
-            $("#prompt_box").show();
-            var switch_b = $(".on-off").children("button");
-            switch_b.addClass("on");
-            switch_b.removeClass("off");
+    if (status == 1 || status == "1"){
+      $("#loading").hide();
+      $("#cfg_box").show();
+      $("#adv_cfg").show();
+      $("#shadowsocks_btn_box").show();
+      $("#prompt_box").show();
+      var switch_b = $("#switch_btn");
+      switch_b.addClass("on");
+      switch_b.removeClass("off");
 			t = setInterval("update_status()", 7000);
-        } else {
-            $("#loading").html("shadowsocks 加速未打开").show();
-            $("#cfg_box").hide();
-            $("#adv_cfg").hide();
-            $("#shadowsocks_btn_box").hide();
-            $("#prompt_box").hide();
-            var switch_b = $(".on-off").children("button");
-            switch_b.addClass("off");
-            switch_b.removeClass("on");
+    } else {
+      $("#loading").html("shadowsocks 加速未打开").show();
+      $("#cfg_box").hide();
+      $("#adv_cfg").hide();
+      $("#shadowsocks_btn_box").hide();
+      $("#prompt_box").hide();
+      var switch_b = $("#switch_btn");
+      switch_b.addClass("off");
+      switch_b.removeClass("on");
 			clearInterval(t);
-        }
     }
+  }
 	
-	   $("#show_passwd").click(function(){
-            if ($(this).attr('checked')) {
-                $('#password').clone().attr('type','text').insertAfter('#password').prev().remove();
-            } else {
-                $('#password').clone().attr('type','password').insertAfter('#password').prev().remove();
-            }
-     })
+  $("#show_passwd").click(function(){
+    if ($(this).attr('checked')) {
+      $('#password').clone().attr('type','text').insertAfter('#password').prev().remove();
+    } else {
+      $('#password').clone().attr('type','password').insertAfter('#password').prev().remove();
+    }
+  })
 	
 	//提交
 	$("#submit_btn").click(function(){
