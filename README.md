@@ -1,11 +1,13 @@
 # hiwifi-ss
 
 极路由+ss配置, 适合旧版界面以及新版界面的极路由
-请参见博客: [极路由Shadowsocks家庭无痛翻墙实践](https://luolei.org/hiwifi-shadowsocks/)
 
-### 使用(待完善)
+### 安装方法(待完善)
 
 1. 旧版hiwifi => release/v1.0.0
+
+请参见博客: [极路由Shadowsocks家庭无痛翻墙实践](https://luolei.org/hiwifi-shadowsocks/)
+
 2. 新版hiwifi => ...
 
 ### TODO 
@@ -32,8 +34,8 @@
 
 (1). ss子菜单在网络设置下:
 
-    ![](./ss-menu.png)
+![](./ss-menu.png)
 
 (2). ss账号设置
  
-    ![](./ss-settings.png)
+![](./ss-settings.png)
