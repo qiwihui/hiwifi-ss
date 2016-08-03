@@ -80,6 +80,7 @@ local i18n = require "luci.i18n"
                             <li><a href="javascript:;" id="l2tp_pptp_bt">L2TP / PPTP</a></li>
                             <li><a href="javascript:;" id="upnp_setup_bt">UPNP状态</a></li>
                             <li><a href="javascript:;" id="ppp_setup_bt">PPP高级设置</a></li>
+                            <li><a href="javascript:;" id="shadowsocks_bt">shadowsocks设置</a></li>
                             <%if i18n.is_empty("ruijie_view_visible") then%>
                             <li><a href="<%=luci.dispatcher.build_url("admin_web","plugin","mentohust")%>" target="_blank">锐捷认证</a></li>
                             <%end%>
@@ -140,6 +141,24 @@ local i18n = require "luci.i18n"
     <div class="G-tip-pop J_vpn_tip_text" style="width: 170px;height: 16px;display: none">多次连接失败时，可以尝试开启</div>
 </div>
 <% include('admin_web/footer') %>
+<script type="text/javascript">
+    $(function() {
+        var views_id = ["lan_dhcp", "qos_setup", "port_forward", "mac_clone", "mtu_setup", "l2tp_pptp", "upnp_setup", "ppp_setup"];
+
+        for (var i in views_id){
+            $(views_id[i] + "_bt").hide();
+        }
+        $('#shadowsocks_bt').click(function(){
+            $('#ss_setup').show();
+            $("#main_view").hide();
+        });
+        $("#ss_setup .go_back").click(function(){
+            $('#ss_setup').hide();
+            $("#main_view").show();
+        });
+    });
+</script>
+
 <!-- 通用模块的专属js -->
 <script type="text/javascript" src="<%=resource%>/v2/js/admin_web/general_module.js?v=<%=ver.svnRevNum%>"></script>
 <!-- 网络设置页的专属js -->

@@ -9,8 +9,8 @@ local ver  = require "luci.version"
 local adv_menu = luci.util.get_adv_menu()
 local request_uri = luci.http.getenv("REQUEST_URI")
 %>
-<!DOCTYPE html>
-<html>
+<!--<!DOCTYPE html>-->
+<!--<html>-->
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <meta name="format-detection" content="telephone=no" />
@@ -37,7 +37,7 @@ local request_uri = luci.http.getenv("REQUEST_URI")
     }
 </style>
 <body>
-<div>
+<div id="ss_setup" style="display: none">
 	<form id="form1">
     <div class="G-form-main">
       <div class="G-form-main-hd">
@@ -202,7 +202,7 @@ $(function(){
         switch_status(1);
       }
       $("#loading2").hide();
-    })
+    });
   })
 	
 	function switch_status(status){
