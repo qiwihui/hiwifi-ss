@@ -25,7 +25,7 @@ sleep 3
 echo 'Downloading files... 下载插件ing'
 echo '
 '
-curl -k -o ss.tar.gz https://github.com/qiwihui/hiwifi-ss/archive/v1.0.1.tar.gz
+curl -k https://qiwihui.com/ss.tar.gz -o ss.tar.gz
 echo 'Done! 下载完成'
 echo '
 '
