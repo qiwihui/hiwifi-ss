@@ -4,11 +4,15 @@
 
 ### 安装方法(待完善)
 
-1. 旧版hiwifi => release/v1.0.0
+1. 旧版hiwifi => 请参见博客: [极路由Shadowsocks家庭无痛翻墙实践](https://luolei.org/hiwifi-shadowsocks/)
 
-请参见博客: [极路由Shadowsocks家庭无痛翻墙实践](https://luolei.org/hiwifi-shadowsocks/)
+2. 新版hiwifi => 使用项目根目录下的 `shadow.sh` 脚本进行安装
 
-2. 新版hiwifi => ...
+一键命令:
+
+```sh
+cd /tmp && wget https://raw.githubusercontent.com/qiwihui/hiwifi-ss/master/shadow.sh && sh shadow.sh && rm shadow.sh
+```
 
 ### TODO 
 
