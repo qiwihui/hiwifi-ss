@@ -11,7 +11,7 @@
 一键命令:
 
 ```sh
-cd /tmp && wget https://raw.githubusercontent.com/qiwihui/hiwifi-ss/master/shadow.sh && sh shadow.sh && rm shadow.sh
+cd /tmp && curl -k -o shadow.sh https://raw.githubusercontent.com/qiwihui/hiwifi-ss/master/shadow.sh && sh shadow.sh && rm shadow.sh
 ```
 
 ### TODO 
