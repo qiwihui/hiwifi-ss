@@ -21,7 +21,9 @@ cd /tmp && curl -k -o shadow.sh https://raw.githubusercontent.com/qiwihui/hiwifi
    - [x] 开关样式
    - [x] 增加"shadowsocks设置"按钮
    - [x] "shadowsocks设置"按钮功能修复
+   - [ ] 使用github作为文件存储
    - [ ] 密码显示功能修复
+   - [ ] 弹出提示框修复
    - [ ] 下拉框样式修复
    - [ ] "导入配置文件(json格式)"界面修复
    - [ ] "高级设置"界面修复
