@@ -31,11 +31,18 @@ echo '
 '
 sleep 3
 echo 'Installing... 安装ing'
+echo -n "备份系统文件...."
+if [ -f /usr/lib/lua/luci/view/admin_web/network/index.htm.ssbak ]; then
+    echo -e "...[\e[31m备份文件已存在\e[37m]"
+else
+    cp -a /usr/lib/lua/luci/view/admin_web/network/index.htm /usr/lib/lua/luci/view/admin_web/network/index.htm.ssbak
+    echo -e "....[\e[32m完成\e[37m]"
+fi
 if test -e /usr/lib/lua/luci/view/admin_web/plugin/shadowsocks.htm;
-then echo 'Error'&&rm -rf /tmp/geewan&&exit;
+then echo 'Error,请备份并重命名之前的shadowsocks插件文件:/usr/lib/lua/luci/view/admin_web/plugin/shadowsocks.htm'&&rm -rf /tmp/geewan&&exit;
 else
 if test -e /etc/config/ss-redir;
-then echo 'Error'&&rm -rf /tmp/geewan&&exit;
+then echo 'Error,请备份并重命名/etc/config/ss-redir文件夹'&&rm -rf /tmp/geewan&&exit;
 else tar xzvf ss.tar.gz -C / >>/dev/null;
 fi
 fi
