@@ -230,7 +230,7 @@ $(function(){
   }
 	
   $("#show_passwd").click(function(){
-    if ($(this).attr('checked')) {
+    if ($(this).prop('checked')) {
       $('#password').clone().attr('type','text').insertAfter('#password').prev().remove();
     } else {
       $('#password').clone().attr('type','password').insertAfter('#password').prev().remove();
