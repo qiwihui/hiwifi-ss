@@ -9,64 +9,45 @@ local ver  = require "luci.version"
 local adv_menu = luci.util.get_adv_menu()
 local request_uri = luci.http.getenv("REQUEST_URI")
 %>
-<!DOCTYPE html>
-<html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<meta name="format-detection" content="telephone=no" />
-<title>HiWiFi 路由器</title>
 <link rel="stylesheet" href="<%=resource%>/web/css/style.css?v=<%=ver.svnRevNum%>" type="text/css"/>
 <script type="text/javascript" src="<%=resource%>/web/js/jquery-1.8.1.min.js?v=<%=ver.svnRevNum%>"></script>
-<script type="text/javascript" src="<%=resource%>/web/js/artDialog/jquery.artDialog.js?skin=blueskin"></script>
-<script src="<%=resource%>/web/js/artDialog/plugins/iframeTools.source.js?v=<%=ver.svnRevNum%>"></script>
 </head>
 
-<style type="text/css">
-	table.zone td.tor{
-		text-align: right;
-		width:120px;
-		line-height:14px;
-	}
-	#con_stauts{
-		width:300px;
-	}
-</style>
-<body>
-<div class="title">
-	<h2>高级设置<i>设置路由器安全 , 及其他高级设置</i></h2>
-</div>
-<div class="menu">
-	<% include("admin_web/menu/adv_menu") %>
-</div>
-
-<div class="box setup_box">
-
-	<form id="form1"> 
-	
-	<ul class="ullist">
-	<li class="ipt_from">
-		<div class="memu row">
-			<div id="cfg_box">
-                <p><label>shadowsocks 高级设置</label></p>
-                <p style="margin-bottom:0px;">
-                    <label>防污染域名</label>
-                    <span style="margin-left:100px;font-size:13px;">以下域名将由加速DNS解析，每行填写一个域名</span>
-                </p>
-				<p style="height:auto">
-                    <label></label>
-                    <textarea style="height:80px;width:240px;line-height:16px;" name="urls" class="txt"></textarea>
-                </p>
-			</div>
+<div id="ss_adv" style="display: none;">
+	<div class="G-form-main">
+		<div class="G-form-main-hd">
+        <span class="G-handle right go_back">
+          <span class="icon back"></span><span>返回上级</span>
+        </span>
+			<span class="icon setting"></span><span>高级设置</span>
 		</div>
-	</li>
-    <li>
-		<div class="btnbox" id="shadowsocks_btn_box">
-			<input type="button" value="<%:保存%>" class="btn" id="submit_btn" />
-			<img style="display:none;" id="loading2" src="<%=resource%>/web/js/artDialog/skins/icons/loading.gif" alt="HiWiFi 路由器" />
+		<div class="G-form-main-bd">
+			<form id="form_ss_adv">
+			<ul class="ullist">
+				<li class="ipt_from">
+					<div class="memu row">
+						<div id="cfg_box">
+							<p style="margin-bottom:0px;">
+							  <label>防污染域名</label>
+							  <span style="margin-left:100px;font-size:13px;">以下域名将由加速DNS解析，每行填写一个域名</span>
+						  </p>
+							<p style="height:auto">
+  		  	      <textarea style="height:80px;width:240px;line-height:16px;" name="urls" class="txt"></textarea>
+  		  	    </p>
+						</div>
+					</div>
+			  </li>
+				<li>
+					<div class="panel-btn-bar" id="ss_adv_btn_box">
+						<a href="javascript:;" class="btn" id="ss_adv_submit_btn">保存</a>
+						<div class="G-panel-loading" style="width:20px;height: 20px;min-height: 1px;margin-left: 5px;display: none;" id="loading_ss_adv"></div>
+					</div>
+				</li>
+			</ul>
+			</form>
 		</div>
-    </li>
-	</ul>
-	</form>
+	</div>
 </div>
 <script type="text/javascript">
 var t;
@@ -74,34 +55,39 @@ $(function(){
 	var request_date = {};
 	$.getJSON("<%=luci.dispatcher.build_url("api", "geewan","get_ss_adv_cfg")%>",request_date,function(rsp) 
 	{ 
-		$("#submit_btn").attr("disabled",false);
+		$("#ss_adv_submit_btn").attr("disabled",false);
 	 	if (rsp.code == 0){
 	 		$("textarea[name='urls']").val(rsp.urls.toString().replace(/,/g, "\r\n"));
 	 	}
 	})
 
 	//提交
-	$("#submit_btn").click(function(){
+	$("#ss_adv_submit_btn").click(function(){
 		
-		$("#loading2").show();
-		$("#submit_btn").attr("disabled",true);
+		$("#loading_ss_adv").show();
+		$("#ss_adv_submit_btn").attr("disabled",true);
 		
-		var request_date =  $("#form1").serializeArray(); 
+		var request_date =  $("#form_ss_adv").serializeArray();
 		$.post("<%=luci.dispatcher.build_url("api", "geewan","set_ss_adv_cfg")%>",request_date,function(rsp) 
 		{ 
 			
 			if(rsp.code == 0){
-				art.dialog({icon:"succeed",title:false,content:"设置成功!"}).lock().time(4);
+				HiWiFi.popDialog({type: "G-text",title: ['设置成功 :)'],content: ""}).time(3000);
 			} else {
-				art.dialog({icon:"error",title:false,content:rsp.msg}).lock().time(4);
+				HiWiFi.popDialog({type: "G-text",title: ['操作失败 :('],content: rsp.msg}).time(3000);
 			}
 			
-			$("#loading2").hide();
-			$("#submit_btn").attr("disabled",false);
+			$("#loading_ss_adv").hide();
+			$("#ss_adv_submit_btn").attr("disabled",false);
 		}, "json")
 	})
-});
+	setTimeout(function(){
+		$("#ss_adv .go_back").click(function(){
+			$("#main_view").hide();
+			$("#ss_setup").show();
+			$("#ss_adv").hide();
+		});
+	},0);
 
+});
 </script>
-</body>
-</html>

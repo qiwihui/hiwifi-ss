@@ -10,8 +10,6 @@ local adv_menu = luci.util.get_adv_menu()
 local request_uri = luci.http.getenv("REQUEST_URI")
 %>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<meta name="format-detection" content="telephone=no" />
 <title>HiWiFi 路由器</title>
 <link rel="stylesheet" href="<%=resource%>/web/css/style.css?v=<%=ver.svnRevNum%>" type="text/css"/>
 <script type="text/javascript" src="<%=resource%>/web/js/jquery-1.8.1.min.js?v=<%=ver.svnRevNum%>"></script>
@@ -30,9 +28,7 @@ local request_uri = luci.http.getenv("REQUEST_URI")
     display: inline-block;
   }
 </style>
-<body>
 <div id="ss_setup" style="display: none">
-	<form id="form1">
     <div class="G-form-main">
       <div class="G-form-main-hd">
         <span class="G-handle right go_back">
@@ -41,6 +37,7 @@ local request_uri = luci.http.getenv("REQUEST_URI")
         <span class="icon setting"></span><span>Shadowsocks</span>
       </div>
       <div class="G-form-main-bd">
+        <form id="form1">
 		    <div class="ullist" style="position:relative">
 	        <ul class="ullist" style="position:relative">
 	          <li class="ipt_from">
@@ -119,24 +116,30 @@ local request_uri = luci.http.getenv("REQUEST_URI")
             <li>
               <div class="panel-btn-bar" id="shadowsocks_btn_box">
                 <a href="javascript:;" class="btn" id="submit_btn">保存</a>
-                <div class="G-panel-loading" style="width:20px;height: 20px;min-height: 1px;margin-left: 5px;display: none;" id="loading2"></div>
+                <div class="G-panel-loading" style="width:20px;height: 20px;min-height: 1px;margin-left: 5px;display: none;" id="loading_ss_setup"></div>
               </div>
             </li>
             <li>
               <div class="memu row">
                   <table width="300" border="0" cellspacing="0" cellpadding="0">
                       <tr>
-                          <td><a style="line-height:32px;font-size:14px" href="<%=luci.dispatcher.build_url("api","geewan","cfg_import")%>">导入配置文件(json格式)</a></td>
-                          <td><a style="display:none;line-height:32px;font-size:14px" id="adv_cfg" href="<%=luci.dispatcher.build_url("api","geewan","ss_adv")%>">高级设置</a></td>
+                          <td><a href="javascript:;" id="ss_cfg_import_btn">导入配置文件(json格式)</a></td>
+                          <td><a href="javascript:;" id="ss_adv_btn">高级设置</a></td>
                       </tr>
                   </table>
               </div>
             </li>
           </ul>
         </div>
+        </form>
       </div>
-  </form>
+    </div>
 </div>
+
+<!-- shadowsocks cfg_import-->
+<% include('admin_web/network/cfg_import') %>
+<!-- shadowsocks advance settings-->
+<% include('admin_web/network/ss_adv') %>
 <script type="text/javascript">
 "use strict";
 var t;
@@ -183,7 +186,7 @@ $(function(){
     } else {
       enable="1";
     }
-    $("#loading2").show();
+    $("#loading_ss_setup").show();
     $("input[name='enable']").val(enable);
 
     var request_date = $("#form1").serializeArray();
@@ -195,7 +198,7 @@ $(function(){
       } else {
         switch_status(1);
       }
-      $("#loading2").hide();
+      $("#loading_ss_setup").hide();
     });
   })
 	
@@ -234,23 +237,31 @@ $(function(){
 	//提交
 	$("#submit_btn").click(function(){
 		
-		$("#loading2").show();
+		$("#loading_ss_setup").show();
 		$("#submit_btn").attr("disabled",true);
 		
-		var request_date =  $("#form1").serializeArray(); 
+		var request_date =  $("#form1").serializeArray();
 		$.getJSON("<%=luci.dispatcher.build_url("api", "geewan","set_shadowsocks")%>",request_date,function(rsp)
 		{ 
 			
 			if(rsp.code == 0){
-        HiWiFi.popDialog({type: "G-text",title: ['设置成功!！'],content: ""}).time(4000);
+        HiWiFi.popDialog({type: "G-text",title: ['设置成功 :)'],content: ""}).time(3000);
 			} else {
-        HiWiFi.popDialog({type: "G-text",title: ['操作失败'],content: rsp.msg}).time(4000);
+        HiWiFi.popDialog({type: "G-text",title: ['操作失败 :('],content: rsp.msg}).time(3000);
 			}
 			
-			$("#loading2").hide();
+			$("#loading_ss_setup").hide();
 			$("#submit_btn").attr("disabled",false);
 		})
-	})
+	});
+  $('#ss_cfg_import_btn').click(function(){
+    $('#ss_cfg_import').show();
+    $('#ss_setup').hide();
+  });
+  $('#ss_adv_btn').click(function(){
+    $('#ss_adv').show();
+    $('#ss_setup').hide();
+  });
 });
 
 function update_status() {
@@ -274,5 +285,3 @@ function update_status() {
 	})
 }
 </script>
-</body>
-</html>

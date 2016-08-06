@@ -1,6 +1,6 @@
 # hiwifi-ss
 
-极路由+ss配置, 适合旧版界面以及新版界面的极路由
+极路由+ss配置, 适应新版界面的极路由(1.0.7.13499s)
 
 ### 安装方法(待完善)
 
@@ -26,7 +26,7 @@ cd /tmp && curl -k -o shadow.sh https://raw.githubusercontent.com/qiwihui/hiwifi
    - [x] 弹出提示框修复
    - [ ] 下拉框样式修复
    - [ ] "导入配置文件(json格式)"界面修复
-   - [ ] "高级设置"界面修复
+   - [x] "高级设置"界面修复
  
  - [ ] release/v1.1.0 => 完成之前所有功能在新版下的界面适配 
  - [ ] 底层增加更多的路由规则
@@ -34,9 +34,7 @@ cd /tmp && curl -k -o shadow.sh https://raw.githubusercontent.com/qiwihui/hiwifi
 
 ### 目前状态
 
-1. 旧版已支持
-
-2. 新版界面
+1. 新版界面
 
 (1). ss子菜单在网络设置下:
 
@@ -45,3 +43,7 @@ cd /tmp && curl -k -o shadow.sh https://raw.githubusercontent.com/qiwihui/hiwifi
 (2). ss账号设置
  
 ![](./ss-settings.png)
+
+(3). ss高级设置
+
+![](./ss-advance.png)

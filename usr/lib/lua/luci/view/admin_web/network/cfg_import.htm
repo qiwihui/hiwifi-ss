@@ -1,82 +1,102 @@
 <%
 local ver = require "luci.version"
+local request_uri = luci.http.getenv("REQUEST_URI")
+local step = 1
 %>
-<!DOCTYPE html>
-<html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<meta name="format-detection" content="telephone=no" />
-<title>HiWiFi 路由器</title>
 <link rel="stylesheet" href="<%=resource%>/web/css/style.css?v=<%=ver.svnRevNum%>" type="text/css"/>
 <script type="text/javascript" src="<%=resource%>/web/js/jquery-1.8.1.min.js?v=<%=ver.svnRevNum%>"></script>
-<script type="text/javascript" src="<%=resource%>/web/js/artDialog/jquery.artDialog.js?skin=blueskin"></script>
-<script type="text/javascript" src="<%=resource%>/web/js/artDialog/plugins/iframeTools.source.js?v=<%=ver.svnRevNum%>"></script>
 <script type="text/javascript" src="<%=resource%>/validators.min.js?v=<%=ver.svnRevNum%>"></script>
 </head>
 
-<style type="text/css">
-    table.zone td.tor{
-        text-align: right;
-        width:120px;
-        line-height:14px;
-    }
-</style>
-<body>
-<div class="title">
-    <h2>高级设置<i>设置路由器安全 , 及其他高级设置</i></h2>
-</div>
-<div class="menu">
-    <% include("admin_web/menu/adv_menu") %>
-</div>
-
-<div class="box setup_box">
-    <% if step == 1 then %>
-	<form method="post" action="<%=REQUEST_URI%>" enctype="multipart/form-data">
-        <div class="memu row">
-            <p>
-            <label>
-            <%:请选择配置文件:%>
-            </label>
-            <br />
-            <br />
-            </p>
-            <input type="hidden" name="step" value="2" />
-            <input type="file" size="30" name="config" />
-            <input class="btn" type="submit" value="<%:上传%>" id="upload" />
-			<img style="display:none;" id="loading2" src="<%=resource%>/web/js/artDialog/skins/icons/loading.gif" alt="HiWiFi 路由器" />
-        </div>
-	</form>
-<% elseif step == 2 then %>
-    <div class="memu row">
-		<% if config_invalid then %>
-        <p>
-        <label style="color:red;"><%:导入失败：格式错误，不是合法的json文件%></label>
-        </p>
-		<% else %>
-        <p>
-        <label>
-			<%:导入失败：非法文件%>
-        </label>
-        </p>
-		<% end %>
-		<form style="display:inline">
-			<input type="hidden" name="step" value="1" />
-			<input class="btn" type="submit" value="重新选择" />
-		</form>
+<div id="ss_cfg_import" style="display: none;">
+  <div class="G-form-main">
+    <div class="G-form-main-hd">
+        <span class="G-handle right go_back">
+          <span class="icon back"></span><span>返回上级</span>
+        </span>
+      <span class="icon setting"></span><span>导入配置文件</span>
     </div>
-<% else %>
-<div class="memu row">
-    <p><label><%:未知错误%></label></p>
-</div>
-<% end %>
+    <div class="G-form-main-bd">
+      <% if step == 1 then %>
+        <form id="form_ss_cfg_import" enctype="multipart/form-data">
+          <div class="memu row">
+            <p><label><%:请选择配置文件:%></label>
+              <br />
+              <br />
+            </p>
+            <input id="ss_cfg_file" type="file" size="30" name="config" />
+            <input type="hidden" name="step" value="2" />
+            <input class="btn" type="submit" value="<%:上传%>" id="upload_ss_config" />
+            <div class="G-panel-loading" style="width:20px;height: 20px;min-height: 1px;margin-left: 5px;display: none;" id="loading_ss_cfg_import"></div>
+          </div>
+        </form>
+      <% elseif step == 2 then %>
+        <div class="memu row">
+  	  	  <% if config_invalid then %>
+              <p><label style="color:red;"><%:导入失败：格式错误，不是合法的json文件%></label></p>
+  	  	  <% else %>
+              <p><label><%:导入失败：非法文件%></label></p>
+  	  	  <% end %>
+  	  	  <form style="display:inline">
+  	  	  	<input type="hidden" name="step" value="1" />
+  	  	  	<input class="btn" type="submit" value="重新选择" />
+  	  	  </form>
+        </div>
+      <% else %>
+        <div class="memu row">
+          <p><label><%:未知错误%></label></p>
+        </div>
+      <% end %>
+    </div>
+  </div>
 </div>
 <script type="text/javascript">
 var t;
 $(function(){
-	$("#upload").click(function(){
-		$("#loading2").show();
-    })
+
+  setTimeout(function(){
+    $("#ss_cfg_import .go_back").click(function(){
+      $("#main_view").hide();
+      $("#ss_setup").show();
+      $("#ss_cfg_import").hide();
+    });
+  },0);
+  // 上传文件
+  $("#upload_ss_config").click(function(){
+    $("#loading_ss_cfg_import").show();
+    $("#upload_ss_config").attr("disabled",true);
+    var formData = new FormData();
+    formData.append("config", $("#ss_cfg_file")[0].files[0]);
+
+    $.ajax({
+      url: "<%=luci.dispatcher.build_url("api","geewan","cfg_import")%>",
+      type: "POST",
+      data: formData,
+      processData: false,  // tell jQuery not to process the data
+      contentType: false   // tell jQuery not to set contentType
+    }).success(function(rsp){
+      console.log(rsp);
+      if(rsp.code == 0){
+        HiWiFi.popDialog({type: "G-text",title: ['设置成功 :)'],content: ""}).time(3000);
+      } else {
+        HiWiFi.popDialog({type: "G-text",title: ['操作失败 :('],content: rsp.msg}).time(3000);
+      }
+      $("#loading_ss_cfg_import").hide();
+      $("#upload_ss_config").attr("disabled",false);
+    });
+//    $.post("<%=luci.dispatcher.build_url("api","geewan","cfg_import")%>", formData, function(rsp) {
+//      console.log(rsp)
+//      if(rsp.code == 0){
+//        HiWiFi.popDialog({type: "G-text",title: ['设置成功 :)'],content: ""}).time(3000);
+//      } else {
+//        HiWiFi.popDialog({type: "G-text",title: ['操作失败 :('],content: rsp.msg}).time(3000);
+//      }
+//      $("#loading_ss_cfg_import").hide();
+//      $("#upload_ss_config").attr("disabled",false);
+//    });
+    return false;
+  });
+
 });
 </script>
-</body>
-</html>
