@@ -9,16 +9,12 @@ local ver  = require "luci.version"
 local adv_menu = luci.util.get_adv_menu()
 local request_uri = luci.http.getenv("REQUEST_URI")
 %>
-<!--<!DOCTYPE html>-->
-<!--<html>-->
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <meta name="format-detection" content="telephone=no" />
 <title>HiWiFi 路由器</title>
 <link rel="stylesheet" href="<%=resource%>/web/css/style.css?v=<%=ver.svnRevNum%>" type="text/css"/>
 <script type="text/javascript" src="<%=resource%>/web/js/jquery-1.8.1.min.js?v=<%=ver.svnRevNum%>"></script>
-<script type="text/javascript" src="<%=resource%>/web/js/artDialog/jquery.artDialog.js?skin=blueskin"></script>
-<script src="<%=resource%>/web/js/artDialog/plugins/iframeTools.source.js?v=<%=ver.svnRevNum%>"></script>
 </head>
 
 <style type="text/css">
@@ -30,11 +26,9 @@ local request_uri = luci.http.getenv("REQUEST_URI")
 	#con_stauts{
 		width:300px;
 	}
-    	.error-box {
-        text-align: center;
-        color: #d84613;
-        font-size: 14px;
-    }
+  .G-panel-loading{
+    display: inline-block;
+  }
 </style>
 <body>
 <div id="ss_setup" style="display: none">
@@ -53,20 +47,20 @@ local request_uri = luci.http.getenv("REQUEST_URI")
               <div class="memu row">
                   <p class="item-txt">
                     <span class="on-off label" style="font-size:14px;">开关</span>
-                    <a href="javascript:;" class="on G-switch-btn btn" id="switch_btn" style="margin-left: 10px"><span></span></a>
+                    <a href="javascript:;" class="on G-switch-btn btn" id="switch_btn" style="margin-left: 66px"><span></span></a>
                   </p>
                   <input type="hidden" value="" name="enable"/>
               </div>
 
               <div style="display:none;"  class="memu row" id="cfg_box">
-              <p><label>服务器地址</label><input type="text" name="server" id="" class="txt" value="" style="width:200px;"/></p>
-              <p><label>端口</label><input type="text" name="port" id="" class="txt" value="" style="width:200px;"/></p>
+              <p><label>服务器地址</label><input type="text" name="server" id="ss_server" class="txt" value="" style="width:200px;"/></p>
+              <p><label>端口</label><input type="text" name="port" id="ss_port" class="txt" value="" style="width:200px;"/></p>
               <p>
-              <label>密码</label><input type="password" name="password" id="password" class="txt" value="" style="width:200px;"/>
-              <input type="checkbox" id="show_passwd" value="true" class="checkbox" />
-              <label for="show_passwd"><%:显示%></label>
-              </p>
-              <p><label>超时时间</label><input type="text" name="timeout" id="" class="txt" value="" style="width:200px;"/></p>
+                <label>密码</label><input type="password" name="password" id="password" class="txt" value="" style="width:200px;"/>
+                <input type="checkbox" id="show_passwd" value="true" class="checkbox" />
+                <label for="show_passwd"><%:显示%></label>
+                </p>
+              <p><label>超时时间</label><input type="text" name="timeout" id="ss_timeout" class="txt" value="" style="width:200px;"/></p>
 
               <p><label class="label">加密方式</label>
                 <span>
@@ -122,10 +116,10 @@ local request_uri = luci.http.getenv("REQUEST_URI")
                 <p style="margin:auto;line-height:20px;height:auto;">避免冲突，请关闭所有翻墙软件，并且检查网卡是否为自动获取ip和DNS</p>
               </div>
             </li>
-            <li  class="ipt_from">
-              <div class="btnbox" style="display:none;" id="shadowsocks_btn_box">
-                  <input type="button" value="<%:保存%>" class="btn" id="submit_btn" />
-                  <img style="display:none;" id="loading2" src="<%=resource%>/web/js/artDialog/skins/icons/loading.gif" alt="HiWiFi 路由器" />
+            <li>
+              <div class="panel-btn-bar" id="shadowsocks_btn_box">
+                <a href="javascript:;" class="btn" id="submit_btn">保存</a>
+                <div class="G-panel-loading" style="width:20px;height: 20px;min-height: 1px;margin-left: 5px;display: none;" id="loading2"></div>
               </div>
             </li>
             <li>
@@ -144,6 +138,7 @@ local request_uri = luci.http.getenv("REQUEST_URI")
   </form>
 </div>
 <script type="text/javascript">
+"use strict";
 var t;
 $(function(){
   var request_date = {};
@@ -188,7 +183,6 @@ $(function(){
     } else {
       enable="1";
     }
-    console.log(enable)
     $("#loading2").show();
     $("input[name='enable']").val(enable);
 
@@ -248,9 +242,9 @@ $(function(){
 		{ 
 			
 			if(rsp.code == 0){
-				art.dialog({icon:"succeed",title:false,content:"设置成功!"}).lock().time(4);
+        HiWiFi.popDialog({type: "G-text",title: ['设置成功!！'],content: ""}).time(4000);
 			} else {
-				art.dialog({icon:"error",title:false,content:rsp.msg}).lock().time(4);
+        HiWiFi.popDialog({type: "G-text",title: ['操作失败'],content: rsp.msg}).time(4000);
 			}
 			
 			$("#loading2").hide();
