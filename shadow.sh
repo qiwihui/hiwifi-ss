@@ -19,16 +19,13 @@ echo ''
 mkdir /tmp/geewan
 cd /tmp/geewan
 echo 'Done! 成功创建临时目录!'
-echo '
-'
+echo ''
 sleep 3
 echo 'Downloading files... 下载插件ing'
-echo '
-'
+echo ''
 curl -k https://qiwihui.com/ss.tar.gz -o ss.tar.gz
 echo 'Done! 下载完成'
-echo '
-'
+echo ''
 sleep 3
 echo 'Installing... 安装ing'
 echo -n "备份系统文件...."
@@ -47,14 +44,11 @@ else tar xzvf ss.tar.gz -C / >>/dev/null;
 fi
 fi
 echo 'Done! 插件安装成功!'
-echo '
-'
+echo ''
 sleep 3
 echo 'adding uninstall information... 准备删除临时文件...'
-echo '
-'
-echo '
-' >>/usr/lib/opkg/status
+echo ''
+echo '' >>/usr/lib/opkg/status
 echo 'Package: geewan-ss' >>/usr/lib/opkg/status
 echo 'Version: master-20130924-eb9d31869e1d7590cd8c2fb1e7d226ac6cf32fad-20141024' >>/usr/lib/opkg/status
 echo 'Provides:' >>/usr/lib/opkg/status
@@ -62,16 +56,12 @@ echo 'Status: install hold installed' >>/usr/lib/opkg/status
 echo 'Architecture: ralink' >>/usr/lib/opkg/status
 echo 'Installed-Time: 1422509506' >>/usr/lib/opkg/status
 echo 'Auto-Installed: yes' >>/usr/lib/opkg/status
-echo '
-' >>/usr/lib/opkg/status
+echo '' >>/usr/lib/opkg/status
 echo 'cleanning temporary files... 清理临时文件ing'
-echo '
-'
+echo ''
 if test -e /tmp/luci-indexcache;
-then rm /tmp/luci-indexcache&&echo 'Done! 清理完成 '&&echo '
-';
-else echo 'luci-cache does not exist! 无法找到luci-cache,请确定是否是极路由环境'&&echo '
-'
+then rm /tmp/luci-indexcache&&echo 'Done! 清理完成 '&&echo '';
+else echo 'luci-cache does not exist! 无法找到luci-cache,请确定是否是极路由环境'&&echo ''
 fi
 rm -rf /tmp/geewan
 sleep 3
