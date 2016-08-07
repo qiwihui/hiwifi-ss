@@ -52,15 +52,18 @@ local request_uri = luci.http.getenv("REQUEST_URI")
       </div>
       <div class="G-form-main-bd">
         <form id="form1">
-          <table class="G-form-table" id="ss_setup_table">
+          <table class="G-form-table" id="ss_setup_switch">
             <col width="80"/>
             <tr>
-              <th>开关</th>
+              <th style="margin-left: 60px">开关</th>
               <td style="padding-top:10px;">
                 <input type="hidden" name="enable" value="1" />
-                <a href="javascript:;" class="on G-switch-btn btn" id="switch_btn" style="margin-left: 66px"><span></span></a>
+                <a href="javascript:;" class="on G-switch-btn btn" id="switch_btn" style="margin-right: 158px"><span></span></a>
               </td>
             </tr>
+          </table>
+          <table class="G-form-table" id="ss_setup_table">
+            <col width="80"/>
             <tr>
               <th>服务器地址</th>
               <td>
@@ -141,103 +144,6 @@ local request_uri = luci.http.getenv("REQUEST_URI")
                 <span id="con_stauts"></span>
               </td>
             </tr>
-
-
-		    <div class="ullist" style="position:relative">
-	        <ul class="ullist" style="position:relative">
-	          <li class="ipt_from">
-
-              <!--<div class="memu row">-->
-                  <!--<p class="item-txt">-->
-                    <!--<span class="on-off label" style="font-size:14px;">开关</span>-->
-                    <!--<a href="javascript:;" class="on G-switch-btn btn" id="switch_btn" style="margin-left: 66px"><span></span></a>-->
-                  <!--</p>-->
-                  <!--<input type="hidden" value="" name="enable"/>-->
-              <!--</div>-->
-
-              <div style="display:none;"  class="memu row" id="cfg_box">
-              <!--<p><label>服务器地址</label><input type="text" name="server" id="ss_server" class="txt" value="" style="width:200px;"/></p>-->
-              <!--<p><label>端口</label><input type="text" name="port" id="ss_port" class="txt" value="" style="width:200px;"/></p>-->
-              <!--<p>-->
-                <!--<label>密码</label><input type="password" name="password" id="password" class="txt" value="" style="width:200px;"/>-->
-                <!--<input type="checkbox" id="show_passwd" value="true" class="checkbox" />-->
-                <!--<label for="show_passwd"><%:显示%></label>-->
-              <!--</p>-->
-              <!--<p><label>超时时间</label><input type="text" name="timeout" id="ss_timeout" class="txt" value="" style="width:200px;"/></p>-->
-
-              <!--<p><label class="label">加密方式</label>-->
-                <!--<span>-->
-                    <!--<select name="enctype" class="txt-input select txt" style="width:200px;">-->
-                        <!--<option value="aes-256-cfb">aes-256-cfb</option>-->
-                        <!--<option value="aes-192-cfb">aes-192-cfb</option>-->
-                        <!--<option value="aes-128-cfb">aes-128-cfb</option>-->
-                        <!--<option value="table">table</option>-->
-                        <!--<option value="rc4">rc4</option>-->
-                        <!--<option value="rc4-md5">rc4-md5</option>-->
-                        <!--<option value="bf-cfb">bf-cfb</option>-->
-                        <!--<option value="camellia-128-cfb">camellia-128-cfb</option>-->
-                        <!--<option value="camellia-192-cfb">camellia-192-cfb</option>-->
-                        <!--<option value="camellia-256-cfb">camellia-256-cfb</option>-->
-                        <!--<option value="cast5-cfb">cast5-cfb</option>-->
-                        <!--<option value="des-cfb">des-cfb</option>-->
-                        <!--<option value="idea-cfb">idea-cfb</option>-->
-                        <!--<option value="rc2-cfb">rc2-cfb</option>-->
-                        <!--<option value="seed-cfb">seed-cfb</option>-->
-                    <!--</select>-->
-                <!--</span>-->
-              <!--</p>-->
-
-              <!--<p><label class="label">模式</label>-->
-              <!--<span>-->
-                  <!--<select name="defaultroute" class="txt-input select txt" style="width:200px;">-->
-                      <!--<option value="0">智能模式</option>-->
-                      <!--<option value="1">全局模式</option>-->
-                  <!--</select>-->
-              <!--</span>-->
-              <!--</p>-->
-
-              <!--<p><label class="label">加速DNS</label>-->
-              <!--<span>-->
-                  <!--<select name="dnsserver" class="txt-input select txt" style="width:200px;">-->
-                      <!--<option value="8.8.4.4">谷歌</option>-->
-                      <!--<option value="60.32.112.42">日本</option>-->
-                      <!--<option value="168.95.1.1">台湾</option>-->
-                      <!--<option value="202.181.224.2">香港</option>-->
-                      <!--<option value="168.126.63.1">韩国</option>-->
-                      <!--<option value="208.67.222.222">openDns</option>-->
-                  <!--</select>-->
-              <!--</span>-->
-              <!--</p>-->
-
-              <!--<p><label>状态:</label>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp-->
-              <!--<span id="con_stauts">读取中... </span>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp-->
-              <!--</p>-->
-              </div>
-            </li>
-            <!--<li>-->
-              <!--<div class="memu row" style="display:none;color:gray;" id="prompt_box">-->
-                <!--<p style="margin:auto;line-height:20px;height:auto;">避免冲突，请关闭所有翻墙软件，并且检查网卡是否为自动获取ip和DNS</p>-->
-              <!--</div>-->
-            <!--</li>-->
-            <!--<li>-->
-              <!--<div class="panel-btn-bar" id="shadowsocks_btn_box">-->
-                <!--<a href="javascript:;" class="btn" id="submit_btn">保存</a>-->
-                <!--<div class="G-panel-loading" style="width:20px;height: 20px;min-height: 1px;margin-left: 5px;display: none;" id="loading_ss_setup"></div>-->
-              <!--</div>-->
-            <!--</li>-->
-            <!--<li>-->
-              <!--<div class="memu row">-->
-                  <!--<table width="300" border="0" cellspacing="0" cellpadding="0">-->
-                      <!--<tr>-->
-                          <!--<td><a href="javascript:;" id="ss_cfg_import_btn">导入配置文件(json格式)</a></td>-->
-                          <!--<td><a href="javascript:;" id="ss_adv_btn">高级设置</a></td>-->
-                      <!--</tr>-->
-                  <!--</table>-->
-              <!--</div>-->
-            <!--</li>-->
-          </ul>
-        </div>
-
           </table>
           <div style="display:none;color:gray;" id="prompt_box">
             <p style="margin:auto;line-height:20px;height:auto;">避免冲突，请关闭所有翻墙软件，并且检查网卡是否为自动获取ip和DNS</p>
@@ -247,8 +153,7 @@ local request_uri = luci.http.getenv("REQUEST_URI")
             <div class="G-panel-loading" style="width:20px;height: 20px;min-height: 1px;margin-left: 5px;display: none;" id="loading_ss_setup"></div>
           </div>
           <div class="super-set-bar G-handle" id="ss_advanced_settings">
-            <span><a href="javascript:;" id="ss_cfg_import_btn">导入配置文件(json格式)</a></span>
-            &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+            <span><a href="javascript:;" id="ss_cfg_import_btn" style="margin-right: 145px">导入配置文件(json格式)</a></span>
             <span><a href="javascript:;" id="ss_adv_btn">高级设置</a></span>
           </div>
         </form>
@@ -324,9 +229,7 @@ $(function(){
 	
 	function switch_status(status){
     if (status == 1 || status == "1"){
-      $("#loading").hide();
-      $("#cfg_box").show();
-      $("#adv_cfg").show();
+      $("#ss_setup_table").show();
       $("#shadowsocks_btn_box").show();
       $("#prompt_box").show();
       var switch_b = $("#switch_btn");
@@ -334,9 +237,8 @@ $(function(){
       switch_b.removeClass("off");
 			t = setInterval("update_status()", 7000);
     } else {
-      $("#loading").html("shadowsocks 加速未打开").show();
-      $("#cfg_box").hide();
-      $("#adv_cfg").hide();
+//      $("#loading").html("shadowsocks 加速未打开").show();
+      $("#ss_setup_table").hide();
       $("#shadowsocks_btn_box").hide();
       $("#prompt_box").hide();
       var switch_b = $("#switch_btn");
