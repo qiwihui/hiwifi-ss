@@ -1,14 +1,12 @@
 # hiwifi-ss
 
-极路由+ss配置, 适应新版界面的极路由(1.0.7.13499s)
+极路由+ss配置, 适应新版极路由，使用前请确认版本为__1.0.7.13499s__。
 
 ### 安装方法(待完善)
 
 1. 旧版hiwifi => 请参见博客: [极路由Shadowsocks家庭无痛翻墙实践](https://luolei.org/hiwifi-shadowsocks/)
 
-2. 新版hiwifi => 使用项目根目录下的 `shadow.sh` 脚本进行安装
-
-一键命令:
+2. 新版hiwifi => 使用项目根目录下的 `shadow.sh` 脚本进行安装, 建议使用以下一键命令:
 
 ```sh
 cd /tmp && curl -k -o shadow.sh https://raw.githubusercontent.com/qiwihui/hiwifi-ss/master/shadow.sh && sh shadow.sh && rm shadow.sh
@@ -29,6 +27,7 @@ cd /tmp && curl -k -o shadow.sh https://raw.githubusercontent.com/qiwihui/hiwifi
    - [x] "高级设置"界面修复
  
  - [ ] release/v1.1.0 => 完成之前所有功能在新版下的界面适配 
+ - [ ] 适应新版界面的不同版本（0.9019.1.13715s，0.9015.1.10328s等）
  - [x] 底层增加更多的路由规则
  - [ ] 关于底层源码开源的一些问题
 
