@@ -1,8 +1,8 @@
 # hiwifi-ss
 
-极路由+ss配置, 适应新版极路由，使用前请确认版本为__1.0.7.13499s__。
+极路由+ss配置, 适应新版极路由，使用前请确认版本为__1.0.7.13499s__。项目中的gfw规则使用项目 [cokebar/gfwlist2dnsmasq](https://github.com/cokebar/gfwlist2dnsmasq) 生成的规则修改而成，最后更新日期为2016.08.07。
 
-### 安装方法(待完善)
+### 安装方法
 
 1. 旧版hiwifi => 请参见博客: [极路由Shadowsocks家庭无痛翻墙实践](https://luolei.org/hiwifi-shadowsocks/)
 
@@ -19,7 +19,6 @@ cd /tmp && curl -k -o shadow.sh https://raw.githubusercontent.com/qiwihui/hiwifi
    - [x] 开关样式
    - [x] 增加"shadowsocks设置"按钮
    - [x] "shadowsocks设置"按钮功能修复
-   - [ ] 使用github作为文件存储
    - [x] 密码显示功能修复
    - [x] 弹出提示框修复
    - [x] 下拉框样式修复
@@ -27,6 +26,7 @@ cd /tmp && curl -k -o shadow.sh https://raw.githubusercontent.com/qiwihui/hiwifi
    - [x] "高级设置"界面修复
  
  - [ ] release/v1.1.0 => 完成之前所有功能在新版下的界面适配 
+ - [ ] 使用github作为文件存储
  - [ ] 适应新版界面的不同版本（0.9019.1.13715s，0.9015.1.10328s等）
  - [x] 底层增加更多的路由规则
  - [ ] 关于底层源码开源的一些问题
