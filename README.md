@@ -31,6 +31,12 @@ cd /tmp && curl -k -o shadow.sh https://raw.githubusercontent.com/qiwihui/hiwifi
  - [x] 底层增加更多的路由规则
  - [ ] 关于底层源码开源的一些问题
 
+### 贡献
+
+1. 如果你在使用中有什么问题或者建议，请不要吝啬，给我提一个issue;
+2. 如果你对代码有自己的想法并实现了，请给我一个Pull Request;
+3. 如果你有什么吐槽，请发邮件给我，qiwihui@qiwihui.com；
+
 ### 目前状态
 
 1. 新版界面
