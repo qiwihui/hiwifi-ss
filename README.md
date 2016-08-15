@@ -12,6 +12,16 @@
 cd /tmp && curl -k -o shadow.sh https://raw.githubusercontent.com/qiwihui/hiwifi-ss/master/shadow.sh && sh shadow.sh && rm shadow.sh
 ```
 
+### 常见问题
+
+1. 安装后显示`请求的接口不存在`?
+
+请重启路由器.
+
+2. 适用极路由版本有哪些?
+
+目前应该是只适用于 `1.x` 版本(比如`1.0.7.13499s`), 不适用于 `0.901X` 版本的极路由.
+
 ### TODO 
 
  - [ ] 适应新版本界面 => 1.0.7.13499s版本
