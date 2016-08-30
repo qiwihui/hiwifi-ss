@@ -22,6 +22,10 @@ cd /tmp && curl -k -o shadow.sh https://raw.githubusercontent.com/qiwihui/hiwifi
 
 目前应该是只适用于 `1.x` 版本(比如`1.0.7.13499s`), 不适用于 `0.901X` 版本的极路由.
 
+3. 如何卸载脚本?([issue#12](https://github.com/qiwihui/hiwifi-ss/issues/12))
+
+将`/usr/lib/lua/luci/view/admin_web/network/index.htm.ssbak` 重命名为 `/usr/lib/lua/luci/view/admin_web/network/index.htm`, 并移除ss: `opkg remove geewan-ss`
+
 ### TODO 
 
  - [ ] 适应新版本界面 => 1.0.7.13499s版本
