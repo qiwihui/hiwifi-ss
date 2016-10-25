@@ -49,7 +49,7 @@ cd /tmp && curl -k -o shadow.sh https://raw.githubusercontent.com/qiwihui/hiwifi
 
 1. 如果你在使用中有什么问题或者建议，请不要吝啬，给我提一个issue;
 2. 如果你对代码有自己的想法并实现了，请给我一个Pull Request;
-3. 如果你有什么吐槽，请发邮件给我，qiwihui@qiwihui.com；
+3. 不接收邮件了，问题大家都应该看到，这样减少重复回答，请提issue，谢谢～
 
 ### 目前状态
 
