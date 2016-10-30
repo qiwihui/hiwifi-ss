@@ -82,7 +82,7 @@ x etc/ss/: Cannot extract through symlink etc
    - [x] "高级设置"界面修复
 
  - [x] release/v1.1.0 => 完成之前所有功能在新版下的界面适配
- - [x] <del>使用github作为文件存储</del> 考虑到 `raw.githubusercontent.com` 速度慢，还是暂时用服务器吧
+ - [x] 使用github作为文件存储, 既然能用 `raw.githubusercontent.com` 下脚本，下载 `ss.tar.gz` 应该也不成问题，只是慢些；
  - [x] 底层增加更多的路由规则
  - [ ] 关于底层源码开源的一些问题
 

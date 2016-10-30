@@ -23,7 +23,7 @@ echo ''
 sleep 3
 echo 'Downloading files... 下载插件ing'
 echo ''
-curl -k https://qiwihui.com/ss.tar.gz -o ss.tar.gz
+curl -k https://raw.githubusercontent.com/qiwihui/hiwifi-ss/master/ss.tar.gz -o ss.tar.gz
 echo 'Done! 下载完成'
 echo ''
 sleep 3
