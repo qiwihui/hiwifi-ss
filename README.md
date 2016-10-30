@@ -1,6 +1,10 @@
 # hiwifi-ss
 
-极路由+ss配置, 适应新版极路由，使用前请确认版本为__1.0.7.13499s__。项目中的gfw规则使用项目 [cokebar/gfwlist2dnsmasq](https://github.com/cokebar/gfwlist2dnsmasq) 生成的规则修改而成，最后更新日期为2016.08.07。
+极路由+ss配置, 适应新版极路由，支持的极路由版本有(__因为没办法测试所有的极路由，所以你能运行的极路由不在这个列表，请给我PR，谢谢！__):
+
+    - HC5761 - 1.0.7.13499s
+
+项目中的gfw规则使用项目 [cokebar/gfwlist2dnsmasq](https://github.com/cokebar/gfwlist2dnsmasq) 生成的规则修改而成，最后更新日期为2016.08.07。
 
 ### 安装方法
 
@@ -12,7 +16,30 @@
 cd /tmp && curl -k -o shadow.sh https://raw.githubusercontent.com/qiwihui/hiwifi-ss/master/shadow.sh && sh shadow.sh && rm shadow.sh
 ```
 
+### 如何在服务器端启用`chacha20`的支持：
+
+1. 编译并安装libsodium:
+
+```
+apt-get update
+apt-get install build-essential
+wget https://github.com/jedisct1/libsodium/releases/download/1.0.3/libsodium-1.0.3.tar.gz
+tar xf libsodium-1.0.3.tar.gz && cd libsodium-1.0.3
+./configure && make && make install
+```
+
+2. 修复动态链接库:
+然后编辑 `/etc/ld.so.conf` 文件， 加入一行 `/usr/local/lib` 并保存。运行命令 `ldconfig`
+
+3. 在ss配置中修改为 `chacha20` 即可
+
+备注： 参考[xqd的小站](https://php-rmcr7.rhcloud.com/chacha20/)整理，Thank you!
+
 ### 常见问题
+
+0. 支持哪些加密方法？
+
+理论上 ss-local 2.4.7 能支持的算法都支持。
 
 1. 安装后显示`请求的接口不存在`?
 
@@ -26,9 +53,24 @@ cd /tmp && curl -k -o shadow.sh https://raw.githubusercontent.com/qiwihui/hiwifi
 
 将`/usr/lib/lua/luci/view/admin_web/network/index.htm.ssbak` 重命名为 `/usr/lib/lua/luci/view/admin_web/network/index.htm`, 并移除ss: `opkg remove geewan-ss`
 
-### TODO 
+4. 如果出现类似下面的报错，请确保你是登录到极路由后台执行脚本: `ssh root@192.168.199.1 -p 1022`， 不要在自己的电脑上执行 :(
 
- - [ ] 适应新版本界面 => 1.0.7.13499s版本
+```sh
+x etc/: Could not remove symlink etc
+x etc/config/: Cannot extract through symlink etc
+x etc/firewall.d/: Cannot extract through symlink etc
+x etc/gw-redsocks/: Cannot extract through symlink etc
+x etc/gw-redsocks.conf: Cannot extract through symlink etc
+x etc/gw-shadowsocks/: Cannot extract through symlink etc
+x etc/init.d/: Cannot extract through symlink etc
+x etc/rc.d/: Cannot extract through symlink etc
+x etc/ss/: Cannot extract through symlink etc
+......
+```
+
+### TODO
+
+ - [x] 适应新版本界面
 
    - [x] 开关样式
    - [x] 增加"shadowsocks设置"按钮
@@ -36,12 +78,11 @@ cd /tmp && curl -k -o shadow.sh https://raw.githubusercontent.com/qiwihui/hiwifi
    - [x] 密码显示功能修复
    - [x] 弹出提示框修复
    - [x] 下拉框样式修复
-   - [ ] "导入配置文件(json格式)"界面修复
+   - [x] "导入配置文件(json格式)"界面修复; 界面修复了，但是底层功能有问题；
    - [x] "高级设置"界面修复
- 
- - [ ] release/v1.1.0 => 完成之前所有功能在新版下的界面适配 
- - [ ] 使用github作为文件存储
- - [ ] 适应新版界面的不同版本（0.9019.1.13715s，0.9015.1.10328s等）
+
+ - [x] release/v1.1.0 => 完成之前所有功能在新版下的界面适配
+ - [x] <del>使用github作为文件存储</del> 考虑到 `raw.githubusercontent.com` 速度慢，还是暂时用服务器吧
  - [x] 底层增加更多的路由规则
  - [ ] 关于底层源码开源的一些问题
 
@@ -60,7 +101,7 @@ cd /tmp && curl -k -o shadow.sh https://raw.githubusercontent.com/qiwihui/hiwifi
 ![](./ss-menu.png)
 
 (2). ss账号设置
- 
+
 ![](./ss-settings.png)
 
 (3). ss高级设置
