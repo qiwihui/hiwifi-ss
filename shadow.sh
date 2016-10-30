@@ -59,9 +59,9 @@ echo 'Auto-Installed: yes' >>/usr/lib/opkg/status
 echo '' >>/usr/lib/opkg/status
 echo 'cleanning temporary files... 清理临时文件ing'
 echo ''
-if test -e /tmp/luci-indexcache;
-then rm /tmp/luci-indexcache&&echo 'Done! 清理完成 '&&echo '';
-else echo 'luci-cache does not exist! 无法找到luci-cache,请确定是否是极路由环境'&&echo ''
+if test -e /var/run/luci-indexcache;
+then rm /var/run/luci-indexcache && echo 'Done! 清理完成 ' && echo '';
+else echo 'luci-cache does not exist! 无法找到luci-cache,请确定是否是极路由环境' && echo ''
 fi
 rm -rf /tmp/geewan
 sleep 3
