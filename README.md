@@ -1,11 +1,8 @@
 # hiwifi-ss
 
-极路由+ss配置, 适应新版极路由，支持的极路由版本有(__因为没办法测试所有的极路由，所以你能运行的极路由不在这个列表，请给我PR，谢谢！__):
+极路由+ss配置, 适应新版极路由，支持的极路由版本有(__因为没办法测试所有的极路由，所以你能运行的极路由不在这个列表，请在[issue#38](https://github.com/qiwihui/hiwifi-ss/issues/38)中回复，谢谢！__):
 
-    - HC5761 - 1.0.7.13499s
-    - HC5761 - 1.1.4.14678s
-
-项目中的gfw规则使用项目 [cokebar/gfwlist2dnsmasq](https://github.com/cokebar/gfwlist2dnsmasq) 生成的规则修改而成，最后更新日期为2016.08.07。
+现在项目使用的是大陆白名单模式，关于适用大陆白名单和gfwlsit的处理，见[issue#37](https://github.com/qiwihui/hiwifi-ss/issues/37)。项目中的gfw规则使用项目 [cokebar/gfwlist2dnsmasq](https://github.com/cokebar/gfwlist2dnsmasq) 生成的规则修改而成，最后更新日期为2016.08.07。
 
 ### 安装方法
 
@@ -44,11 +41,11 @@ tar xf libsodium-1.0.3.tar.gz && cd libsodium-1.0.3
 
 1. 安装后显示`请求的接口不存在`?
 
-请重启路由器.
+请重启路由器. [issue#28](https://github.com/qiwihui/hiwifi-ss/issues/28)
 
 2. 适用极路由版本有哪些?
 
-目前应该是只适用于 `1.x` 版本(比如`1.0.7.13499s`), 不适用于 `0.901X` 版本的极路由.
+see [issue#38](https://github.com/qiwihui/hiwifi-ss/issues/38)
 
 3. 如何卸载脚本?([issue#12](https://github.com/qiwihui/hiwifi-ss/issues/12))
 
