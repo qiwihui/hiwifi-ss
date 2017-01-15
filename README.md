@@ -10,27 +10,27 @@
 
 2. 新版hiwifi => 使用项目根目录下的 `shadow.sh` 脚本进行安装, 建议使用以下一键命令:
 
-```sh
-cd /tmp && curl -k -o shadow.sh https://raw.githubusercontent.com/qiwihui/hiwifi-ss/master/shadow.sh && sh shadow.sh && rm shadow.sh
-```
+   ```sh
+   cd /tmp && curl -k -o shadow.sh https://raw.githubusercontent.com/qiwihui/hiwifi-ss/master/shadow.sh && sh shadow.sh && rm shadow.sh
+   ```
 
 3.  hiwifi 1.2.5.15805s 
 
-```sh
-cd /tmp && curl -k -o shadow.sh https://raw.githubusercontent.com/qiwihui/hiwifi-ss/master/shadow.sh && sh shadow.sh 12515805s && rm shadow.sh
-```
+   ```sh
+   cd /tmp && curl -k -o shadow.sh https://raw.githubusercontent.com/qiwihui/hiwifi-ss/master/shadow.sh && sh shadow.sh 12515805s && rm shadow.sh
+   ```
 
 ### 如何在服务器端启用`chacha20`的支持：
 
 1. 编译并安装libsodium:
 
-```
-apt-get update
-apt-get install build-essential
-wget https://github.com/jedisct1/libsodium/releases/download/1.0.3/libsodium-1.0.3.tar.gz
-tar xf libsodium-1.0.3.tar.gz && cd libsodium-1.0.3
-./configure && make && make install
-```
+   ```
+   apt-get update
+   apt-get install build-essential
+   wget https://github.com/jedisct1/libsodium/releases/download/1.0.3/libsodium-1.0.3.tar.gz
+   tar xf libsodium-1.0.3.tar.gz && cd libsodium-1.0.3
+   ./configure && make && make install
+   ```
 
 2. 修复动态链接库:
 然后编辑 `/etc/ld.so.conf` 文件， 加入一行 `/usr/local/lib` 并保存。运行命令 `ldconfig`
@@ -43,19 +43,19 @@ tar xf libsodium-1.0.3.tar.gz && cd libsodium-1.0.3
 
 0. 支持哪些加密方法？
 
-理论上 ss-local 2.4.7 能支持的算法都支持。
+  理论上 ss-local 2.4.7 能支持的算法都支持。
 
 1. 安装后显示`请求的接口不存在`?
 
-请重启路由器. [issue#28](https://github.com/qiwihui/hiwifi-ss/issues/28)
+  请重启路由器. [issue#28](https://github.com/qiwihui/hiwifi-ss/issues/28)
 
 2. 适用极路由版本有哪些?
 
-see [issue#38](https://github.com/qiwihui/hiwifi-ss/issues/38)
+  see [issue#38](https://github.com/qiwihui/hiwifi-ss/issues/38)
 
 3. 如何卸载脚本?([issue#12](https://github.com/qiwihui/hiwifi-ss/issues/12))
 
-将`/usr/lib/lua/luci/view/admin_web/network/index.htm.ssbak` 重命名为 `/usr/lib/lua/luci/view/admin_web/network/index.htm`, 并移除ss: `opkg remove geewan-ss`
+  将`/usr/lib/lua/luci/view/admin_web/network/index.htm.ssbak` 重命名为 `/usr/lib/lua/luci/view/admin_web/network/index.htm`, 并移除ss: `opkg remove geewan-ss`
 
 4. 如果出现类似下面的报错，请确保你是登录到极路由后台执行脚本: `ssh root@192.168.199.1 -p 1022`， 不要在自己的电脑上执行 :(
 
@@ -102,12 +102,12 @@ x etc/ss/: Cannot extract through symlink etc
 
 (1). ss子菜单在网络设置下:
 
-![](./ss-menu.png)
+  ![](./ss-menu.png)
 
 (2). ss账号设置
 
-![](./ss-settings.png)
+  ![](./ss-settings.png)
 
 (3). ss高级设置
 
-![](./ss-advance.png)
+  ![](./ss-advance.png)
