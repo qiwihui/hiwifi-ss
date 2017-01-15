@@ -1,18 +1,6 @@
 #!/bin/sh
 #
-echo ''
-echo '/*教程请参考:极路由Shadowsocks家庭无痛翻墙实践*/'
-echo 'https://luolei.org/hiwifi-shadowsocks/'
-echo 'by @foru17'
-echo ''
-echo ''
-echo '那一天,'
-echo '人类终于回想起了,'
-echo '曾经一度被他们所支配的恐怖,'
-echo '还有被囚禁于鸟笼中的那份屈辱.'
-echo ''
-echo '進撃の巨人 諫山創'
-echo ''
+echo 'Go!'
 sleep 2
 echo 'Building environment... 创建临时目录ing'
 echo ''
@@ -23,7 +11,14 @@ echo ''
 sleep 3
 echo 'Downloading files... 下载插件ing'
 echo ''
+if [ $1 == "12515805s" ]
+then
+echo ">1.2.5.15805s"
+curl -k https://raw.githubusercontent.com/qiwihui/hiwifi-ss/master/ss.12515805s.tar.gz -o ss.tar.gz
+else
+echo "<1.2.5.15805s"
 curl -k https://raw.githubusercontent.com/qiwihui/hiwifi-ss/master/ss.tar.gz -o ss.tar.gz
+fi
 echo 'Done! 下载完成'
 echo ''
 sleep 3

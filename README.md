@@ -14,6 +14,12 @@
 cd /tmp && curl -k -o shadow.sh https://raw.githubusercontent.com/qiwihui/hiwifi-ss/master/shadow.sh && sh shadow.sh && rm shadow.sh
 ```
 
+3.  hiwifi 1.2.5.15805s 
+
+```sh
+cd /tmp && curl -k -o shadow.sh https://raw.githubusercontent.com/qiwihui/hiwifi-ss/master/shadow.sh && sh shadow.sh 12515805s && rm shadow.sh
+```
+
 ### 如何在服务器端启用`chacha20`的支持：
 
 1. 编译并安装libsodium:
