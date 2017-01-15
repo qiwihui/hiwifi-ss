@@ -6,13 +6,11 @@
 ]]--
 
 local ver  = require "luci.version"
-local adv_menu = luci.util.get_adv_menu()
-local request_uri = luci.http.getenv("REQUEST_URI")
 %>
 <head>
 <title>HiWiFi 路由器</title>
 <link rel="stylesheet" href="<%=resource%>/web/css/style.css?v=<%=ver.svnRevNum%>" type="text/css"/>
-<script type="text/javascript" src="<%=resource%>/web/js/jquery-1.8.1.min.js?v=<%=ver.svnRevNum%>"></script>
+<script type="text/javascript" src="<%=resource%>/v2/js/boot_loader/jquery.min.js?v=<%=ver.svnRevNum%>"></script>
 </head>
 
 <style type="text/css">
@@ -153,19 +151,11 @@ local request_uri = luci.http.getenv("REQUEST_URI")
             <a href="javascript:;" class="btn" id="submit_btn">保存</a>
             <div class="G-panel-loading" style="width:20px;height: 20px;min-height: 1px;margin-left: 5px;display: none;" id="loading_ss_setup"></div>
           </div>
-          <div class="super-set-bar G-handle" id="ss_advanced_settings">
-            <span><a href="javascript:;" id="ss_cfg_import_btn" style="margin-right: 145px">导入配置文件(json格式)</a></span>
-            <span><a href="javascript:;" id="ss_adv_btn">高级设置</a></span>
-          </div>
         </form>
       </div>
     </div>
 </div>
 
-<!-- shadowsocks cfg_import-->
-<% include('admin_web/network/cfg_import') %>
-<!-- shadowsocks advance settings-->
-<% include('admin_web/network/ss_adv') %>
 <script type="text/javascript">
 "use strict";
 var t;
