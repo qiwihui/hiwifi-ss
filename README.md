@@ -59,18 +59,29 @@
 
 4. 如果出现类似下面的报错，请确保你是登录到极路由后台执行脚本: `ssh root@192.168.199.1 -p 1022`， 不要在自己的电脑上执行 :(
 
-```sh
-x etc/: Could not remove symlink etc
-x etc/config/: Cannot extract through symlink etc
-x etc/firewall.d/: Cannot extract through symlink etc
-x etc/gw-redsocks/: Cannot extract through symlink etc
-x etc/gw-redsocks.conf: Cannot extract through symlink etc
-x etc/gw-shadowsocks/: Cannot extract through symlink etc
-x etc/init.d/: Cannot extract through symlink etc
-x etc/rc.d/: Cannot extract through symlink etc
-x etc/ss/: Cannot extract through symlink etc
-......
-```
+    ```sh
+    x etc/: Could not remove symlink etc
+    x etc/config/: Cannot extract through symlink etc
+    x etc/firewall.d/: Cannot extract through symlink etc
+    x etc/gw-redsocks/: Cannot extract through symlink etc
+    x etc/gw-redsocks.conf: Cannot extract through symlink etc
+    x etc/gw-shadowsocks/: Cannot extract through symlink etc
+    x etc/init.d/: Cannot extract through symlink etc
+    x etc/rc.d/: Cannot extract through symlink etc
+    x etc/ss/: Cannot extract through symlink etc
+    ......
+    ```
+
+5. 项目如何开机自动运行？
+
+  项目在 `/etc/rc.d/` 下添加了 `S80gw-shadowsocks` 指向 `/etc/init.d/gw-shadowsocks`，所以会开机自动运行的。
+
+### 关于底层源码开源的一些问题
+
+这个项目基于 geewan 的 hiwifi 配置程序，底层只有编译后的 lua 程序，除开用到的 shadowsocks 使用了 GPL 协议, 其他部分不开源也并没有问题。
+本着共同进步的原则，作者尝试完成了部分功能的实现并开源，不足之处请多指教。
+
+本项目会不断补充并完善功能，只是作者开发时间不长，进度会比较慢，请勿催~
 
 ### TODO
 
@@ -88,7 +99,7 @@ x etc/ss/: Cannot extract through symlink etc
  - [x] release/v1.1.0 => 完成之前所有功能在新版下的界面适配
  - [x] 使用github作为文件存储, 既然能用 `raw.githubusercontent.com` 下脚本，下载 `ss.tar.gz` 应该也不成问题，只是慢些；
  - [x] 底层增加更多的路由规则
- - [ ] 关于底层源码开源的一些问题
+ - [x] 关于底层源码开源的一些问题
 
 ### 贡献
 

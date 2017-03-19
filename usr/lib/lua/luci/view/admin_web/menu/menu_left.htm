@@ -1,0 +1,74 @@
+<%
+--[[
+    Info    menu页
+    Author    peng.kang  <peng.kang@hiwif.tw>
+    Copyright    2015
+]]--
+local i18n = require "luci.i18n"
+local path_info = luci.http.getenv_htmlencode("PATH_INFO")
+local dir_num = string.find(path_info, "admin_web")
+local view = "home"
+if (dir_num > 20) then
+    view = string.sub(path_info, dir_num + 10)
+end
+if view ~= "network" and view ~= "wifi" and view ~= "safe" and view ~= "storage" and view ~= "system" and view ~= "prometheus" then
+    view = "home"
+end
+%>
+<div class="G-nav-bar" id="menu_view">
+    <ul>
+        <li class="J_twx_view">
+            <a href="<%=luci.dispatcher.build_url('admin_web','home')%>"<%if view == "home" then%>class="current"<%end%> id="menu_home">
+                <span class="icon icon-home"></span>
+                <p class="nav-text"><%=i18n.translate('web_home')%></p>
+            </a>
+        </li>
+        <li class="J_twx_view">
+            <a href="<%=luci.dispatcher.build_url('admin_web','network')%>"<%if view == "network" then%>class="current"<%end%> id="menu_net">
+                <span class="icon icon-net"></span>
+                <span class="nav-text"><%=i18n.translate('g_internet')%></span>
+            </a>
+        </li>
+        <li class="J_twx_view">
+            <a href="<%=luci.dispatcher.build_url('admin_web','wifi')%>"<%if view == "wifi" then%>class="current"<%end%> id="menu_wifi">
+                <span class="icon icon-wifi"></span>
+                <span class="nav-text">Wi-Fi</span>
+            </a>
+        </li>
+        <li class="J_twx_view">
+            <a href="<%=luci.dispatcher.build_url('admin_web','safe')%>"<%if view == "safe" then%>class="current"<%end%> id="menu_safe">
+                <span class="icon icon-safe"></span>
+                <span class="nav-text"><%=i18n.translate('web_safe')%></span>
+            </a>
+        </li>
+        <%if i18n.is_empty("storage_view_visible") then%>
+        <li class="J_twx_view">
+            <a href="<%=luci.dispatcher.build_url('admin_web','storage')%>"<%if view == "storage" then%>class="current"<%end%> id="menu_storage">
+                <span class="icon icon-save"></span>
+                <span class="nav-text"><%=i18n.translate('web_storage')%></span>
+            </a>
+        </li>
+        <%end%>
+        <%if i18n.is_empty("plugins_view_visible") then%>
+        <li>
+            <a href="<%=luci.dispatcher.build_url('admin_web','plugin')%>" target="_blank" id="menu_plugin">
+                <span class="icon icon-app"></span>
+                <span class="nav-text"><%=i18n.translate('web_plugin')%></span>
+            </a>
+        </li>
+        <%end%>
+        <li class="J_twx_view">
+            <a href="<%=luci.dispatcher.build_url('admin_web','system')%>"<%if view == "system" then%>class="current"<%end%> id="ment_system">
+                <span class="icon icon-set"></span>
+                <span class="nav-text"><%=i18n.translate('web_sys_set')%></span>
+            </a>
+        </li>
+        <!-- prometheus -->
+        <li class="J_twx_view">
+            <a href="<%=luci.dispatcher.build_url('admin_web','prometheus')%>"<%if view == "prometheus" then%>class="current"<%end%> id="menu_prometheus">
+                <span class="icon icon-net"></span>
+                <span class="nav-text">安全上网</span>
+            </a>
+        </li>
+    </ul>
+</div>
