@@ -29,7 +29,7 @@ echo -n "备份系统文件...."
 if [ -f /usr/lib/lua/luci/view/admin_web/menu/menu_left.htm.ssbak ]; then
     echo -e "...[\e[31m 备份已存在\e[0m]"
 else
-    cp -a /Users/qiwihui/Development/nonWork/hiwifi-ss/usr/lib/lua/luci/view/admin_web/menu/menu_left.htm /Users/qiwihui/Development/nonWork/hiwifi-ss/usr/lib/lua/luci/view/admin_web/menu/menu_left.htm.ssbak
+    cp -a /usr/lib/lua/luci/view/admin_web/menu/menu_left.htm /usr/lib/lua/luci/view/admin_web/menu/menu_left.htm.ssbak
     echo -e "....[\e[32m 备份完成\e[0m]"
 fi
 
