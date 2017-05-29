@@ -25,21 +25,18 @@ echo ''
 sleep 3
 echo 'Installing... 安装ing'
 echo -n "备份系统文件...."
-if [ -f /usr/lib/lua/luci/view/admin_web/network/index.htm.ssbak ]; then
-    echo -e "...[\e[31m备份文件已存在\e[0m]"
+
+if [ -f /usr/lib/lua/luci/view/admin_web/menu/menu_left.htm.ssbak ]; then
+    echo -e "...[\e[31m 备份已存在\e[0m]"
 else
-    cp -a /usr/lib/lua/luci/view/admin_web/network/index.htm /usr/lib/lua/luci/view/admin_web/network/index.htm.ssbak
-    echo -e "....[\e[32m完成\e[0m]"
+    cp -a /Users/qiwihui/Development/nonWork/hiwifi-ss/usr/lib/lua/luci/view/admin_web/menu/menu_left.htm /Users/qiwihui/Development/nonWork/hiwifi-ss/usr/lib/lua/luci/view/admin_web/menu/menu_left.htm.ssbak
+    echo -e "....[\e[32m 备份完成\e[0m]"
 fi
-if test -e /usr/lib/lua/luci/view/admin_web/plugin/shadowsocks.htm;
-then echo 'Error,请备份并重命名之前的shadowsocks插件文件:/usr/lib/lua/luci/view/admin_web/plugin/shadowsocks.htm'&&rm -rf /tmp/geewan&&exit;
-else
-if test -e /etc/config/ss-redir;
-then echo 'Error,请备份并重命名/etc/config/ss-redir文件夹'&&rm -rf /tmp/geewan&&exit;
-else tar xzvf ss.tar.gz -C / >>/dev/null;
-fi
-fi
-echo 'Done! 插件安装成功!'
+
+echo '安装插件...'
+tar xzvf ss.tar.gz -C / >>/dev/null
+echo '...[\e[32m 安装成功\e[0m]'
+
 echo ''
 sleep 3
 echo 'adding uninstall information... 准备删除临时文件...'
@@ -55,13 +52,14 @@ echo 'Auto-Installed: yes' >>/usr/lib/opkg/status
 echo '' >>/usr/lib/opkg/status
 echo 'cleanning temporary files... 清理临时文件ing'
 echo ''
-if test -e /var/run/luci-indexcache;
-then rm /var/run/luci-indexcache && echo 'Done! 清理完成 ' && echo '';
-else echo 'luci-cache does not exist! 无法找到luci-cache,请确定是否是极路由环境' && echo ''
+if test -e /var/run/luci-indexcache; then
+    rm /var/run/luci-indexcache && echo 'Done! 清理完成 ' && echo '';
+else
+    echo 'luci-cache does not exist! 无法找到luci-cache,请确定是否是极路由环境' && echo ''
 fi
 rm -rf /tmp/geewan
 sleep 3
-echo 'the whole installation Success! 插件成功安装!'
+echo '插件成功安装!'
 echo '1987年9月14日21时07分'
 echo '中国第一封电子邮件'
 echo '从北京发往德国'
