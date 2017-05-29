@@ -37,7 +37,7 @@ end
 
 
 local luci_http = require("luci.http")
-local log = require "luci.log"
+--local log = require "luci.log"
 
 function json_return(content)
     luci_http.prepare_content("application/json")

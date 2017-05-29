@@ -11,7 +11,7 @@ local view = "home"
 if (dir_num > 20) then
     view = string.sub(path_info, dir_num + 10)
 end
-if view ~= "network" and view ~= "wifi" and view ~= "safe" and view ~= "storage" and view ~= "system" and view ~= "prometheus" then
+if view ~= "network" and view ~= "wifi" and view ~= "safe" and view ~= "storage" and view ~= "plugin" and view ~= "system" and view ~= "prometheus" then
     view = "home"
 end
 %>
@@ -51,16 +51,16 @@ end
         <%end%>
         <%if i18n.is_empty("plugins_view_visible") then%>
         <li>
-            <a href="<%=luci.dispatcher.build_url('admin_web','plugin')%>" target="_blank" id="menu_plugin">
+            <a href="<%=luci.dispatcher.build_url('admin_web','plugin')%>"<%if view == "plugin" then%>class="current"<%end%> id="menu_storage">
                 <span class="icon icon-app"></span>
-                <span class="nav-text"><%=i18n.translate('web_plugin')%></span>
+                <span class="nav-text" style="top:38px"><%=i18n.translate('web_plugin')%></span>
             </a>
         </li>
         <%end%>
         <li class="J_twx_view">
             <a href="<%=luci.dispatcher.build_url('admin_web','system')%>"<%if view == "system" then%>class="current"<%end%> id="ment_system">
-                <span class="icon icon-set"></span>
-                <span class="nav-text"><%=i18n.translate('web_sys_set')%></span>
+                <span class="icon icon-set" style="top:12px"></span>
+                <span class="nav-text" style="top:37px"><%=i18n.translate('web_sys_set')%></span>
             </a>
         </li>
         <!-- prometheus -->

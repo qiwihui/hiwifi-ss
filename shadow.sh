@@ -11,24 +11,25 @@ echo ''
 sleep 3
 echo 'Downloading files... 下载插件ing'
 echo ''
-if [ $1 == "12515805s" ]
-then
+
+if [ $1 == "12515805s" ]; then
 echo ">1.2.5.15805s"
 curl -k https://raw.githubusercontent.com/qiwihui/hiwifi-ss/master/ss.12515805s.tar.gz -o ss.tar.gz
 else
 echo "<1.2.5.15805s"
 curl -k https://raw.githubusercontent.com/qiwihui/hiwifi-ss/master/ss.tar.gz -o ss.tar.gz
 fi
+
 echo 'Done! 下载完成'
 echo ''
 sleep 3
 echo 'Installing... 安装ing'
 echo -n "备份系统文件...."
 if [ -f /usr/lib/lua/luci/view/admin_web/network/index.htm.ssbak ]; then
-    echo -e "...[\e[31m备份文件已存在\e[37m]"
+    echo -e "...[\e[31m备份文件已存在\e[0m]"
 else
     cp -a /usr/lib/lua/luci/view/admin_web/network/index.htm /usr/lib/lua/luci/view/admin_web/network/index.htm.ssbak
-    echo -e "....[\e[32m完成\e[37m]"
+    echo -e "....[\e[32m完成\e[0m]"
 fi
 if test -e /usr/lib/lua/luci/view/admin_web/plugin/shadowsocks.htm;
 then echo 'Error,请备份并重命名之前的shadowsocks插件文件:/usr/lib/lua/luci/view/admin_web/plugin/shadowsocks.htm'&&rm -rf /tmp/geewan&&exit;

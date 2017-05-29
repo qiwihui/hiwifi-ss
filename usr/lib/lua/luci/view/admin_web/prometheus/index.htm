@@ -272,7 +272,52 @@ local i18n = require "luci.i18n"
     </div>
   </div>
 </div>
+<style>
+  .J_selectOriginal {
+    padding-right: 24px;
+    background: url("/turbo-static/turbo/v2/img/select-arrow.png") no-repeat right center;
+    display: inline-block;
+    line-height: 34px;
+    position: relative;
+    vertical-align: middle;
+    border: 1px #c7c7c7 solid;
+    height: 34px;
+    text-indent: 5px;
+    color: #5a6779;
+    outline: none;
+    font-size: 14px;
+    font-family: "STHeitiSC-Light", "Microsoft Yahei", Helvetica, Arial, sans-serif;
+  }
 
+  .J_selectOriginal span {
+    white-space: nowrap;
+    overflow: hidden;
+    display: block;
+  }
+
+  .J_selectOriginal .option-list {
+    position: absolute;
+    top: 34px;
+    background: #fff;
+    width: 100%;
+    border: 1px #c7c7c7 solid;
+    left: -1px;
+    border-top: none;
+    z-index: 99;
+  }
+
+  .J_selectOriginal .option-list li a {
+    height: 28px;
+    line-height: 28px;
+    padding: 0 5px;
+    color: #5a6779;
+    display: block;
+  }
+
+  .J_selectOriginal .option-list li a:hover {
+    background: #f4f7fa;
+  }
+</style>
 <script type="text/javascript">
 "use strict";
 var t;
