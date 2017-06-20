@@ -4,7 +4,7 @@ echo 'Go!'
 sleep 2
 echo '创建临时目录'
 echo ''
-mkdir /tmp/geewan
+mkdir -p /tmp/geewan
 cd /tmp/geewan
 echo 'Done! 成功创建临时目录!'
 echo ''
@@ -12,7 +12,7 @@ sleep 3
 echo '下载插件'
 echo ''
 
-if [ $1 == "12515805s" ]; then
+if [ "$1"x = "12515805sx" ]; then
     echo ">1.2.5.15805s"
     curl -k https://raw.githubusercontent.com/qiwihui/hiwifi-ss/master/ss.12515805s.tar.gz -o ss.tar.gz
 else
