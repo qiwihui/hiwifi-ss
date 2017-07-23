@@ -13,10 +13,10 @@ echo '下载插件'
 echo ''
 
 if [ "$1"x = "12515805sx" ]; then
-    echo ">1.2.5.15805s"
+    echo "=1.2.5.15805s"
     curl -k https://raw.githubusercontent.com/qiwihui/hiwifi-ss/master/ss.12515805s.tar.gz -o ss.tar.gz
 else
-    echo "<1.2.5.15805s"
+    echo ">1.2.5.15805s"
     curl -k https://raw.githubusercontent.com/qiwihui/hiwifi-ss/master/ss.tar.gz -o ss.tar.gz
 fi
 
