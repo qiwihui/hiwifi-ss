@@ -32,7 +32,6 @@ function index()
     entry({ "api", "prometheus", "get_ss_status" }, call("get_ss_status"), _(""), 607)
     -- prometheus_upgrade  升级
     entry({ "api", "prometheus", "prometheus_upgrade" }, call("prometheus_upgrade"), _(""), 608)
-
 end
 
 
@@ -67,16 +66,13 @@ function get_ss_cfg()
     result['defaultroute'] = config['defaultroute'] or '0'
     result['dnsserver'] = config['dnsserver'] or '8.8.4.4'
 
-    result["status"] = "running"
     result["code"] = 0
-    -- log.print_r(result)
-    -- result["msg"] = luci.util.get_api_error(0)
     json_return(result)
 end
 
 function set_ss_cfg()
     -- 保存 shadowsocks 配置
-    local enable = luci.http.formvalue("enable")
+    -- local enable = luci.http.formvalue("enable")
     local server = luci.http.formvalue("server")
     local server_port = luci.http.formvalue("server_port")
     -- local local_port = luci.http.formvalue("local_port") -- local_port 61080
@@ -86,10 +82,18 @@ function set_ss_cfg()
     local defaultroute = luci.http.formvalue("defaultroute")
     local dnsserver = luci.http.formvalue("dnsserver")
 
-    luci.sys.exec('uci set shadowsocks.shadowsocks.enable='..enable..';')
+    -- 查看是否有 shadowsocks 的配置，有则修改，无则创建
+    local has_config = luci.sys.exec("test -f /etc/config/shadowsocks && echo -n 'yes' || echo -n 'no'")
+    if has_config == 'no' then
+        luci.sys.exec('touch /etc/config/shadowsocks')
+        luci.sys.exec('uci set shadowsocks.shadowsocks=ssproxy;')
+        luci.sys.exec('uci set shadowsocks.shadowsocks.enable="0";')
+        luci.sys.exec('uci set shadowsocks.shadowsocks.local_port="61080";')
+        luci.sys.exec('uci set shadowsocks.shadowsocks.rs_port=3088;')
+    end
+
     luci.sys.exec('uci set shadowsocks.shadowsocks.server='..server..';')
     luci.sys.exec('uci set shadowsocks.shadowsocks.server_port='..server_port..';')
-    luci.sys.exec('uci set shadowsocks.shadowsocks.local_port=61080);')
     luci.sys.exec('uci set shadowsocks.shadowsocks.password='..password..';')
     luci.sys.exec('uci set shadowsocks.shadowsocks.method='..method..';')
     luci.sys.exec('uci set shadowsocks.shadowsocks.defaultroute='..defaultroute..';')
@@ -121,17 +125,18 @@ function set_ss_switch()
     -- 关闭/开启 ss
     local enable = luci.http.formvalue("enable")
     -- log.print(enable)
+    luci.sys.exec('uci set shadowsocks.shadowsocks.enable='..enable..';')
+    luci.sys.exec('uci commit;')
     if enable == '1' then
         start_ss()
-        -- log.print('start')
     else
         shutdown_ss()
-        -- log.print('shutdown')
     end
     local codeResp = 0
     local result = {}
     result['code'] = codeResp
     result['msg'] = luci.util.get_api_error(codeResp)
+    result['enable'] = enable
     json_return(result)
 end
 
@@ -140,8 +145,11 @@ function get_ss_status()
     local result = {}
     -- ss 运行状态
     local output = luci.sys.exec('/lib/gw-shadowsocks.sh status')
-    -- 是否能访问 youtube
-    local accel = luci.sys.exec('lua /lib/ss-test.lua')
+    local accel = 'no'
+    if output == 'running' then
+        -- 是否能访问 youtube
+        accel = luci.sys.exec('lua /lib/ss-test.lua')
+    end
     local codeResp = 0
     result['code'] = codeResp
     result['msg'] = luci.util.get_api_error(codeResp)
