@@ -65,6 +65,7 @@ function get_ss_cfg()
     result['method'] = config['method'] or 'aes-256-cfb'
     result['defaultroute'] = config['defaultroute'] or '0'
     result['dnsserver'] = config['dnsserver'] or '8.8.4.4'
+    result['udp_relay'] = config['udp_relay'] or '0'
 
     result["code"] = 0
     json_return(result)
@@ -81,6 +82,7 @@ function set_ss_cfg()
     local method = luci.http.formvalue("method")
     local defaultroute = luci.http.formvalue("defaultroute")
     local dnsserver = luci.http.formvalue("dnsserver")
+    local udp_relay = luci.http.formvalue("udp_relay")
 
     -- 查看是否有 shadowsocks 的配置，有则修改，无则创建
     local has_config = luci.sys.exec("test -f /etc/config/shadowsocks && echo -n 'yes' || echo -n 'no'")
@@ -99,6 +101,7 @@ function set_ss_cfg()
     luci.sys.exec('uci set shadowsocks.shadowsocks.defaultroute='..defaultroute..';')
     luci.sys.exec('uci set shadowsocks.shadowsocks.dnsserver='..dnsserver..';')
     luci.sys.exec('uci set shadowsocks.shadowsocks.timeout='..timeout..';')
+    luci.sys.exec('uci set shadowsocks.shadowsocks.udp_relay='..udp_relay..';')
     luci.sys.exec('uci commit;')
 
     -- reload ss

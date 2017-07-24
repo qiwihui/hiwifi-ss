@@ -41,6 +41,7 @@ local i18n = require "luci.i18n"
                 <tr>
                   <td style="padding-top: 10px; width: 60px">开关</td>
                   <td style="padding-top: 3px; width: 60px">
+                    <input type="text" class="input" name="enable" tabindex="1" value="0" id="enable" style="display: none;"/>
                     <a href="javascript:;" class="off G-switch-btn" id="switch_btn"></a>
                   </td>
                   <td>
@@ -84,7 +85,7 @@ local i18n = require "luci.i18n"
                       <div class="G-password-bar">
                         <a href="javascript:;" class="password-handle J_password_icon"></a>
                         <input type="text" name="" class="input G-password-on" tabindex="4" style="display: none;"/>
-                        <input type="password" name="password" class="input G-password-off" tabindex="3" id="password"
+                        <input type="password" name="password" class="input G-password-off" tabindex="4" id="password"
                                style="width: 190px"/>
                         <input type="checkbox" id="show_passwd" value="true" class="checkbox"/>
                         <label for="show_passwd"><%:显示%></label>
@@ -140,6 +141,13 @@ local i18n = require "luci.i18n"
                         <option value="168.126.63.1">韩国(168.126.63.1)</option>
                         <option value="208.67.222.222">openDns(208.67.222.222)</option>
                       </select>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>UDP转发</th>
+                    <td>
+                      <input type="text" class="input" name="udp_relay" tabindex="6" value="0" id="udp_relay" style="display: none;"/>
+                      <a href="javascript:;" class="off G-switch-btn" id="udp_relay_switch"></a>
                     </td>
                   </tr>
                   <tr>
@@ -359,6 +367,22 @@ $(function(){
 
   refresh_status()
 
+  $("#udp_relay_switch").click(function(){
+    var switch_b = $(this)
+    var is_udp_relay = switch_b.attr("class").indexOf("on")>-1;
+    var udp_relay = "";
+    if (is_udp_relay){
+      udp_relay="0";
+      switch_b.addClass("off");
+      switch_b.removeClass("on");
+    }else{
+      udp_relay="1";
+      switch_b.addClass("on");
+      switch_b.removeClass("off");
+    }
+    $("input[name='udp_relay']").val(udp_relay);
+  })
+
   // 开启或者关闭
 	$("#switch_btn").click(function(){
     var status_now = $(this).attr("class");
@@ -457,7 +481,18 @@ function get_ss_config() {
       $("select[name='defaultroute']").val(rsp.defaultroute);
       $("select[name='method']").val(rsp.method);
       $("select[name='dnsserver']").val(rsp.dnsserver);
+      $("select[name='udp_relay']").val(rsp.udp_relay);
+      $("input[name='udp_relay']").val(rsp.udp_relay);
 
+      var switch_b = $("#udp_relay_switch");
+      var udp_relay = rsp.udp_relay;
+      if (udp_relay == '0'){
+        switch_b.addClass("off");
+        switch_b.removeClass("on");
+      }else{
+        switch_b.addClass("on");
+        switch_b.removeClass("off");
+      }
       var enable = rsp.enable;
       if (enable == "1"){
         switch_status(1);

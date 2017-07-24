@@ -14,6 +14,7 @@ start() {
 	local method
 	local enable
     local dnsserver
+    local udp_relay
 
 	local section='shadowsocks'
 
@@ -29,9 +30,17 @@ start() {
 		config_get timeout "$section" 'timeout'
 		config_get method "$section" 'method'
 		config_get dnsserver "$section" 'dnsserver'
+		config_get dnsserver "$section" 'dnsserver'
+		config_get udp_relay "$section" 'udp_relay'
 
-		service_start /usr/bin/ss-local -s $server -p $server_port -l $local_port -k $password -t $timeout -m $method
-		
+		echo "$udp_relay" > /tmp/shadowsocks
+		if [ "$udp_relay" == "1" ]
+		then
+		    service_start /usr/bin/ss-local -s $server -p $server_port -l $local_port -k $password -t $timeout -m $method -u
+		else
+		    service_start /usr/bin/ss-local -s $server -p $server_port -l $local_port -k $password -t $timeout -m $method
+		fi
+
         #/etc/init.d/dnscrypt-proxy start
 		service_start /usr/sbin/dns2socks 127.0.0.1:$local_port $dnsserver 127.0.0.1:53535 -d -q
 		/etc/init.d/gw-redsocks start
