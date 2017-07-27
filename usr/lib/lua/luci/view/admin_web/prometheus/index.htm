@@ -171,6 +171,19 @@ local i18n = require "luci.i18n"
               </div>
             </div>
           </div>
+          <!--升级-->
+          <div class="G-gray-panel m-t-20">
+            <div class="G-main-panel-bd">
+              <table class="G-form-table" id="ss_upgrade">
+                <tr>
+                  <th>当前版本</th>
+                  <th>
+                    <span id="ss_version">获取中 ...</span>
+                  </th>
+                </tr>
+              </table>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -367,6 +380,8 @@ $(function(){
 
   refresh_status()
 
+  get_ss_version()
+
   $("#udp_relay_switch").click(function(){
     var switch_b = $(this)
     var is_udp_relay = switch_b.attr("class").indexOf("on")>-1;
@@ -501,6 +516,43 @@ function get_ss_config() {
       }
 	 	}
 	})
+}
+
+function get_ss_version() {
+  // 刷新状态
+	var request_data = {};
+	$.getJSON('<%=luci.dispatcher.build_url("api", "prometheus","get_ss_version")%>',request_data,function(rsp)
+	{
+	  var version = ''
+	  if(rsp.code == 0) {
+      version = rsp.version
+    }
+	  $("#ss_version").html(version);
+	})
+}
+
+function check_ss_updates() {
+  // 刷新状态
+	var request_data = {};
+	$.getJSON('<%=luci.dispatcher.build_url("api", "prometheus","check_ss_updates")%>',request_data,function(rsp)
+	{
+	})
+}
+
+function upgrade_ss() {
+  // 刷新状态
+	var request_data = {};
+  //	TODO 根据版本升级
+	$.getJSON('<%=luci.dispatcher.build_url("api", "prometheus","upgrade_ss")%>',request_data,function(rsp)
+		{
+			if(rsp.code == 0){
+        popDialog({type: "G-text",title: ['设置成功 :)'],content: ""}).time(2000);
+			} else {
+        popDialog({type: "G-text",title: ['操作失败 :('],content: rsp.msg}).time(2000);
+			}
+			$("#loading_ss_setup").hide();
+			$("#submit_btn").attr("disabled",false);
+		})
 }
 
 function refresh_status() {
