@@ -40,17 +40,11 @@ local i18n = require "luci.i18n"
               <table class="G-form-table" id="ss_setup_switch">
                 <tr>
                   <td style="width: 60px;vertical-align: middle">开关</td>
-                  <td>
-                    <div>
+                  <td style="width: 80px;vertical-align: middle">
                       <input type="checkbox" name="enable" value="0" id="switch_btn" class="toggle toggle-round-flat">
                       <label for="switch_btn"></label>
-                    </div>
                   </td>
-                  <!--<td style="padding-top: 3px; width: 60px">-->
-                    <!--<input type="text" class="input" name="enable" tabindex="1" value="0" id="enable" style="display: none;"/>-->
-                    <!--<a href="javascript:;" class="off G-switch-btn" id="switch_btn"></a>-->
-                  <!--</td>-->
-                  <td>
+                  <td style="vertical-align: middle">
                     <div class="G-panel-loading"
                      style="width:20px;height: 20px;min-height: 1px;margin-left: 5px;display: none;"
                      id="loading_ss_switch"></div>
@@ -153,15 +147,11 @@ local i18n = require "luci.i18n"
                   </tr>
                   <tr>
                     <th>UDP转发</th>
-                    <!--<td>-->
-                      <!--<label class="switch">-->
-                      <!--<input type="checkbox" name="udp_relay" value="0" id="udp_relay">-->
-                      <!--<div class="slider round"></div>-->
-                    <!--</label>-->
-                    <!--</td>-->
                     <td>
-                      <input type="text" class="input" name="udp_relay" tabindex="6" value="0" id="udp_relay" style="display: none;"/>
-                      <a href="javascript:;" class="off G-switch-btn" id="udp_relay_switch"></a>
+                      <div>
+                        <input type="checkbox" name="udp_relay" value="0" tabindex="6" id="udp_relay_switch" class="toggle toggle-round-flat">
+                        <label for="udp_relay_switch"></label>
+                      </div>
                     </td>
                   </tr>
                   <tr>
@@ -190,10 +180,13 @@ local i18n = require "luci.i18n"
             <div class="G-main-panel-bd">
               <table class="G-form-table" id="ss_upgrade">
                 <tr>
-                  <th>当前版本</th>
-                  <th>
+                  <td style="width: 80px">当前版本</td>
+                  <td style="width: 80px">
                     <span id="ss_version">获取中 ...</span>
-                  </th>
+                  </td>
+                  <td>
+
+                  </td>
                 </tr>
               </table>
             </div>
@@ -457,18 +450,14 @@ $(function(){
   get_ss_version()
 
   $("#udp_relay_switch").click(function(){
-    var switch_b = $(this)
-    var is_udp_relay = switch_b.attr("class").indexOf("on")>-1;
+    var is_udp_relay = $(this).prop("checked");
     var udp_relay = "";
     if (is_udp_relay){
-      udp_relay="0";
-      switch_b.addClass("off");
-      switch_b.removeClass("on");
-    }else{
       udp_relay="1";
-      switch_b.addClass("on");
-      switch_b.removeClass("off");
+    }else{
+      udp_relay="0";
     }
+    console.log(udp_relay)
     $("input[name='udp_relay']").val(udp_relay);
   })
 
@@ -521,7 +510,17 @@ $(function(){
 		$("#submit_btn").attr("disabled",true);
 
 		var request_data =  $("#form1").serializeArray();
-		console.log(request_data)
+		// 修正 serializeArray 对 unchecked 的忽略
+		if ($("#udp_relay_switch").prop("checked")==false){
+		  request_data.push({name: "udp_relay", value: '0'})
+    }
+
+    // 或者
+//    var serialized = $('input:checkbox').map(function() {
+//      return { name: this.name, value: this.checked ? this.value : "false" };
+//    });
+//    request_data = request_data.concat(serialized)
+
 		$.getJSON('<%=luci.dispatcher.build_url("api", "prometheus","set_ss_cfg")%>',request_data,function(rsp)
 		{
 			if(rsp.code == 0){
@@ -562,26 +561,20 @@ function get_ss_config() {
       $("select[name='defaultroute']").val(rsp.defaultroute);
       $("select[name='method']").val(rsp.method);
       $("select[name='dnsserver']").val(rsp.dnsserver);
-      $("select[name='udp_relay']").val(rsp.udp_relay);
       $("input[name='udp_relay']").val(rsp.udp_relay);
 
-      var switch_b = $("#udp_relay_switch");
       var udp_relay = rsp.udp_relay;
-      if (udp_relay == '0'){
-        switch_b.addClass("off");
-        switch_b.removeClass("on");
+      if (udp_relay == '1'){
+        $("#udp_relay_switch").prop('checked', true);
       }else{
-        switch_b.addClass("on");
-        switch_b.removeClass("off");
+        $("#udp_relay_switch").prop('checked', false);
       }
-
       var enable = rsp.enable;
-      console.log(enable)
       if (enable == "1"){
-        $("#switch_btn").prop("checked", true)
+        $("#switch_btn").prop("checked", true);
         switch_status(1);
       } else {
-        $("#switch_btn").prop("checked", false)
+        $("#switch_btn").prop("checked", false);
         switch_status(0);
       }
 	 	}
