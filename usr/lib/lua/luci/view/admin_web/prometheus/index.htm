@@ -39,11 +39,17 @@ local i18n = require "luci.i18n"
             <div class="G-main-panel-bd">
               <table class="G-form-table" id="ss_setup_switch">
                 <tr>
-                  <td style="padding-top: 10px; width: 60px">开关</td>
-                  <td style="padding-top: 3px; width: 60px">
-                    <input type="text" class="input" name="enable" tabindex="1" value="0" id="enable" style="display: none;"/>
-                    <a href="javascript:;" class="off G-switch-btn" id="switch_btn"></a>
+                  <td style="width: 60px;vertical-align: middle">开关</td>
+                  <td>
+                    <div>
+                      <input type="checkbox" name="enable" value="0" id="switch_btn" class="toggle toggle-round-flat">
+                      <label for="switch_btn"></label>
+                    </div>
                   </td>
+                  <!--<td style="padding-top: 3px; width: 60px">-->
+                    <!--<input type="text" class="input" name="enable" tabindex="1" value="0" id="enable" style="display: none;"/>-->
+                    <!--<a href="javascript:;" class="off G-switch-btn" id="switch_btn"></a>-->
+                  <!--</td>-->
                   <td>
                     <div class="G-panel-loading"
                      style="width:20px;height: 20px;min-height: 1px;margin-left: 5px;display: none;"
@@ -147,6 +153,12 @@ local i18n = require "luci.i18n"
                   </tr>
                   <tr>
                     <th>UDP转发</th>
+                    <!--<td>-->
+                      <!--<label class="switch">-->
+                      <!--<input type="checkbox" name="udp_relay" value="0" id="udp_relay">-->
+                      <!--<div class="slider round"></div>-->
+                    <!--</label>-->
+                    <!--</td>-->
                     <td>
                       <input type="text" class="input" name="udp_relay" tabindex="6" value="0" id="udp_relay" style="display: none;"/>
                       <a href="javascript:;" class="off G-switch-btn" id="udp_relay_switch"></a>
@@ -192,6 +204,66 @@ local i18n = require "luci.i18n"
   </div>
 </div>
 <style>
+
+  /* sliders */
+  .toggle {
+    position: absolute;
+    margin-left: -9999px;
+    visibility: hidden;
+  }
+
+  .toggle + label {
+    display: block;
+    position: relative;
+    cursor: pointer;
+    outline: none;
+    user-select: none;
+  }
+
+  input.toggle-round-flat + label {
+    padding: 2px;
+    width: 54px;
+    height: 26px;
+    background-color: #dddddd;
+    border-radius: 34px;
+    transition: background 0.4s;
+  }
+
+  input.toggle-round-flat + label:before,
+  input.toggle-round-flat + label:after {
+    display: block;
+    position: absolute;
+    content: "";
+  }
+
+  input.toggle-round-flat + label:before {
+    top: 2px;
+    left: 2px;
+    bottom: 2px;
+    right: 2px;
+    background-color: #fff;
+    border-radius: 34px;
+    transition: background 0.4s;
+  }
+
+  input.toggle-round-flat + label:after {
+    top: 4px;
+    left: 4px;
+    bottom: 4px;
+    width: 21px;
+    background-color: #dddddd;
+    border-radius: 34px;
+    transition: margin 0.4s, background 0.4s;
+  }
+
+  input.toggle-round-flat:checked + label {
+    background-color: #5a9fec;
+  }
+
+  input.toggle-round-flat:checked + label:after {
+    margin-left: 29px;
+    background-color: #5a9fec;
+  }
 
   table.zone td.tor {
     text-align: right;
@@ -402,16 +474,15 @@ $(function(){
 
   // 开启或者关闭
 	$("#switch_btn").click(function(){
-    var status_now = $(this).attr("class");
     var enable = "";
-    var is_on = status_now.indexOf("on")>-1;
+    // 点击之后状态
+    var is_on = $(this).prop("checked")
     if(is_on){
-      enable="0";
-    } else {
       enable="1";
+    } else {
+      enable="0";
     }
     $("#loading_ss_switch").show();
-//    $("input[name='enable']").val(enable);
 
     var request_data = {
       enable: enable
@@ -466,19 +537,12 @@ $(function(){
 
 // 切换开关状态
 function switch_status(status) {
-  var switch_b = $("#switch_btn");
   if (status == 1 || status == "1") {
     $("#shadowsocks_btn_box").removeAttr('disabled');
-    $("#prompt_box").removeAttr('disabled');
-    switch_b.addClass("on");
-    switch_b.removeClass("off");
     // 15秒
     t = setInterval("refresh_status()", 15000);
   } else {
     $("#shadowsocks_btn_box").attr('disabled', 'disabled');
-    $("#prompt_box").attr('disabled', 'disabled');
-    switch_b.addClass("off");
-    switch_b.removeClass("on");
     clearInterval(t);
   }
 }
@@ -510,10 +574,14 @@ function get_ss_config() {
         switch_b.addClass("on");
         switch_b.removeClass("off");
       }
+
       var enable = rsp.enable;
+      console.log(enable)
       if (enable == "1"){
+        $("#switch_btn").prop("checked", true)
         switch_status(1);
       } else {
+        $("#switch_btn").prop("checked", false)
         switch_status(0);
       }
 	 	}
