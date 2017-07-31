@@ -13,10 +13,11 @@ if [ "$1"x = "12515805sx" ]; then
     curl -k https://raw.githubusercontent.com/qiwihui/hiwifi-ss/master/ss.12515805s.tar.gz -o hiwifi-ss.tar.gz
 else
     echo ">1.2.5.15805s"
-    download_url=$(/usr/bin/curl -k https://api.github.com/repos/qiwihui/hiwifi-ss/releases/latest | grep "browser_download_url.*tar.gz" | cut -d '"' -f 4)
-    echo ''
-    echo ${download_url}
-    curl -OkL ${download_url}
+    curl -k https://raw.githubusercontent.com/qiwihui/hiwifi-ss/master/hiwifi-ss.tar.gz -o hiwifi-ss.tar.gz
+#    download_url=$(/usr/bin/curl -k https://api.github.com/repos/qiwihui/hiwifi-ss/releases/latest | grep "browser_download_url.*tar.gz" | cut -d '"' -f 4)
+#    echo ''
+#    echo ${download_url}
+#    curl -OkL ${download_url}
 fi
 echo 'Done! 下载完成'
 echo ''
