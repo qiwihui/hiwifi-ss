@@ -32,6 +32,9 @@ start() {
 		config_get dnsserver "$section" 'dnsserver'
 		config_get dnsserver "$section" 'dnsserver'
 		config_get udp_relay "$section" 'udp_relay'
+		if [ "$timeout" == "" ]; then
+		    timeout=300
+		fi
 
 		echo "$udp_relay" > /tmp/shadowsocks
 		if [ "$udp_relay" == "1" ]
