@@ -1,4 +1,3 @@
-/etc/config/shadowsocks
 /etc/gw-shadowsocks/gw-shadowsocks.dnslist
 /etc/init.d/gw-redsocks
 /etc/init.d/gw-shadowsocks
