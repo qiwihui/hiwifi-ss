@@ -32,17 +32,22 @@ start() {
 		config_get dnsserver "$section" 'dnsserver'
 		config_get dnsserver "$section" 'dnsserver'
 		config_get udp_relay "$section" 'udp_relay'
+		if [ "$timeout" == "" ]; then
+		    timeout=300
+		fi
 
 		echo "$udp_relay" > /tmp/shadowsocks
 		if [ "$udp_relay" == "1" ]
 		then
 		    service_start /usr/bin/ss-local -s $server -p $server_port -l $local_port -k $password -t $timeout -m $method -u
+		    service_start /usr/bin/ss-redir -s $server -p $server_port -b 0.0.0.0 -l 3088 -k $password -t $timeout -m $method -u
 		else
 		    service_start /usr/bin/ss-local -s $server -p $server_port -l $local_port -k $password -t $timeout -m $method
+		    service_start /usr/bin/ss-redir -s $server -p $server_port -b 0.0.0.0 -l 3088 -k $password -t $timeout -m $method
 		fi
 
         #/etc/init.d/dnscrypt-proxy start
-		service_start /usr/sbin/dns2socks 127.0.0.1:$local_port $dnsserver 127.0.0.1:53535 -d -q
+		service_start /usr/bin/dns2socks 127.0.0.1:$local_port $dnsserver 127.0.0.1:53535 -d -q
 		/etc/init.d/gw-redsocks start
 	fi
 }
@@ -51,8 +56,9 @@ stop() {
 	/etc/init.d/gw-redsocks stop
     #/etc/init.d/dnscrypt-proxy stop
 	
-	service_stop /usr/sbin/dns2socks
+	service_stop /usr/bin/dns2socks
 	service_stop /usr/bin/ss-local
+	service_stop /usr/bin/ss-redir
 }
 
 restart() {

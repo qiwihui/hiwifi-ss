@@ -1,7 +1,6 @@
 /etc/firewall.d/10-shadowsocks
 /etc/ss/ss-init
-/usr/sbin/ss-redir
-/usr/sbin/dns2socks
+/usr/bin/dns2socks
 /etc/ss/ss-lib
 /etc/config/dnscrypt-proxy
 /etc/config/shadowsocks
@@ -11,10 +10,8 @@
 /etc/init.d/gw-redsocks
 /etc/init.d/gw-shadowsocks
 /etc/rc.d/S80gw-shadowsocks
-/etc/gw-redsocks.conf
 /lib/gw-shadowsocks.sh
 /lib/ss-test.lua
-/usr/bin/gw_redsocks
 /usr/bin/ss-local
 /usr/bin/ss-redir
 /usr/bin/ss-tunnel
