@@ -95,7 +95,7 @@ local i18n = require "luci.i18n"
                   <tr>
                     <th>超时时间</th>
                     <td>
-                      <input type="text" class="input" name="timeout" tabindex="5" value="" id="ss_timeout"/>
+                      <input type="text" class="input" name="timeout" tabindex="5" value="300" id="ss_timeout"/>
                     </td>
                   </tr>
                   <tr>
@@ -152,6 +152,21 @@ local i18n = require "luci.i18n"
                         <input type="checkbox" name="udp_relay" value="0" tabindex="6" id="udp_relay_switch" class="toggle toggle-round-flat">
                         <label for="udp_relay_switch"></label>
                       </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>混淆模式</th>
+                    <td>
+                      <div>
+                        <input type="checkbox" name="plugin_enable" value="0" tabindex="6" id="plugin_enable_switch" class="toggle toggle-round-flat">
+                        <label for="plugin_enable_switch"></label>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>插件选项</th>
+                    <td>
+                      <input type="text" class="input" name="plugin_opts" tabindex="7" value="obfs=http;obfs-host=www.bing.com" id="plugin_opts"/>
                     </td>
                   </tr>
                   <tr>
@@ -449,6 +464,7 @@ $(function(){
 
   get_ss_version()
 
+  // UDP 转发开关
   $("#udp_relay_switch").click(function(){
     var is_udp_relay = $(this).prop("checked");
     var udp_relay = "";
@@ -459,6 +475,19 @@ $(function(){
     }
     console.log(udp_relay)
     $("input[name='udp_relay']").val(udp_relay);
+  })
+
+  // 混淆
+  $("#plugin_enable_switch").click(function(){
+    var is_plugin_enable = $(this).prop("checked");
+    var plugin_enable = "";
+    if (is_plugin_enable){
+      plugin_enable="1";
+    }else{
+      plugin_enable="0";
+    }
+    console.log(is_plugin_enable)
+    $("input[name='plugin_enable']").val(plugin_enable);
   })
 
   // 开启或者关闭
@@ -514,12 +543,16 @@ $(function(){
 		if ($("#udp_relay_switch").prop("checked")==false){
 		  request_data.push({name: "udp_relay", value: '0'})
     }
-
     // 或者
 //    var serialized = $('input:checkbox').map(function() {
 //      return { name: this.name, value: this.checked ? this.value : "false" };
 //    });
 //    request_data = request_data.concat(serialized)
+
+    if ($("#plugin_enable_switch").prop("checked")==false){
+		  request_data.push({name: "plugin_enable", value: '0'})
+    }
+
 
 		$.getJSON('<%=luci.dispatcher.build_url("api", "prometheus","set_ss_cfg")%>',request_data,function(rsp)
 		{
@@ -562,13 +595,23 @@ function get_ss_config() {
       $("select[name='method']").val(rsp.method);
       $("select[name='dnsserver']").val(rsp.dnsserver);
       $("input[name='udp_relay']").val(rsp.udp_relay);
-
+      $("input[name='plugin_enable']").val(rsp.plugin_enable);
+      $("input[name='plugin_opts']").val(rsp.plugin_opts);
+      // udp 开关
       var udp_relay = rsp.udp_relay;
       if (udp_relay == '1'){
         $("#udp_relay_switch").prop('checked', true);
       }else{
         $("#udp_relay_switch").prop('checked', false);
       }
+      // 混淆开关
+      var plugin_enable = rsp.plugin_enable;
+      if (plugin_enable == '1'){
+        $("#plugin_enable_switch").prop('checked', true);
+      }else{
+        $("#plugin_enable_switch").prop('checked', false);
+      }
+      // 功能开关
       var enable = rsp.enable;
       if (enable == "1"){
         $("#switch_btn").prop("checked", true);
