@@ -8,7 +8,7 @@ PID_FILE=/var/run/$APP.pid
 #export SERVICE_WRITE_PID=1
 
 appname=gw-shadowsocks
-appdir=/etc/gw-redsocks/$appname
+appdir=/etc/$appname
 
 rs_getconfig() {
 	lan_ip=$(uci get network.lan.ipaddr)
