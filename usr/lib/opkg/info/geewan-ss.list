@@ -1,7 +1,7 @@
 /etc/gw-shadowsocks/gw-shadowsocks.dnslist
 /etc/init.d/gw-redsocks
 /etc/init.d/gw-shadowsocks
-/etc/rc.d/S80gw-shadowsocks
+/etc/rc.d/S99gw-shadowsocks
 /lib/gw-shadowsocks.sh
 /lib/ss-test.lua
 /usr/bin/dns2socks
@@ -9,9 +9,8 @@
 /usr/bin/ss-redir
 /usr/bin/ss-tunnel
 /usr/lib/lua/geewan.lua
-/usr/lib/lua/luci/controller/admin_web/shadowsocks.lua
-/usr/lib/lua/luci/controller/api/geewan.lua
-/usr/lib/lua/luci/view/admin_web/menu/adv_menu.htm
-/usr/lib/lua/luci/view/admin_web/network/cfg_import.htm
-/usr/lib/lua/luci/view/admin_web/network/shadowsocks.htm
-/usr/lib/lua/luci/view/admin_web/network/ss_adv.htm
+/usr/lib/lua/luci/log.lua
+/usr/lib/lua/luci/controller/prometheus/shadowsocks.lua
+/usr/lib/lua/luci/controller/api/prometheus.lua
+/usr/lib/lua/luci/view/admin_web/prometheus/index.htm
+/usr/lib/lua/luci/view/admin_web/menu/menu_left.htm
