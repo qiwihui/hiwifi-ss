@@ -139,7 +139,7 @@ function set_ss_cfg()
     luci.sys.exec('uci set shadowsocks.shadowsocks.udp_relay='..udp_relay..';')
     -- simple obfs
     luci.sys.exec('uci set shadowsocks.shadowsocks.plugin_enable='..plugin_enable..';')
-    luci.sys.exec('uci set shadowsocks.shadowsocks.plugin="obfs_local";')
+    luci.sys.exec('uci set shadowsocks.shadowsocks.plugin="obfs-local";')
     luci.sys.exec('uci set shadowsocks.shadowsocks.plugin_opts=\"'..plugin_opts..'\";')
     luci.sys.exec('uci commit;')
 

@@ -48,7 +48,7 @@ start() {
 		    timeout=300
 		fi
 		if [ "$udp_relay" == "1" ]; then
-		    params="$params  -u"
+		    params="$params -u"
 		fi
 		echo "$params" > /tmp/ss_params
 
