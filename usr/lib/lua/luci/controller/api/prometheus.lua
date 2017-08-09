@@ -37,7 +37,7 @@ end
 
 
 local luci_http = require("luci.http")
-local VERSION = 'v1.0.5'
+local VERSION = 'v1.0.6'
 --local log = require "luci.log"
 
 function json_return(content)
@@ -202,4 +202,3 @@ end
 
 function prometheus_upgrade()
 end
-
