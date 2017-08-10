@@ -17,7 +17,6 @@
 usr/bin/base64
 /usr/lib/libpcre.so.1
 /usr/lib/libsodium.so.18
-/usr/lib/libsodium.so.18.2.0
 /usr/lib/lua/luci/controller/admin_web/shadowsocks.lua
 /usr/lib/lua/luci/controller/api/prometheus.lua
 /usr/lib/lua/luci/controller/prometheus/shadowsocks.lua
