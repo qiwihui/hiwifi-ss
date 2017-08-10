@@ -4,9 +4,9 @@
 	Author	qiwihui  <qiwihui@qiwihui.com>
 	Copyright	2017
 ]]--
+
     local ver  = require "luci.version"
     local i18n = require "luci.i18n"
-    local model = luci.http.formvalue_htmlencode("model")
 %>
 <% include('admin_web/header') %>
 <script type="text/javascript" src="<%=resource%>/v2/js/boot_loader/jquery.min.js?v=<%=ver.svnRevNum%>"></script>
@@ -518,7 +518,7 @@ $(function(){
         switch_status(1);
         refresh_status()
       } else {
-        // 关
+        // 光
         switch_status(0);
         refresh_status()
       }
@@ -796,12 +796,7 @@ function popDialog(content_object) {
   };
   return that;
 }
-
-<% include('admin_web/footer') %>
-<script type="text/javascript">
-    var view_model = "<%=model%>";
 </script>
+<% include('admin_web/footer') %>
 <!-- 通用模块的专属js -->
 <script type="text/javascript" src="<%=resource%>/v2/js/admin_web/general_module.js?v=<%=ver.svnRevNum%>"></script>
-</body>
-</html>
