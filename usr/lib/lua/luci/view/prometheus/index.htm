@@ -1,0 +1,798 @@
+﻿<%
+--[[
+	Info	hiwifi-ss
+	Author	qiwihui  <qiwihui@qiwihui.com>
+	Copyright	2017
+]]--
+
+local ver  = require "luci.version"
+local i18n = require "luci.i18n"
+%>
+<% include('admin_web/header') %>
+<script type="text/javascript" src="<%=resource%>/v2/js/boot_loader/jquery.min.js?v=<%=ver.svnRevNum%>"></script>
+<link rel="stylesheet" type="text/css" href="<%=resource%>/v2/style/net.css?v=<%=ver.svnRevNum%>">
+<div id="bd">
+  <div class="com-main clearfix">
+    <!-- 右侧提示 -->
+    <div id="right_part" class="G-rightSide">
+      <div>
+        <h2 class="left-tit">小提示</h2>
+        <div class="side-bd save-tip m-t-20">
+          <p> 1. 首次安装请重启路由。 </p>
+          <p> 2. 保存配置和开关功能是分开的。 </p>
+        </div>
+        <div class="G-power-panel">
+          <a href="javascript:;" class="icon power G-handle J_system_restart"></a>
+          <p class="J_system_restart G-handle"><%=i18n.translate("g_reboot")%></p>
+        </div>
+      </div>
+    </div>
+    <!-- 左侧菜单 -->
+    <% include('admin_web/menu/menu_left') %>
+
+    <!-- 中间配置 -->
+    <div class="G-main" id="middle_part">
+      <div id="ss_setup">
+        <div class="G-form-main">
+          <!--开关-->
+          <div class="G-gray-panel">
+            <div class="G-main-panel-bd">
+              <table class="G-form-table" id="ss_setup_switch">
+                <tr>
+                  <td style="width: 60px;vertical-align: middle">开关</td>
+                  <td style="width: 80px;vertical-align: middle">
+                      <input type="checkbox" name="enable" value="0" id="switch_btn" class="toggle toggle-round-flat">
+                      <label for="switch_btn"></label>
+                  </td>
+                  <td style="vertical-align: middle">
+                    <div class="G-panel-loading"
+                     style="width:20px;height: 20px;min-height: 1px;margin-left: 5px;display: none;"
+                     id="loading_ss_switch"></div>
+                  </td>
+                </tr>
+              </table>
+            </div>
+          </div>
+          <!--配置-->
+          <div class="G-gray-panel m-t-20">
+            <div class="G-main-panel-hd">服务器配置</div>
+            <div class="G-main-panel-bd">
+              <form id="form1">
+                <table class="G-form-table" id="ss_setup_table">
+                  <col width="80"/>
+                  <tr>
+                    <th>服务器地址</th>
+                    <td>
+                      <input type="text" class="input" name="server" tabindex="1" value="" id="ss_server"/>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>服务端口</th>
+                    <td>
+                      <input type="text" class="input" name="server_port" tabindex="2" value="" id="ss_server_port"/>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>本地端口</th>
+                    <td>
+                      <input type="text" class="input" name="local_port" tabindex="3" value="61080" id="ss_local_port"
+                             disabled/>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>密码</th>
+                    <td>
+                      <div class="G-password-bar">
+                        <a href="javascript:;" class="password-handle J_password_icon"></a>
+                        <input type="text" name="" class="input G-password-on" tabindex="4" style="display: none;"/>
+                        <input type="password" name="password" class="input G-password-off" tabindex="4" id="password"
+                               style="width: 190px"/>
+                        <input type="checkbox" id="show_passwd" value="true" class="checkbox"/>
+                        <label for="show_passwd"><%:显示%></label>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>超时时间</th>
+                    <td>
+                      <select name="timeout" class="J_selectOriginal input">
+                        <option value="60">60</option>
+                        <option value="120">120</option>
+                        <option value="300">300</option>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>加密方式</th>
+                    <td>
+                      <select name="method" class="J_selectOriginal input">
+                        <option value="rc4-md5">rc4-md5</option>
+                        <option value="aes-128-cfb">aes-128-cfb</option>
+                        <option value="aes-192-cfb">aes-192-cfb</option>
+                        <option value="aes-256-cfb">aes-256-cfb</option>
+                        <option value="aes-128-gcm">aes-128-gcm</option>
+                        <option value="aes-192-gcm">aes-192-gcm</option>
+                        <option value="aes-256-gcm">aes-256-gcm</option>
+                        <option value="aes-128-ctr">aes-128-ctr</option>
+                        <option value="aes-192-ctr">aes-192-ctr</option>
+                        <option value="aes-256-ctr">aes-256-ctr</option>
+                        <option value="chacha20">chacha20</option>
+                        <option value="chacha20-ietf">chacha20-ietf</option>
+                        <option value="chacha20-ietf-poly1305">chacha20-ietf-poly1305</option>
+                        <option value="bf-cfb">bf-cfb</option>
+                        <option value="camellia-256-cfb">camellia-256-cfb</option>
+                        <option value="camellia-192-cfb">camellia-192-cfb</option>
+                        <option value="camellia-128-cfb">camellia-128-cfb</option>
+                        <option value="cast5-cfb">salsa20</option>
+                      </select>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>运行模式</th>
+                    <td>
+                      <select name="defaultroute" class="J_selectOriginal input">
+                        <option value="0">GFW_模式</option>
+                        <option value="1">全局模式</option>
+                      </select>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>加速DNS</th>
+                    <td>
+                      <select name="dnsserver" class="J_selectOriginal input">
+                        <option value="8.8.4.4">谷歌(8.8.4.4)</option>
+                        <option value="60.32.112.42">日本(60.32.112.42)</option>
+                        <option value="168.95.1.1">台湾(168.95.1.1)</option>
+                        <option value="202.181.224.2">香港(202.181.224.2)</option>
+                        <option value="168.126.63.1">韩国(168.126.63.1)</option>
+                        <option value="208.67.222.222">openDns(208.67.222.222)</option>
+                      </select>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>UDP转发</th>
+                    <td>
+                      <div>
+                        <input type="checkbox" name="udp_relay" value="0" tabindex="6" id="udp_relay_switch" class="toggle toggle-round-flat">
+                        <label for="udp_relay_switch"></label>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>混淆模式</th>
+                    <td>
+                      <div>
+                        <input type="checkbox" name="plugin_enable" value="0" tabindex="6" id="plugin_enable_switch" class="toggle toggle-round-flat">
+                        <label for="plugin_enable_switch"></label>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>插件选项</th>
+                    <td>
+                      <input type="text" class="input" name="plugin_opts" tabindex="7" value="obfs=http;obfs-host=www.bing.com" id="plugin_opts"/>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>状态:</th>
+                    <th>
+                      <span id="con_status">检查中 ...</span>
+                    </th>
+                  </tr>
+                </table>
+              </form>
+              <!--保存按钮-->
+              <div class="panel-btn-bar" id="shadowsocks_btn_box">
+                <a href="javascript:;" class="btn" id="submit_btn">保存</a>
+                <div class="G-panel-loading"
+                     style="width:20px;height: 20px;min-height: 1px;margin-left: 5px;display: none;"
+                     id="loading_ss_setup"></div>
+              </div>
+              <!--提醒-->
+              <div style="color:gray;" id="prompt_box">
+                <p style="margin:auto;line-height:20px;height:auto;">避免冲突，请关闭所有翻墙软件，并且检查网卡是否为自动获取ip和DNS</p>
+              </div>
+            </div>
+          </div>
+          <!--升级-->
+          <div class="G-gray-panel m-t-20">
+            <div class="G-main-panel-bd">
+              <table class="G-form-table" id="ss_upgrade">
+                <tr>
+                  <td style="width: 80px">当前版本</td>
+                  <td style="width: 80px">
+                    <span id="ss_version">获取中 ...</span>
+                  </td>
+                  <td>
+
+                  </td>
+                </tr>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<style>
+
+  /* sliders */
+  .toggle {
+    position: absolute;
+    margin-left: -9999px;
+    visibility: hidden;
+  }
+
+  .toggle + label {
+    display: block;
+    position: relative;
+    cursor: pointer;
+    outline: none;
+    user-select: none;
+  }
+
+  input.toggle-round-flat + label {
+    padding: 2px;
+    width: 54px;
+    height: 26px;
+    background-color: #dddddd;
+    border-radius: 34px;
+    transition: background 0.4s;
+  }
+
+  input.toggle-round-flat + label:before,
+  input.toggle-round-flat + label:after {
+    display: block;
+    position: absolute;
+    content: "";
+  }
+
+  input.toggle-round-flat + label:before {
+    top: 2px;
+    left: 2px;
+    bottom: 2px;
+    right: 2px;
+    background-color: #fff;
+    border-radius: 34px;
+    transition: background 0.4s;
+  }
+
+  input.toggle-round-flat + label:after {
+    top: 4px;
+    left: 4px;
+    bottom: 4px;
+    width: 21px;
+    background-color: #dddddd;
+    border-radius: 34px;
+    transition: margin 0.4s, background 0.4s;
+  }
+
+  input.toggle-round-flat:checked + label {
+    background-color: #5a9fec;
+  }
+
+  input.toggle-round-flat:checked + label:after {
+    margin-left: 29px;
+    background-color: #5a9fec;
+  }
+
+  table.zone td.tor {
+    text-align: right;
+    width: 120px;
+    line-height: 14px;
+  }
+
+  #ss_setup .G-form-table td {
+    height: 5px;
+  }
+
+  #form1 table {
+    margin: auto;
+    width: auto;
+  }
+
+  #con_status {
+    width: 300px;
+    padding-top: 14px;
+  }
+
+  .G-panel-loading {
+    display: inline-block;
+  }
+
+  #prompt_box {
+    margin-top: 15px;
+  }
+
+  .G-page-mask {
+    background: #000;
+    opacity: 0.3;
+    position: absolute;
+    z-index: 9;
+    width: 100%;
+    top: 0;
+    left: 0;
+  }
+
+  .G-dialog {
+    background: #fff;
+    position: absolute;
+    z-index: 99;
+    -moz-background-clip: padding;
+    -webkit-background-clip: padding-box;
+    background-clip: padding-box;
+    -moz-box-shadow: 2px 4px 10px rgba(0, 0, 0, 0.2);
+    -webkit-box-shadow: 2px 4px 10px rgba(0, 0, 0, 0.2);
+    box-shadow: 2px 4px 10px rgba(0, 0, 0, 0.2);
+  }
+
+  .G-dialog .dialog-hd {
+    border-bottom: 1px solid #dce1e5;
+    height: 16px;
+    line-height: 16px;
+    padding-bottom: 9px;
+    margin-bottom: 20px;
+    font-size: 14px;
+    color: #8e9aa9;
+  }
+
+  .G-dialog .dialog-wrap {
+    padding: 20px;
+    position: relative;
+  }
+
+  .G-dialog .dialog-wrap .dialog-close {
+    width: 13px;
+    height: 13px;
+    display: block;
+    background: url("/turbo-static/turbo/v2/img/dialog-close.png") no-repeat;
+    position: absolute;
+    right: 20px;
+  }
+
+  .G-select-copy {
+    padding-right: 24px;
+    background: url("/turbo-static/turbo/v2/img/select-arrow.png") no-repeat right center;
+    display: inline-block;
+    line-height: 34px;
+    position: relative;
+    vertical-align: middle;
+    border: 1px #c7c7c7 solid;
+    height: 34px;
+    text-indent: 5px;
+    color: #5a6779;
+    outline: none;
+    font-size: 14px;
+    font-family: "STHeitiSC-Light", "Microsoft Yahei", Helvetica, Arial, sans-serif;
+  }
+
+  .G-select-copy span {
+    white-space: nowrap;
+    overflow: hidden;
+    display: block;
+  }
+
+  .G-select-copy .option-list {
+    position: absolute;
+    top: 34px;
+    background: #fff;
+    width: 100%;
+    border: 1px #c7c7c7 solid;
+    left: -1px;
+    border-top: none;
+    z-index: 99;
+  }
+
+  .G-select-copy .option-list li a {
+    height: 28px;
+    line-height: 28px;
+    padding: 0 5px;
+    color: #5a6779;
+    display: block;
+  }
+
+  .G-select-copy .option-list li a:hover {
+    background: #f4f7fa;
+  }
+
+  .m-t-20 {
+    margin-top: 20px;
+  }
+
+  .G-main-panel-bd {
+    padding: 8px 10px;
+  }
+
+  .G-gray-panel .G-main-panel-hd {
+    padding: 8px 10px;
+  }
+
+  .J_selectOriginal {
+    padding-right: 24px;
+    display: inline-block;
+    line-height: 34px;
+    position: relative;
+    vertical-align: middle;
+    border: 1px #c7c7c7 solid;
+    height: 34px;
+    text-indent: 5px;
+    color: #5a6779;
+    outline: none;
+    font-size: 14px;
+    font-family: "STHeitiSC-Light", "Microsoft Yahei", Helvetica, Arial, sans-serif;
+  }
+
+  .J_selectOriginal span {
+    white-space: nowrap;
+    overflow: hidden;
+    display: block;
+  }
+
+  .J_selectOriginal .option-list {
+    position: absolute;
+    top: 34px;
+    background: #fff;
+    width: 100%;
+    border: 1px #c7c7c7 solid;
+    left: -1px;
+    border-top: none;
+    z-index: 99;
+  }
+
+  .J_selectOriginal .option-list li a {
+    height: 28px;
+    line-height: 28px;
+    padding: 0 5px;
+    color: #5a6779;
+    display: block;
+  }
+
+  .J_selectOriginal .option-list li a:hover {
+    background: #f4f7fa;
+  }
+
+  .G-form-table input[type=text] {
+    width: 220px;
+    /*background-color: #f4f7fa;*/
+  }
+</style>
+<script type="text/javascript">
+"use strict";
+var t;
+$(function(){
+
+  get_ss_config()
+
+  refresh_status()
+
+  get_ss_version()
+
+  // UDP 转发开关
+  $("#udp_relay_switch").click(function(){
+    var is_udp_relay = $(this).prop("checked");
+    var udp_relay = "";
+    if (is_udp_relay){
+      udp_relay="1";
+    }else{
+      udp_relay="0";
+    }
+    console.log(udp_relay)
+    $("input[name='udp_relay']").val(udp_relay);
+  })
+
+  // 混淆
+  $("#plugin_enable_switch").click(function(){
+    var is_plugin_enable = $(this).prop("checked");
+    var plugin_enable = "";
+    if (is_plugin_enable){
+      plugin_enable="1";
+    }else{
+      plugin_enable="0";
+    }
+    console.log(is_plugin_enable)
+    $("input[name='plugin_enable']").val(plugin_enable);
+  })
+
+  // 开启或者关闭
+	$("#switch_btn").click(function(){
+    var enable = "";
+    // 点击之后状态
+    var is_on = $(this).prop("checked")
+    if(is_on){
+      enable="1";
+    } else {
+      enable="0";
+    }
+    $("#loading_ss_switch").show();
+
+    var request_data = {
+      enable: enable
+    }
+    console.log(enable)
+    $.getJSON('<%=luci.dispatcher.build_url("api", "prometheus","set_ss_switch")%>',request_data,function(rsp)
+    {
+      is_on = rsp.enable
+      if(is_on=='1' || is_on==1){
+        // 开
+        switch_status(1);
+        refresh_status()
+      } else {
+        // 光
+        switch_status(0);
+        refresh_status()
+      }
+      $("#loading_ss_switch").hide();
+      $("#con_status").html("检查中 ...");
+    });
+  })
+
+  // 查看密码
+  $("#show_passwd").click(function(){
+    if ($(this).prop('checked')) {
+      $('#password').clone().attr('type','text').insertAfter('#password').prev().remove();
+    } else {
+      $('#password').clone().attr('type','password').insertAfter('#password').prev().remove();
+    }
+  })
+
+	// 提交配置修改
+	$("#submit_btn").click(function(){
+
+		$("#loading_ss_setup").show();
+		$("#submit_btn").attr("disabled",true);
+
+		var request_data =  $("#form1").serializeArray();
+		// 修正 serializeArray 对 unchecked 的忽略
+		if ($("#udp_relay_switch").prop("checked")==false){
+		  request_data.push({name: "udp_relay", value: '0'})
+    }
+    // 或者
+//    var serialized = $('input:checkbox').map(function() {
+//      return { name: this.name, value: this.checked ? this.value : "false" };
+//    });
+//    request_data = request_data.concat(serialized)
+
+    if ($("#plugin_enable_switch").prop("checked")==false){
+		  request_data.push({name: "plugin_enable", value: '0'})
+    }
+
+
+		$.getJSON('<%=luci.dispatcher.build_url("api", "prometheus","set_ss_cfg")%>',request_data,function(rsp)
+		{
+			if(rsp.code == 0){
+        popDialog({type: "G-text",title: ['设置成功 :)'],content: ""}).time(2000);
+			} else {
+        popDialog({type: "G-text",title: ['操作失败 :('],content: rsp.msg}).time(2000);
+			}
+			$("#loading_ss_setup").hide();
+			$("#submit_btn").attr("disabled",false);
+		})
+	});
+});
+
+// 切换开关状态
+function switch_status(status) {
+  if (status == 1 || status == "1") {
+    $("#shadowsocks_btn_box").removeAttr('disabled');
+    // 15秒
+    t = setInterval("refresh_status()", 15000);
+  } else {
+    $("#shadowsocks_btn_box").attr('disabled', 'disabled');
+    clearInterval(t);
+  }
+}
+
+function get_ss_config() {
+  var request_data = {
+    config: 1
+  };
+  $.getJSON('<%=luci.dispatcher.build_url("api", "prometheus","get_ss_cfg")%>',request_data,function(rsp)
+  {
+    $("#submit_btn").attr("disabled",false);
+    if (rsp.code == 0){
+      $("input[name='server_port']").val(rsp.server_port);
+      $("input[name='password']").val(rsp.password);
+      $("input[name='server']").val(rsp.server);
+      $("input[name='timeout']").val(rsp.timeout);
+      $("select[name='defaultroute']").val(rsp.defaultroute);
+      $("select[name='method']").val(rsp.method);
+      $("select[name='dnsserver']").val(rsp.dnsserver);
+      $("input[name='udp_relay']").val(rsp.udp_relay);
+      $("input[name='plugin_enable']").val(rsp.plugin_enable);
+      $("input[name='plugin_opts']").val(rsp.plugin_opts);
+      // udp 开关
+      var udp_relay = rsp.udp_relay;
+      if (udp_relay == '1'){
+        $("#udp_relay_switch").prop('checked', true);
+      }else{
+        $("#udp_relay_switch").prop('checked', false);
+      }
+      // 混淆开关
+      var plugin_enable = rsp.plugin_enable;
+      if (plugin_enable == '1'){
+        $("#plugin_enable_switch").prop('checked', true);
+      }else{
+        $("#plugin_enable_switch").prop('checked', false);
+      }
+      // 功能开关
+      var enable = rsp.enable;
+      if (enable == "1"){
+        $("#switch_btn").prop("checked", true);
+        switch_status(1);
+      } else {
+        $("#switch_btn").prop("checked", false);
+        switch_status(0);
+      }
+	 	}
+	})
+}
+
+function get_ss_version() {
+  // 刷新状态
+	var request_data = {};
+	$.getJSON('<%=luci.dispatcher.build_url("api", "prometheus","get_ss_version")%>',request_data,function(rsp)
+	{
+	  var version = ''
+	  if(rsp.code == 0) {
+      version = rsp.version
+    }
+	  $("#ss_version").html(version);
+	})
+}
+
+function check_ss_updates() {
+  // 刷新状态
+	var request_data = {};
+	$.getJSON('<%=luci.dispatcher.build_url("api", "prometheus","check_ss_updates")%>',request_data,function(rsp)
+	{
+	})
+}
+
+function upgrade_ss() {
+  // 刷新状态
+	var request_data = {};
+  //	TODO 根据版本升级
+	$.getJSON('<%=luci.dispatcher.build_url("api", "prometheus","upgrade_ss")%>',request_data,function(rsp)
+		{
+			if(rsp.code == 0){
+        popDialog({type: "G-text",title: ['设置成功 :)'],content: ""}).time(2000);
+			} else {
+        popDialog({type: "G-text",title: ['操作失败 :('],content: rsp.msg}).time(2000);
+			}
+			$("#loading_ss_setup").hide();
+			$("#submit_btn").attr("disabled",false);
+		})
+}
+
+function refresh_status() {
+  // 刷新状态
+	var request_data = {};
+	$.getJSON('<%=luci.dispatcher.build_url("api", "prometheus","get_ss_status")%>',request_data,function(rsp)
+	{
+    var status = "";
+		if (rsp.code == 0){
+			if(rsp.status == "stopped"){
+				status = "<span style='color:red'>未运行</span>";
+			} else if (rsp.status == "running") {
+        if (rsp.accel == "yes")
+          status = "运行中 <span style='color:green'>连接正常</span>";
+        else
+          status = "运行中 <span style='color:red'>连接错误</span>";
+			} else {
+				status = "未知";
+			}
+		} else {
+		  status = "<span style='color:red'>获取状态错误</span>"
+    }
+    $("#con_status").html(status);
+	})
+};
+// 弹出框
+function popDialog(content_object) {
+  var support_cancel = true;
+  var window_height = $(window).height();
+  var window_width = $(window).width();
+  var pop_dialog_id = "hiwifi_pop_dialog";
+  var background_grey_id = "hiwifi_dialog_background";
+  if (!content_object) {
+    $("#hiwifi_pop_dialog").hide();
+    $("#hiwifi_dialog_background").hide();
+    return;
+  }
+  var bg_gray = {};
+  var confirm_dialog = {};
+  var content_div = document.createElement("div");
+  var center_div = document.createElement("div");
+  var title_div = document.createElement("div");
+  var footer_div = document.createElement("div");
+  var background_height = $(document).height();
+
+  if ($("#hiwifi_dialog_background").length === 0) {
+    bg_gray = document.createElement("div");
+    $(bg_gray).addClass("G-page-mask").css({
+      "width": "100%",
+      "height": background_height,
+      "z-index": 9998,
+      "display": "none"
+    }).attr('id', background_grey_id).addClass('J_dialog_support_cancel');
+    $("body").append(bg_gray);
+  } else {
+    $("#" + background_grey_id).css({
+      "width": "100%",
+      "height": background_height
+    });
+  }
+
+  if ($("#hiwifi_pop_dialog").length === 0) {
+    console.log("dialog==0")
+    confirm_dialog = document.createElement("div");
+    $(confirm_dialog).addClass("G-dialog").css({
+      "minWidth": 380,
+      "minHeight": 100,
+      "position": "fixed",
+      "z-index": 9999,
+      "left": (window_width - 400) / 2,
+      "top": (window_height - 400) / 2,
+      "display": "none"
+    }).attr('id', pop_dialog_id);
+    $("body").append(confirm_dialog);
+  } else {
+    console.log("dialog>0")
+    window_height = $(window).height();
+    window_width = $(window).width();
+    $("#" + pop_dialog_id).addClass("G-dialog").css({
+      "left": (window_width - 400) / 2,
+      "top": (window_height - 400) / 2
+    });
+  }
+  //标题部分的填充--通用
+  if (typeof content_object.title === "string") {
+    $(title_div).append('<p>' + content_object.title + '</p>');
+  } else if ($.isArray(content_object.title)) {
+    $.each(content_object.title, function (index, value) {
+      $(title_div).append('<p>' + value + '</p>');
+    });
+  }
+  if (content_object.content && content_object.title) {
+    $(title_div).addClass("dialog-hd");
+  } else {
+    $(title_div).addClass("dialog-bd");
+  }
+  $(footer_div).append('</div>');
+  //以下为每种类型的填充
+  //默认为confirm,支持模式有:confirm,update,limit,level,G-text,add
+  content_object.type = content_object.type || "confirm";
+  //以下模式不支持点击灰色背景，取消dialog
+
+  if (content_object.type === "update" || content_object.type === "G-text") {
+    support_cancel = false;
+  } else {
+    $(content_div).prepend('<a href="javascript:;" class="dialog-close J_dialog_support_cancel"></a>');
+  }
+  if (content_object.content) {
+    $(center_div).addClass("dialog-bd").append(content_object.content || "");
+  }
+
+  $(content_div).addClass("dialog-wrap " + content_object.type + "-dialog").append(title_div).append(center_div).append(footer_div);
+
+  $("#hiwifi_pop_dialog").empty().append(content_div).show();
+  $(".J_dialog_support_cancel").data("support_cancel", support_cancel).show();
+
+  var that = {
+    time: function (time) {
+      time = time || 1000;
+      setTimeout(function () {
+        popDialog();
+      }, time);
+      return this;
+    },
+    closeCallback: function (callback) {
+      if (typeof callback === "function") {
+        callback();
+      }
+      return this;
+    }
+  };
+  return that;
+}
+</script>
