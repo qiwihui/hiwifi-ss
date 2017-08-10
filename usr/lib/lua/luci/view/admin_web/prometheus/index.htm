@@ -1,4 +1,4 @@
-﻿<%
+<%
 --[[
 	Info	hiwifi-ss
 	Author	qiwihui  <qiwihui@qiwihui.com>
@@ -95,7 +95,13 @@ local i18n = require "luci.i18n"
                   <tr>
                     <th>超时时间</th>
                     <td>
-                      <input type="text" class="input" name="timeout" tabindex="5" value="300" id="ss_timeout"/>
+                      <select name="timeout" class="J_selectOriginal input">
+                        <option value="30">30</option>
+                        <option value="60">60</option>
+                        <option value="120">120</option>
+                        <option value="200">200</option>
+                        <option value="300">300</option>
+                      </select>
                     </td>
                   </tr>
                   <tr>
@@ -127,7 +133,7 @@ local i18n = require "luci.i18n"
                     <th>运行模式</th>
                     <td>
                       <select name="defaultroute" class="J_selectOriginal input">
-                        <option value="0">智能模式</option>
+                        <option value="0">GFW_模式</option>
                         <option value="1">全局模式</option>
                       </select>
                     </td>
@@ -793,3 +799,7 @@ function popDialog(content_object) {
   return that;
 }
 </script>
+
+<% include('admin_web/footer') %>
+<!-- 通用模块的专属js -->
+<script type="text/javascript" src="<%=resource%>/v2/js/admin_web/general_module.js?v=<%=ver.svnRevNum%>"></script>
