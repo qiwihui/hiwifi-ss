@@ -65,7 +65,7 @@ start() {
 		service_start /usr/bin/dns2socks 127.0.0.1:$local_port $dnsserver 127.0.0.1:53535 -d -q
 		/etc/init.d/gw-redsocks start >/dev/null 2>&1
 	fi
-	add_cron
+	#add_cron
 }
 
 stop() {
@@ -73,7 +73,7 @@ stop() {
 	service_stop /usr/bin/dns2socks >/dev/null 2>&1
 	service_stop /usr/bin/ss-local >/dev/null 2>&1
 	service_stop /usr/bin/ss-redir >/dev/null 2>&1
-	del_cron
+	#del_cron
 }
 
 restart() {
