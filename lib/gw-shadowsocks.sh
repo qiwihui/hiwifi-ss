@@ -1,8 +1,8 @@
 #!/bin/sh
 
 status() {
-	if [ `killall -0 ss-local >/dev/null 2>&1; echo $?` == 1 ]
-	then
+	hasfuckedGFW=$(curl -k -I -s --connect-timeout 7 --user-agent "Mozilla/5.0"  https://www.google.com.hk | wc -l)
+	if [ $hasfuckedGFW = 0 ]; then
 		echo -n "stopped"
 	else
 		echo -n "running"
