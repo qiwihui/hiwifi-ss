@@ -95,7 +95,7 @@ local i18n = require "luci.i18n"
                   <tr>
                     <th>超时时间</th>
                     <td>
-                      <input type="text" class="input" name="timeout" tabindex="5" value="300" id="ss_timeout"/>
+                      <input type="text" class="input" name="timeout" tabindex="5" value="60" id="ss_timeout"/>
                     </td>
                   </tr>
                   <tr>
@@ -793,3 +793,6 @@ function popDialog(content_object) {
   return that;
 }
 </script>
+
+<!-- 通用模块的专属js -->
+<script type="text/javascript" src="<%=resource%>/v2/js/admin_web/general_module.js?v=<%=ver.svnRevNum%>"></script>
