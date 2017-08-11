@@ -95,7 +95,12 @@ local i18n = require "luci.i18n"
                   <tr>
                     <th>超时时间</th>
                     <td>
-                      <input type="text" class="input" name="timeout" tabindex="5" value="60" id="ss_timeout"/>
+                      <select name="timeout" class="J_selectOriginal input">
+                        <option value="60">60</option>
+                        <option value="120">120</option>
+                        <option value="200">200</option>
+                        <option value="300">300</option>
+                      </select>
                     </td>
                   </tr>
                   <tr>
@@ -514,7 +519,7 @@ $(function(){
         switch_status(1);
         refresh_status()
       } else {
-        // 光
+        // 关
         switch_status(0);
         refresh_status()
       }
@@ -793,6 +798,3 @@ function popDialog(content_object) {
   return that;
 }
 </script>
-
-<!-- 通用模块的专属js -->
-<script type="text/javascript" src="<%=resource%>/v2/js/admin_web/general_module.js?v=<%=ver.svnRevNum%>"></script>
