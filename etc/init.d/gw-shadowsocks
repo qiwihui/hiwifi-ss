@@ -8,17 +8,15 @@ export SERVICE_WRITE_PID=1
 appname=gw-shadowsocks
 appdir=/etc/$appname
 
-rs_getconfig() {
-	lan_ip=$(uci get network.lan.ipaddr)
-	source /lib/functions/network.sh
-	network_get_ipaddr wanip wan
-	local_ip=127.0.0.1
+lan_ip=$(uci get network.lan.ipaddr)
+source /lib/functions/network.sh
+network_get_ipaddr wanip wan
+local_ip=127.0.0.1
 
-	rs_port_tcp=$(uci get shadowsocks.shadowsocks.rs_port)
-	mode=$(uci get shadowsocks.shadowsocks.defaultroute)
-	server_ip=$(uci get shadowsocks.shadowsocks.server)
-	user_urls=$(uci get shadowsocks.adv.url)
-}
+rs_port_tcp=$(uci get shadowsocks.shadowsocks.rs_port)
+mode=$(uci get shadowsocks.shadowsocks.defaultroute)
+server_ip=$(uci get shadowsocks.shadowsocks.server)
+user_urls=$(uci get shadowsocks.adv.url)
 
 rs_iptables_add() {
 	echo -n > /dev/null
@@ -72,8 +70,6 @@ rs_iptables_del() {
 	iptables -t nat -X $appname
 }
 
-rs_getconfig
-
 start() {
 	local server
 	local server_port
@@ -90,8 +86,7 @@ start() {
 	config_load 'shadowsocks'
 
 	config_get enable "$section" 'enable'
-	if [ "$enable" == "1" ]
-	then
+	if [ "$enable" == "1" ]; then
 		config_get server "$section" 'server'
 		config_get server_port "$section" 'server_port'
 		config_get local_port "$section" 'local_port'
@@ -109,53 +104,51 @@ start() {
 		config_get plugin_opts "$section" 'plugin_opts'
 		
 		if [ "$timeout" == "" ]; then
-		    timeout=60
+				timeout=60
 		fi
 		
 		params=''
 		
 		if [ "$plugin_enable" == '1' ]; then
-		params="$params --plugin $plugin --plugin-opts \"$plugin_opts\""
+				params="$params --plugin $plugin --plugin-opts \"$plugin_opts\""
 		fi
 		echo "$params" > /tmp/ss_params
 		
-		if [ "$udp_relay" == "1" ]
-		then
-		    service_start /usr/bin/ss-local -s $server -p $server_port -l $local_port -k $password -t $timeout -m $method $params -u
-		    service_start /usr/bin/ss-redir -s $server -p $server_port -b 0.0.0.0 -l $rs_port -k $password -t $timeout -m $method -u
+		if [ "$udp_relay" == "1" ]; then
+				service_start /usr/bin/ss-local -s $server -p $server_port -l $local_port -k $password -t $timeout -m $method $params -u
+				service_start /usr/bin/ss-redir -s $server -p $server_port -b 0.0.0.0 -l $rs_port -k $password -t $timeout -m $method -u
 		else
-		    service_start /usr/bin/ss-local -s $server -p $server_port -l $local_port -k $password -t $timeout -m $method $params
-		    service_start /usr/bin/ss-redir -s $server -p $server_port -b 0.0.0.0 -l $rs_port -k $password -t $timeout -m $method
+				service_start /usr/bin/ss-local -s $server -p $server_port -l $local_port -k $password -t $timeout -m $method $params
+				service_start /usr/bin/ss-redir -s $server -p $server_port -b 0.0.0.0 -l $rs_port -k $password -t $timeout -m $method
 		fi
 		echo "$udp_relay" > /tmp/shadowsocks
 		
 		service_start /usr/bin/dns2socks 127.0.0.1:$local_port $dnsserver 127.0.0.1:53535 -d -q
 #		/etc/init.d/gw-redsocks start >/dev/null 2>&1
-	rs_iptables_add
+		rs_iptables_add
 
-	echo > /tmp/dnsmasq.d/$appname.usr.dnslist
-	for url in $user_urls
-	do
-		echo "server=/$url/127.0.0.1#53535" >> /tmp/dnsmasq.d/$appname.usr.dnslist
-	done
+		echo > /tmp/dnsmasq.d/$appname.usr.dnslist
+		for url in $user_urls
+		do
+				echo "server=/$url/127.0.0.1#53535" >> /tmp/dnsmasq.d/$appname.usr.dnslist
+		done
 
-	#cp $appdir/$appname.dnslist /tmp/dnsmasq.d/
-	[ "$mode" == "1" ] && {
-		touch /tmp/dnsmasq.d/$appname.dnslist
-		cat >> /tmp/dnsmasq.d/$appname.dnslist << EOF
+		#cp $appdir/$appname.dnslist /tmp/dnsmasq.d/
+		[ "$mode" == "1" ] && {
+				touch /tmp/dnsmasq.d/$appname.dnslist
+				cat >> /tmp/dnsmasq.d/$appname.dnslist << EOF
 no-resolv
 server=127.0.0.1#53535
 EOF
     }
 
-	/etc/init.d/dnsmasq restart >/dev/null 2>&1
+		/etc/init.d/dnsmasq restart >/dev/null 2>&1
 	
 	fi
 	add_cron
 }
 
 stop() {
-#	/etc/init.d/gw-redsocks stop >/dev/null 2>&1
 	rs_iptables_del
 	rm /tmp/dnsmasq.d/$appname.dnslist
 	rm /tmp/dnsmasq.d/$appname.usr.dnslist
@@ -177,8 +170,7 @@ restart() {
 add_cron()
 {
 	touch /etc/crontabs/root
-	sed -i '/shadowsocks/d' /etc/crontabs/root
-	sed -i '/shadowsocksr/d' /etc/crontabs/root
+	sed -i '/gw-shadowsocks/d' /etc/crontabs/root
 	echo '1 3 * * * /etc/gw-shadowsocks/upgfwlist.sh > /tmp/upgfwlist.log 2>&1' >> /etc/crontabs/root
 	#echo '*/10 * * * * /etc/gw-shadowsocks/ssr-watchdog >> /tmp/ssr_watchdog.log 2>&1' >> /etc/crontabs/root
 	echo '50 1 * * * /etc/gw-shadowsocks/upchinaroute.sh > /tmp/upchinaroute.log 2>&1' >> /etc/crontabs/root
@@ -187,7 +179,6 @@ add_cron()
 
 del_cron()
 {
-	sed -i '/shadowsocks/d' /etc/crontabs/root
-	sed -i '/shadowsocksr/d' /etc/crontabs/root
+	sed -i '/gw-shadowsocks/d' /etc/crontabs/root
 	/etc/init.d/cron restart
 }
