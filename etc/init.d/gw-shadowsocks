@@ -5,67 +5,6 @@ START=99
 export SERVICE_DAEMONIZE=1
 export SERVICE_WRITE_PID=1
 
-appname=gw-shadowsocks
-appdir=/etc/$appname
-
-lan_ip=$(uci get network.lan.ipaddr)
-source /lib/functions/network.sh
-network_get_ipaddr wanip wan
-local_ip=127.0.0.1
-
-rs_port_tcp=$(uci get shadowsocks.shadowsocks.rs_port)
-mode=$(uci get shadowsocks.shadowsocks.defaultroute)
-server_ip=$(uci get shadowsocks.shadowsocks.server)
-user_urls=$(uci get shadowsocks.adv.url)
-
-rs_iptables_add() {
-	echo -n > /dev/null
-	iptables -t nat -N $appname 
-	iptables -t nat -A PREROUTING -i br-lan -j $appname
-	iptables -t nat -A OUTPUT -j $appname
-	iptables -t nat -A $appname -m salist --salist local --match-dip -j RETURN 
-	iptables -t nat -A $appname -m salist --salist hiwifi --match-dip -j RETURN 
-	iptables -t nat -A $appname -d $lan_ip/24 -j RETURN
-	iptables -t nat -A $appname -d $wanip/24 -j RETURN
-	iptables -t nat -A $appname -d $server_ip/32 -j RETURN
-
-	[ "$mode" != "1" ] && {
-		ipset create china-banned hash:ip maxelem 65536 2>/dev/null
-		iptables -t nat -A $appname -m set ! --match-set china-banned dst -j RETURN
-		iptables -t nat -A $appname -m set --match-set china dst -j RETURN
-		# Get LAN settings as default parameters
-	[ -f /lib/functions/network.sh ] && . /lib/functions/network.sh
-	[ -z "$covered_subnets" ] && network_get_subnet covered_subnets lan
-		local subnet
-		for subnet in $covered_subnets; do
-		iptables -t nat -A $appname -s $subnet -p tcp -j REDIRECT --to 3088
-		done
-		iptables -t nat -I PREROUTING -p tcp -j $appname
-	#echo this $host is gfwlist
-	[ -f /tmp/dnsmasq.d/02-ipset.conf ] || {
-		awk '!/^$/&&!/^#/{printf("ipset=/%s/'"china-banned"'\n",$0)}' \
-		/etc/gw-shadowsocks/china-banned > /tmp/dnsmasq.d/GFW-ipset.conf
-	}
-	[ -f /tmp/dnsmasq.d/01-pollution.conf ] || {
-		awk '!/^$/&&!/^#/{printf("server=/%s/'"127.0.0.1#53535"'\n",$0)}' \
-		/etc/gw-shadowsocks/china-banned > /tmp/dnsmasq.d/01-pollution.conf
-	}
-	
-	iptables -t nat -A $appname -m salist --salist china --match-dip -j RETURN
-	iptables -t nat -A $appname -p tcp -m salist --match-dip --salist china-banned -j DNAT --to-destination $lan_ip:$ss_local_port
-	}
-	
-	iptables -t nat -A $appname -p tcp -j DNAT --to-destination $lan_ip:$rs_port_tcp
-}
-
-rs_iptables_del() {
-	echo -n > /dev/null
-	iptables -t nat -D PREROUTING -i br-lan -j $appname
-	iptables -t nat -D OUTPUT -j $appname
-	iptables -t nat -F $appname
-	iptables -t nat -X $appname
-}
-
 start() {
 	local server
 	local server_port
@@ -82,7 +21,8 @@ start() {
 	config_load 'shadowsocks'
 
 	config_get enable "$section" 'enable'
-	if [ "$enable" == "1" ]; then
+	if [ "$enable" == "1" ]
+	then
 		config_get server "$section" 'server'
 		config_get server_port "$section" 'server_port'
 		config_get local_port "$section" 'local_port'
@@ -99,58 +39,37 @@ start() {
 		config_get plugin "$section" 'plugin'
 		config_get plugin_opts "$section" 'plugin_opts'
 		
-		if [ "$timeout" == "" ]; then
+		if [ "$timeout" == "" ]
+		then
 				timeout=60
 		fi
 		
 		params=''
 		
-		if [ "$plugin_enable" == '1' ]; then
+		if [ "$plugin_enable" == '1' ]
+		then
 				params="$params --plugin $plugin --plugin-opts \"$plugin_opts\""
 		fi
 		echo "$params" > /tmp/ss_params
 		
-		if [ "$udp_relay" == "1" ]; then
-				service_start /usr/bin/ss-local -s $server -p $server_port -l $local_port -k $password -t $timeout -m $method $params -u
-				service_start /usr/bin/ss-redir -s $server -p $server_port -b 0.0.0.0 -l $rs_port -k $password -t $timeout -m $method -u
+		if [ "$udp_relay" == "1" ]
+		then
+		    service_start /usr/bin/ss-local -s $server -p $server_port -l $local_port -k $password -t $timeout -m $method $params -u
+		    service_start /usr/bin/ss-redir -s $server -p $server_port -b 0.0.0.0 -l $rs_port -k $password -t $timeout -m $method -u
 		else
-				service_start /usr/bin/ss-local -s $server -p $server_port -l $local_port -k $password -t $timeout -m $method $params
-				service_start /usr/bin/ss-redir -s $server -p $server_port -b 0.0.0.0 -l $rs_port -k $password -t $timeout -m $method
+		    service_start /usr/bin/ss-local -s $server -p $server_port -l $local_port -k $password -t $timeout -m $method $params
+		    service_start /usr/bin/ss-redir -s $server -p $server_port -b 0.0.0.0 -l $rs_port -k $password -t $timeout -m $method
 		fi
 		echo "$udp_relay" > /tmp/shadowsocks
 		
 		service_start /usr/bin/dns2socks 127.0.0.1:$local_port $dnsserver 127.0.0.1:53535 -d -q
-#		/etc/init.d/gw-redsocks start >/dev/null 2>&1
-		rs_iptables_add
-
-		echo > /tmp/dnsmasq.d/$appname.usr.dnslist
-		for url in $user_urls
-		do
-				echo "server=/$url/127.0.0.1#53535" >> /tmp/dnsmasq.d/$appname.usr.dnslist
-		done
-
-		#cp $appdir/$appname.dnslist /tmp/dnsmasq.d/
-		[ "$mode" == "1" ] && {
-				touch /tmp/dnsmasq.d/$appname.dnslist
-				cat >> /tmp/dnsmasq.d/$appname.dnslist << EOF
-no-resolv
-server=127.0.0.1#53535
-EOF
-    }
-
-		/etc/init.d/dnsmasq restart >/dev/null 2>&1
-	
+		/etc/init.d/gw-redsocks start >/dev/null 2>&1
 	fi
 	add_cron
 }
 
 stop() {
-	rs_iptables_del
-	rm /tmp/dnsmasq.d/$appname.dnslist
-	rm /tmp/dnsmasq.d/$appname.usr.dnslist
-	rm /tmp/dnsmasq.d/GFW-ipset.conf
-	rm /tmp/dnsmasq.d/01-pollution.conf
-	/etc/init.d/dnsmasq restart >/dev/null 2>&1
+	/etc/init.d/gw-redsocks stop >/dev/null 2>&1
 	service_stop /usr/bin/dns2socks >/dev/null 2>&1
 	service_stop /usr/bin/ss-local >/dev/null 2>&1
 	service_stop /usr/bin/ss-redir >/dev/null 2>&1
