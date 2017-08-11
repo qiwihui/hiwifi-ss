@@ -65,7 +65,7 @@ start() {
 		service_start /usr/bin/dns2socks 127.0.0.1:$local_port $dnsserver 127.0.0.1:53535 -d -q
 		/etc/init.d/gw-redsocks start >/dev/null 2>&1
 	fi
-	#add_cron
+#	#add_cron
 }
 
 stop() {
@@ -73,7 +73,7 @@ stop() {
 	service_stop /usr/bin/dns2socks >/dev/null 2>&1
 	service_stop /usr/bin/ss-local >/dev/null 2>&1
 	service_stop /usr/bin/ss-redir >/dev/null 2>&1
-	#del_cron
+#	#del_cron
 }
 
 restart() {
@@ -86,9 +86,9 @@ add_cron()
 {
 	touch /etc/crontabs/root
 	sed -i '/gw-shadowsocks/d' /etc/crontabs/root
-	echo '1 3 * * * /etc/gw-shadowsocks/upgfwlist.sh > /tmp/upgfwlist.log 2>&1' >> /etc/crontabs/root
+	echo '28 2 * * * /etc/gw-shadowsocks/upgfwlist.sh > /tmp/upgfwlist.log 2>&1' >> /etc/crontabs/root
 	#echo '*/10 * * * * /etc/gw-shadowsocks/ssr-watchdog >> /tmp/ssr_watchdog.log 2>&1' >> /etc/crontabs/root
-	echo '50 1 * * * /etc/gw-shadowsocks/upchinaroute.sh > /tmp/upchinaroute.log 2>&1' >> /etc/crontabs/root
+	echo '10 2 * * * /etc/gw-shadowsocks/upchinaroute.sh > /tmp/upchinaroute.log 2>&1' >> /etc/crontabs/root
 	/etc/init.d/cron restart
 }
 
