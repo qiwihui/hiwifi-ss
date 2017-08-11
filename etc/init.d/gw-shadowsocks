@@ -31,10 +31,6 @@ rs_iptables_add() {
 
 	[ "$mode" != "1" ] && {
 		ipset create china-banned hash:ip maxelem 65536 2>/dev/null
-			ipset add china-banned 91.108.56.0/22
-			ipset add china-banned 91.108.4.0/22
-			ipset add china-banned 109.239.140.0/24
-			ipset add china-banned 149.154.160.0/20
 		iptables -t nat -A $appname -m set ! --match-set china-banned dst -j RETURN
 		iptables -t nat -A $appname -m set --match-set china dst -j RETURN
 		# Get LAN settings as default parameters
