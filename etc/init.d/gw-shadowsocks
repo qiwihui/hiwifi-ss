@@ -38,11 +38,11 @@ start() {
 		config_get plugin_enable "$section" 'plugin_enable'
 		config_get plugin "$section" 'plugin'
 		config_get plugin_opts "$section" 'plugin_opts'
-		
-		if [ "$timeout" == "" ]
-		then
-				timeout=60
-		fi
+		#
+		# if [ "$timeout" == "" ]
+		# then
+		#		timeout=60
+		# fi
 		
 		params=''
 		
