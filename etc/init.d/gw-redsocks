@@ -52,7 +52,7 @@ rs_iptables_add() {
 #echo this $host is gfwlist
 [ -f /tmp/dnsmasq.d/02-ipset.conf ] || {
 	awk '!/^$/&&!/^#/{printf("ipset=/%s/'"china-banned"'\n",$0)}' \
-	/etc/$appname/china-banned > /tmp/dnsmasq.d/GFW-ipset.conf
+	/etc/$appname/china-banned > /tmp/dnsmasq.d/02-ipset.conf
 }
 [ -f /tmp/dnsmasq.d/01-pollution.conf ] || {
 	awk '!/^$/&&!/^#/{printf("server=/%s/'"127.0.0.1#53535"'\n",$0)}' \
@@ -99,6 +99,8 @@ stop() {
 	rs_iptables_del
 
 	rm /tmp/dnsmasq.d/$appname.dnslist
+	rm /tmp/dnsmasq.d/02-ipset.conf
+	rm /tmp/dnsmasq.d/01-pollution.conf
     rm /tmp/dnsmasq.d/$appname.usr.dnslist
 	/etc/init.d/dnsmasq restart
 }
