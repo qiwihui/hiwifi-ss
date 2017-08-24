@@ -13,6 +13,9 @@ start() {
 	local timeout
 	local method
 	local enable
+	local plugin_enable
+	local plugin_opts
+	local plugin
     local dnsserver
     local udp_relay
 
@@ -42,7 +45,7 @@ start() {
         params=''
 
         if [ "$plugin_enable" == '1' ]; then
-            params="$params --plugin $plugin --plugin-opts \"$plugin_opts\""
+            params="$params --plugin $plugin --plugin-opts $plugin_opts"
         fi
 		if [ "$timeout" == "" ]; then
 		    timeout=300
@@ -52,8 +55,8 @@ start() {
 		fi
 		echo "$params" > /tmp/ss_params
 
-        service_start /usr/bin/ss-local -s $server -p $server_port -l $local_port -k $password -t $timeout -m $method $params
-        service_start /usr/bin/ss-redir -s $server -p $server_port -b 0.0.0.0 -l $rs_port -k $password -t $timeout -m $method $params
+        service_start /usr/bin/ss-local -s $server -p $server_port -l $local_port -k "$password" -t $timeout -m $method $params
+        service_start /usr/bin/ss-redir -s $server -p $server_port -b 0.0.0.0 -l $rs_port -k "$password" -t $timeout -m $method $params
 
         #/etc/init.d/dnscrypt-proxy start
 		service_start /usr/bin/dns2socks 127.0.0.1:$local_port $dnsserver 127.0.0.1:53535 -d -q
@@ -64,7 +67,7 @@ start() {
 stop() {
 	/etc/init.d/gw-redsocks stop
     #/etc/init.d/dnscrypt-proxy stop
-	
+
 	service_stop /usr/bin/dns2socks
 	service_stop /usr/bin/ss-local
 	service_stop /usr/bin/ss-redir

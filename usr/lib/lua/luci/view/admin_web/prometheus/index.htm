@@ -170,6 +170,12 @@ local i18n = require "luci.i18n"
                     </td>
                   </tr>
                   <tr>
+                    <th>plugin参数</th>
+                    <td>
+                      <input type="text" class="input" name="plugin" tabindex="12" value="obfs-local" id="plugin"/>
+                    </td>
+                  </tr>
+                  <tr>
                     <th>状态:</th>
                     <th>
                       <span id="con_status">检查中 ...</span>
@@ -597,6 +603,7 @@ function get_ss_config() {
       $("input[name='udp_relay']").val(rsp.udp_relay);
       $("input[name='plugin_enable']").val(rsp.plugin_enable);
       $("input[name='plugin_opts']").val(rsp.plugin_opts);
+      $("input[name='plugin']").val(rsp.plugin);
       // udp 开关
       var udp_relay = rsp.udp_relay;
       if (udp_relay == '1'){
