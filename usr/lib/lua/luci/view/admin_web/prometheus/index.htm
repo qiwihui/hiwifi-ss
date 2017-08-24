@@ -63,19 +63,19 @@ local i18n = require "luci.i18n"
                   <tr>
                     <th>服务器地址</th>
                     <td>
-                      <input type="text" class="input" name="server" tabindex="1" value="" id="ss_server"/>
+                      <input type="text" class="input" name="server" tabindex="1" value="" id="server"/>
                     </td>
                   </tr>
                   <tr>
                     <th>服务端口</th>
                     <td>
-                      <input type="text" class="input" name="server_port" tabindex="2" value="" id="ss_server_port"/>
+                      <input type="text" class="input" name="server_port" tabindex="2" value="" id="server_port"/>
                     </td>
                   </tr>
                   <tr>
                     <th>本地端口</th>
                     <td>
-                      <input type="text" class="input" name="local_port" tabindex="3" value="61080" id="ss_local_port"
+                      <input type="text" class="input" name="local_port" tabindex="3" value="61080" id="local_port"
                              disabled/>
                     </td>
                   </tr>
@@ -95,7 +95,7 @@ local i18n = require "luci.i18n"
                   <tr>
                     <th>超时时间</th>
                     <td>
-                      <input type="text" class="input" name="timeout" tabindex="5" value="300" id="ss_timeout"/>
+                      <input type="text" class="input" name="timeout" tabindex="5" value="300" id="timeout"/>
                     </td>
                   </tr>
                   <tr>
@@ -514,7 +514,7 @@ $(function(){
         switch_status(1);
         refresh_status()
       } else {
-        // 光
+        // 关
         switch_status(0);
         refresh_status()
       }
@@ -793,3 +793,6 @@ function popDialog(content_object) {
   return that;
 }
 </script>
+<% include('admin_web/footer') %>
+<!-- 通用模块的专属js -->
+<script type="text/javascript" src="<%=resource%>/v2/js/admin_web/general_module.js?v=<%=ver.svnRevNum%>"></script>
