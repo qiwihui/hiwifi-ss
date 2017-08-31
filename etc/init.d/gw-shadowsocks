@@ -2,6 +2,7 @@
 # Copyright (C) 2007-2011 OpenWrt.org
 
 START=99
+CRON_FILE=/etc/crontabs/root
 export SERVICE_DAEMONIZE=1
 export SERVICE_WRITE_PID=1
 
@@ -13,8 +14,11 @@ start() {
 	local timeout
 	local method
 	local enable
-    local dnsserver
-    local udp_relay
+	local plugin_enable
+	local plugin_opts
+	local plugin
+	local dnsserver
+	local udp_relay
 
 	local section='shadowsocks'
 
@@ -30,47 +34,67 @@ start() {
 		config_get timeout "$section" 'timeout'
 		config_get method "$section" 'method'
 		config_get dnsserver "$section" 'dnsserver'
-		# 3088
+		# rs_port=3088
 		config_get rs_port "$section" 'rs_port'
 		# udp 转发
 		config_get udp_relay "$section" 'udp_relay'
-        # 混淆
+		# 混淆
 		config_get plugin_enable "$section" 'plugin_enable'
 		config_get plugin "$section" 'plugin'
 		config_get plugin_opts "$section" 'plugin_opts'
 
-        params=''
+		params=''
 
-        if [ "$plugin_enable" == '1' ]; then
-            params="$params --plugin $plugin --plugin-opts \"$plugin_opts\""
-        fi
+		if [ "$plugin_enable" == '1' ]; then
+			arams="$params --plugin $plugin --plugin-opts $plugin_opts"
+		fi
 		if [ "$timeout" == "" ]; then
-		    timeout=300
+			timeout=300
 		fi
 		if [ "$udp_relay" == "1" ]; then
 		    params="$params -u"
 		fi
 		echo "$params" > /tmp/ss_params
 
-        service_start /usr/bin/ss-local -s $server -p $server_port -l $local_port -k $password -t $timeout -m $method $params
-        service_start /usr/bin/ss-redir -s $server -p $server_port -b 0.0.0.0 -l $rs_port -k $password -t $timeout -m $method $params
+		service_start /usr/bin/ss-local -s $server -p $server_port -l $local_port -k "$password" -t $timeout -m $method $params
+		service_start /usr/bin/ss-redir -s $server -p $server_port -b 0.0.0.0 -l $rs_port -k "$password" -t $timeout -m $method $params
 
-        #/etc/init.d/dnscrypt-proxy start
+		#/etc/init.d/dnscrypt-proxy start
 		service_start /usr/bin/dns2socks 127.0.0.1:$local_port $dnsserver 127.0.0.1:53535 -d -q
 		/etc/init.d/gw-redsocks start
 	fi
+	add_cron
 }
 
 stop() {
 	/etc/init.d/gw-redsocks stop
-    #/etc/init.d/dnscrypt-proxy stop
-	
+	#/etc/init.d/dnscrypt-proxy stop
+
 	service_stop /usr/bin/dns2socks
 	service_stop /usr/bin/ss-local
 	service_stop /usr/bin/ss-redir
+	del_cron
 }
 
 restart() {
-   stop
-   start
+	stop
+	sleep 1
+	start
+}
+
+add_cron()
+{
+	touch $CRON_FILE
+	sed -i '/gw-shadowsocks/d' $CRON_FILE
+	echo '51 1 * * 3 /etc/gw-shadowsocks/upgfwlist.sh > /tmp/upgfwlist.log 2>&1' >> $CRON_FILE
+	echo '31 1 * * 3 /etc/gw-shadowsocks/upchinaroute.sh > /tmp/upchinaroute.log 2>&1' >> $CRON_FILE
+	touch /etc/crontabs/cron.update
+	/etc/init.d/cron restart
+}
+
+del_cron()
+{
+	sed -i '/gw-shadowsocks/d' $CRON_FILE
+	touch /etc/crontabs/cron.update
+	/etc/init.d/cron restart
 }

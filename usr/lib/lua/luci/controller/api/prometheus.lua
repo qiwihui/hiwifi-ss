@@ -95,6 +95,7 @@ function get_ss_cfg()
 
     result['plugin_opts'] = config['plugin_opts'] or 'obfs=http;obfs-host=www.bing.com'
     result['plugin_enable'] = config['plugin_enable'] or '0'
+    result['plugin'] = config['plugin'] or 'obfs-local'
 
     result["code"] = 0
     json_return(result)
@@ -114,7 +115,7 @@ function set_ss_cfg()
     local udp_relay = luci.http.formvalue("udp_relay")
     -- simple obfs switch
     local plugin_enable = luci.http.formvalue("plugin_enable")
---    local plugin = luci.http.formvalue("plugin")
+    local plugin = luci.http.formvalue("plugin")
     local plugin_opts = luci.http.formvalue("plugin_opts")
 
     -- 查看是否有 shadowsocks 的配置，有则修改，无则创建
@@ -139,7 +140,7 @@ function set_ss_cfg()
     luci.sys.exec('uci set shadowsocks.shadowsocks.udp_relay='..udp_relay..';')
     -- simple obfs
     luci.sys.exec('uci set shadowsocks.shadowsocks.plugin_enable='..plugin_enable..';')
-    luci.sys.exec('uci set shadowsocks.shadowsocks.plugin="obfs-local";')
+    luci.sys.exec('uci set shadowsocks.shadowsocks.plugin='..plugin..';')
     luci.sys.exec('uci set shadowsocks.shadowsocks.plugin_opts=\"'..plugin_opts..'\";')
     luci.sys.exec('uci commit;')
 

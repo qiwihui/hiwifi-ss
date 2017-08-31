@@ -24,19 +24,44 @@ rs_getconfig() {
 
 rs_iptables_add() {
 	echo -n > /dev/null
-	iptables -t nat -N $appname 
+	iptables -t nat -N $appname
 	iptables -t nat -A PREROUTING -i br-lan -j $appname
 	iptables -t nat -A OUTPUT -j $appname
-	iptables -t nat -A $appname -m salist --salist local --match-dip -j RETURN 
-	iptables -t nat -A $appname -m salist --salist hiwifi --match-dip -j RETURN 
+	iptables -t nat -A $appname -m salist --salist local --match-dip -j RETURN
+	iptables -t nat -A $appname -m salist --salist hiwifi --match-dip -j RETURN
 	iptables -t nat -A $appname -d $lan_ip/24 -j RETURN
 	iptables -t nat -A $appname -d $wanip/24 -j RETURN
 	iptables -t nat -A $appname -d $server_ip/32 -j RETURN
 
 	[ "$mode" != "1" ] && {
+		ipset create china-banned hash:ip maxelem 65536 2>/dev/null
+		ipset add china-banned 91.108.56.0/22
+		ipset add china-banned 91.108.4.0/22
+		ipset add china-banned 109.239.140.0/24
+		ipset add china-banned 149.154.160.0/20
+	iptables -t nat -A $appname -m set ! --match-set china-banned dst -j RETURN
+	iptables -t nat -A $appname -m set --match-set china dst -j RETURN
+	# Get LAN settings as default parameters
+[ -f /lib/functions/network.sh ] && . /lib/functions/network.sh
+[ -z "$covered_subnets" ] && network_get_subnet covered_subnets lan
+	local subnet
+	for subnet in $covered_subnets; do
+	iptables -t nat -A $appname -s $subnet -p tcp -j REDIRECT --to 3088
+	done
+	iptables -t nat -I PREROUTING -p tcp -j $appname
+#echo this $host is gfwlist
+[ -f /tmp/dnsmasq.d/02-ipset.conf ] || {
+	awk '!/^$/&&!/^#/{printf("ipset=/%s/'"china-banned"'\n",$0)}' \
+	/etc/$appname/china-banned > /tmp/dnsmasq.d/02-ipset.conf
+}
+[ -f /tmp/dnsmasq.d/01-pollution.conf ] || {
+	awk '!/^$/&&!/^#/{printf("server=/%s/'"127.0.0.1#53535"'\n",$0)}' \
+	/etc/$appname/china-banned > /tmp/dnsmasq.d/01-pollution.conf
+}
 		iptables -t nat -A $appname -m salist --salist china --match-dip -j RETURN
+		iptables -t nat -A $appname -p tcp -m salist --match-dip --salist china-banned -j DNAT --to-destination $lan_ip:$rs_port_tcp
 	}
-	
+
     iptables -t nat -A $appname -p tcp -j DNAT --to-destination $lan_ip:$rs_port_tcp
 }
 
@@ -72,8 +97,10 @@ EOF
 
 stop() {
 	rs_iptables_del
-	
+
 	rm /tmp/dnsmasq.d/$appname.dnslist
+	rm /tmp/dnsmasq.d/02-ipset.conf
+	rm /tmp/dnsmasq.d/01-pollution.conf
     rm /tmp/dnsmasq.d/$appname.usr.dnslist
 	/etc/init.d/dnsmasq restart
 }
