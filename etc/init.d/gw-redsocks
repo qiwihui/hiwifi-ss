@@ -8,7 +8,7 @@ PID_FILE=/var/run/$APP.pid
 #export SERVICE_WRITE_PID=1
 
 appname=gw-shadowsocks
-appdir=/etc/gw-redsocks/$appname
+appdir=/etc/$appname
 
 rs_getconfig() {
 	lan_ip=$(uci get network.lan.ipaddr)
@@ -51,8 +51,6 @@ rs_iptables_del() {
 rs_getconfig
 
 start() {
-	service_start /usr/bin/$APP -c /etc/gw-redsocks.conf
-	#start-stop-daemon -S -x $APP -p $PID_FILE -m -b -- -c /etc/redsocks.conf
 	rs_iptables_add
 
     echo > /tmp/dnsmasq.d/$appname.usr.dnslist
@@ -73,13 +71,11 @@ EOF
 }
 
 stop() {
-	#start-stop-daemon -K -x $APP -s TERM
 	rs_iptables_del
 	
 	rm /tmp/dnsmasq.d/$appname.dnslist
     rm /tmp/dnsmasq.d/$appname.usr.dnslist
 	/etc/init.d/dnsmasq restart
-	killall -q $APP
 }
 
 restart() {

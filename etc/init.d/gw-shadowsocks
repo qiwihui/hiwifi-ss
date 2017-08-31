@@ -1,7 +1,7 @@
 #!/bin/sh /etc/rc.common
 # Copyright (C) 2007-2011 OpenWrt.org
 
-START=80
+START=99
 export SERVICE_DAEMONIZE=1
 export SERVICE_WRITE_PID=1
 
@@ -14,6 +14,7 @@ start() {
 	local method
 	local enable
     local dnsserver
+    local udp_relay
 
 	local section='shadowsocks'
 
@@ -29,11 +30,33 @@ start() {
 		config_get timeout "$section" 'timeout'
 		config_get method "$section" 'method'
 		config_get dnsserver "$section" 'dnsserver'
+		# 3088
+		config_get rs_port "$section" 'rs_port'
+		# udp 转发
+		config_get udp_relay "$section" 'udp_relay'
+        # 混淆
+		config_get plugin_enable "$section" 'plugin_enable'
+		config_get plugin "$section" 'plugin'
+		config_get plugin_opts "$section" 'plugin_opts'
 
-		service_start /usr/bin/ss-local -s $server -p $server_port -l $local_port -k $password -t $timeout -m $method
-		
+        params=''
+
+        if [ "$plugin_enable" == '1' ]; then
+            params="$params --plugin $plugin --plugin-opts \"$plugin_opts\""
+        fi
+		if [ "$timeout" == "" ]; then
+		    timeout=300
+		fi
+		if [ "$udp_relay" == "1" ]; then
+		    params="$params -u"
+		fi
+		echo "$params" > /tmp/ss_params
+
+        service_start /usr/bin/ss-local -s $server -p $server_port -l $local_port -k $password -t $timeout -m $method $params
+        service_start /usr/bin/ss-redir -s $server -p $server_port -b 0.0.0.0 -l $rs_port -k $password -t $timeout -m $method $params
+
         #/etc/init.d/dnscrypt-proxy start
-		service_start /usr/sbin/dns2socks 127.0.0.1:$local_port $dnsserver 127.0.0.1:53535 -d -q
+		service_start /usr/bin/dns2socks 127.0.0.1:$local_port $dnsserver 127.0.0.1:53535 -d -q
 		/etc/init.d/gw-redsocks start
 	fi
 }
@@ -42,8 +65,9 @@ stop() {
 	/etc/init.d/gw-redsocks stop
     #/etc/init.d/dnscrypt-proxy stop
 	
-	service_stop /usr/sbin/dns2socks
+	service_stop /usr/bin/dns2socks
 	service_stop /usr/bin/ss-local
+	service_stop /usr/bin/ss-redir
 }
 
 restart() {
