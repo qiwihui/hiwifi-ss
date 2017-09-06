@@ -186,13 +186,19 @@ local i18n = require "luci.i18n"
                     </div>
 
                     <br/>
-                    <hr/>
+                    <div class="G-main-panel-bd">
+                    <div class="G-main-panel-hd">高级功能配置</div>
+                    <div class="G-main-panel-bd">
                     <table width="100%" align="center" cellpadding="4" class="G-form-table">
                       <tr id="ss_config_addr">
                         <td colspan="3" style="border-top: 0 none;">
                           <a href="javascript:spoiler_toggle('script_addr')"><span>☞点这里 自定义域名，强制使用代理解析</span></a>
                           <div id="script_addr" style="display:none;">
-                            <textarea rows="10" class="form-input" data-type="addr_list" placeholder="列表中的域名会强制使用代理解析&#13;&#10;每行一条，例如：&#13;&#10;100.100.100.100&#13;&#10;baidu.com"></textarea>
+                            <p>列表中的域名会强制使用代理解析</p>
+                            <p>（每行一条，以#开头的作为备注不生效）例如：</p>
+                            <p>100.100.100.100</p>
+                            <p>baidu.com</p>
+                            <textarea rows="10" class="form-input" data-type="addr_list" placeholder=""></textarea>
                           </div>
                           <br/>
                         </td>
@@ -202,8 +208,8 @@ local i18n = require "luci.i18n"
                           <a href="javascript:spoiler_toggle('script_lan')"><span>☞点这里 自定义屏蔽局域网设备使用ss</span></a>
                           <div id="script_lan" style="display:none;">
                             <p>内网(LAN)设置绕过SS，不使用SS访问外网</p>
-                            <p>（如多个设置则每一个ip一行,可选项：删除前面的#可生效）</p>
-                            <textarea rows="10" class="form-input" data-type="lan_list" placeholder="列表中局域网设备不会被代理，可以是ip或mac地址&#13;&#10;每行一条，例如：&#13;&#10;192.168.199.101&#13;&#10;e012ab34ef00"></textarea>
+                            <p>（每一个ip/mac地址一行，以#开头的作为备注不生效）</p>
+                            <textarea rows="10" class="form-input" data-type="lan_list" placeholder="例如：&#13;&#10;192.168.199.101&#13;&#10;e012ab34ef00"></textarea>
                           </div>
                           <br/>
                         </td>
@@ -219,8 +225,8 @@ local i18n = require "luci.i18n"
                               <p>以+开头的 网段/掩码 的走SS 详见下面样板</p>
                               <p>以-开头的 网段/掩码 不走SS 详见下面样板</p>
                               <p>优先级: 走SS > 不走SS</p>
-                              <p>（每一个域名、IP一行,可选项：删除前面的#可生效）</p>
-                              <textarea rows="15" class="form-input" data-type="wan_list" placeholder="每行一条"></textarea>
+                              <p>（每一个域名、IP一行，以#开头的作为备注不生效）</p>
+                              <textarea rows="15" class="form-input" data-type="wan_list" placeholder=""></textarea>
                             </div>
                           </div>
                         </td>
@@ -667,17 +673,17 @@ local i18n = require "luci.i18n"
             'data': data,
             'dataType': 'json',
             'success': function(data) {
-              if (rsp.code == 0) {
+              if (data.code == 0) {
                 popDialog({
                   type: "G-text",
-                  title: ['保存成功，重新开启后生效 :)'],
+                  title: ['保存成功 :)'],
                   content: ""
                 }).time(2000);
               } else {
                 popDialog({
                   type: "G-text",
-                  title: ['操作失败 :('],
-                  content: rsp.msg
+                  title: ['保存失败 :('],
+                  content: data.msg
                 }).time(2000);
               }
               $("#loading_ss_setup2").hide();
@@ -925,20 +931,16 @@ local i18n = require "luci.i18n"
 
       function get_adv_config() {
         var request_data = {};
-        console.log(1)
         $.ajax({
           'url': '<%=luci.dispatcher.build_url("api", "prometheus","get_ss_adv")%>',
           'type': 'get',
           'dataType': 'json',
           'success': function(data) {
-            console.log(3)
             if (data.code == 0) {
-              console.log(4)
               data.lans && $('[data-type=lan_list]').val(data.lans.replace(/^\s+/g, '').replace(/\s+$/g, '').replace(/\\n/g, "\n"));
               data.wans && $('[data-type=wan_list]').val(data.wans.replace(/^\s+/g, '').replace(/\s+$/g, '').replace(/\\n/g, "\n"));
               data.addrs && $('[data-type=addr_list]').val(data.addrs.replace(/^\s+/g, '').replace(/\s+$/g, '').replace(/\\n/g, "\n"));
             } else {
-              console.log(5)
               popDialog({
                 type: "G-text",
                 title: ['获取数据失败 :('],
@@ -947,6 +949,5 @@ local i18n = require "luci.i18n"
             }
           }
         })
-        console.log(2)
       }
     </script>
