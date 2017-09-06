@@ -33,10 +33,13 @@ function index()
     --   升级
     entry({ "api", "prometheus", "check_ss_updates" }, call("check_ss_updates"), _(""), 608)
     entry({ "api", "prometheus", "upgrade_ss" }, call("upgrade_ss"), _(""), 608)
+    entry({ "api", "prometheus", "set_ss_adv" }, call("set_ss_adv"), _(""), 609)
+    entry({ "api", "prometheus", "get_ss_adv" }, call("get_ss_adv"), _(""), 610)
 end
 
 
 local luci_http = require("luci.http")
+local mime = require("mime")
 local VERSION = 'v1.0.6'
 --local log = require "luci.log"
 
@@ -201,4 +204,54 @@ function get_ss_status()
 end
 
 function prometheus_upgrade()
+end
+
+function set_ss_adv()
+    -- 保存 shadowsocks 高级配置
+    local addr_list = '/etc/gw-shadowsocks/addr_list.conf'
+    local lan_list = '/etc/gw-shadowsocks/lan_list.conf'
+    local wan_list = '/etc/gw-shadowsocks/wan_list.conf'
+    local addrs = luci.http.formvalue("addrs")
+    local lans = luci.http.formvalue("lans")
+    local wans = luci.http.formvalue("wans")
+
+
+    local file = io.open(addr_list, 'w+')
+    local str = addrs or ""
+    if file then
+        file:write(str..'\n')
+        file:close()
+    end
+    local file = io.open(lan_list, 'w+')
+    local str = lans or ""
+    if file then
+        file:write(str..'\n')
+        file:close()
+    end
+    local file = io.open(wan_list, 'w+')
+    local str = wans or ""
+    if file then
+        file:write(str..'\n')
+        file:close()
+    end
+    
+    luci.sys.exec('/etc/init.d/gw-shadowsocks restart')
+
+    local result = {}
+    local codeResp = 0
+    result["code"] = codeResp
+    result["msg"] = luci.util.get_api_error(codeResp)
+    json_return(result)
+end
+
+function get_ss_adv()
+    local addr_list = '/etc/gw-shadowsocks/addr_list.conf'
+    local lan_list = '/etc/gw-shadowsocks/lan_list.conf'
+    local wan_list = '/etc/gw-shadowsocks/wan_list.conf'
+    local result = {}
+    result['code'] = 0
+    result['addrs'] = string.gsub(luci.sys.exec('cat '..addr_list),"\n","\\n")
+    result['lans'] = string.gsub(luci.sys.exec('cat '..lan_list),"\n","\\n")
+    result['wans'] = string.gsub(luci.sys.exec('cat '..wan_list),"\n","\\n")
+    json_return(result)
 end
