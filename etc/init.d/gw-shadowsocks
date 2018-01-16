@@ -15,6 +15,7 @@ start() {
 	local enable
     local dnsserver
     local udp_relay
+	local params
 
 	local section='shadowsocks'
 
@@ -42,7 +43,7 @@ start() {
         params=''
 
         if [ "$plugin_enable" == '1' ]; then
-            params="$params --plugin $plugin --plugin-opts \"$plugin_opts\""
+            params="$params --plugin $plugin --plugin-opts $plugin_opts"
         fi
 		if [ "$timeout" == "" ]; then
 		    timeout=300
@@ -50,7 +51,6 @@ start() {
 		if [ "$udp_relay" == "1" ]; then
 		    params="$params -u"
 		fi
-		echo "$params" > /tmp/ss_params
 
         service_start /usr/bin/ss-local -s $server -p $server_port -l $local_port -k $password -t $timeout -m $method $params
         service_start /usr/bin/ss-redir -s $server -p $server_port -b 0.0.0.0 -l $rs_port -k $password -t $timeout -m $method $params
