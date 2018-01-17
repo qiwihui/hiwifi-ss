@@ -185,14 +185,14 @@ local i18n = require "luci.i18n"
 
                     <br/>
                     <div class="G-main-panel-bd">
-                    <div class="G-main-panel-hd">高级功能配置</div>
+                    <div class="G-main-panel-hd">高级功能</div>
                     <div class="G-main-panel-bd">
                     <table width="100%" align="center" cellpadding="4" class="G-form-table">
                       <tr id="ss_config_addr">
                         <td colspan="3" style="border-top: 0 none;">
-                          <a href="javascript:spoiler_toggle('script_addr')"><span>☞点这里 自定义域名，强制使用代理解析</span></a>
+                          <a href="javascript:spoiler_toggle('script_addr')"><span>☞ 白名单</span></a>
                           <div id="script_addr" style="display:none;">
-                            <p>列表中的域名会强制使用代理解析</p>
+                            <p>列表中的IP或域名会强制使用代理解析</p>
                             <p>（每行一条，以#开头的作为备注不生效）</p>
                             <p>例如：</p>
                             <p>100.100.100.100</p>
@@ -204,7 +204,7 @@ local i18n = require "luci.i18n"
                       </tr>
                       <tr id="ss_config_lan">
                         <td colspan="3" style="border-top: 0 none;">
-                          <a href="javascript:spoiler_toggle('script_lan')"><span>☞点这里 自定义屏蔽局域网设备使用ss</span></a>
+                          <a href="javascript:spoiler_toggle('script_lan')"><span>☞ 黑名单</span></a>
                           <div id="script_lan" style="display:none;">
                             <p>内网(LAN)设置绕过SS，不使用SS访问外网</p>
                             <p>（每一个ip/mac地址一行，以#开头的作为备注不生效）</p>
@@ -218,7 +218,7 @@ local i18n = require "luci.i18n"
                       </tr>
                       <tr id="ss_config_wan">
                         <td colspan="3" style="border-top: 0 none;">
-                          <a href="javascript:spoiler_toggle('script_wan')"><span>☞点这里 自定义强制WAN的IP转发或忽略代理中转设置控制功能</span></a>
+                          <a href="javascript:spoiler_toggle('script_wan')"><span>☞ 代理转发</span></a>
                           <div id="script_wan" style="display:none;">
                             <div class="alert alert-info" style="margin-top: 10px;">
                               <p>强制WAN的IP转发或忽略代理中转设置 ：</p>
