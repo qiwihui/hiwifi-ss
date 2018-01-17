@@ -6,19 +6,21 @@
 
 现在项目使用的是大陆白名单模式，关于适用大陆白名单和gfwlsit的处理，见[issue#37](https://github.com/qiwihui/hiwifi-ss/issues/37)。项目中的gfw规则使用项目 [cokebar/gfwlist2dnsmasq](https://github.com/cokebar/gfwlist2dnsmasq) 生成的规则修改而成，最后更新日期为2017.08.08。
 
+## 用户选择
+
 ### 安装方法
 
-1. 新版hiwifi => 使用项目根目录下的 `shadow.sh` 脚本进行安装, 建议使用以下一键命令:
+1. 使用项目根目录下的 `shadow.sh` 脚本进行安装, 建议使用以下一键命令:
 
     ```bash
     cd /tmp && curl -k -o shadow.sh https://raw.githubusercontent.com/qiwihui/hiwifi-ss/master/shadow.sh && sh shadow.sh && rm shadow.sh
     ```
 
-2.  hiwifi 1.2.5.15805s
+### 其他方法
 
-    ```bash
-    cd /tmp && curl -k -o shadow.sh https://raw.githubusercontent.com/qiwihui/hiwifi-ss/master/shadow.sh && sh shadow.sh 12515805s && rm shadow.sh
-    ```
+因为作者能力有限，很多功能不能及时跟上，所以大家可以尝试其他的解决方案，比如 [Paull/hiwifi.easucks](https://github.com/Paull/hiwifi.easucks)
+
+## 开发者选择
 
 ### 本地更新dnsmasq.conf
 
@@ -73,7 +75,7 @@ tar xzvf /tmp/hiwifi-ss.tar.gz -C /
 
 0. 支持哪些加密方法？
 
-  理论上 ss-local 2.4.7 能支持的算法都支持。
+  理论上 ss-local 3.1.2 能支持的算法都支持。
 
 1. 安装后显示`请求的接口不存在`?
 
@@ -136,7 +138,7 @@ tar xzvf /tmp/hiwifi-ss.tar.gz -C /
 2. 下一阶段
 
   - [x] 升级 ss-libev 版本
-  - [ ] 支持 ss-libev 混淆 （simple-obfs）
+  - [x] 支持 ss-libev 混淆 （simple-obfs）
   - [ ] 支持 SSR
 
 ### 贡献
