@@ -9,10 +9,6 @@ echo ''
 echo '==> 下载插件...'
 
 curl -k https://raw.githubusercontent.com/qiwihui/hiwifi-ss/master/hiwifi-ss.tar.gz -o hiwifi-ss.tar.gz
-#    download_url=$(/usr/bin/curl -k https://api.github.com/repos/qiwihui/hiwifi-ss/releases/latest | grep "browser_download_url.*tar.gz" | cut -d '"' -f 4)
-#    echo ''
-#    echo ${download_url}
-#    curl -OkL ${download_url}
 echo 'Done! 下载完成'
 echo ''
 sleep 2
