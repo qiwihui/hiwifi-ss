@@ -61,7 +61,7 @@ local i18n = require "luci.i18n"
                         <tr>
                           <th>服务器地址</th>
                           <td>
-                            <input type="text" class="input" name="server" tabindex="1" value="" id="ss_server" />
+                            <input type="text" class="input" name="server" tabindex="1" value="" id="ss_server" autocomplete="username" />
                           </td>
                         </tr>
                         <tr>
@@ -82,7 +82,7 @@ local i18n = require "luci.i18n"
                             <div class="G-password-bar">
                               <a href="javascript:;" class="password-handle J_password_icon"></a>
                               <input type="text" name="" class="input G-password-on" tabindex="4" style="display: none;" />
-                              <input type="password" name="password" class="input G-password-off" tabindex="4" id="password" style="width: 190px" />
+                              <input type="password" name="password" class="input G-password-off" tabindex="4" id="password" style="width: 190px" autocomplete="current-password" />
                               <input type="checkbox" id="show_passwd" value="true" class="checkbox" />
                               <label for="show_passwd"><%:显示%></label>
                             </div>
