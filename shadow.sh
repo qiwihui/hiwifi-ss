@@ -28,6 +28,19 @@ net_css_in_admin_web=`grep "admin_web/net\.css" /usr/lib/lua/luci/view/admin_web
 if [ $net_css_in_admin_web -eq 0 ]; then
     sed -i "s/admin_web\/net\.css/net\.css/g" /usr/lib/lua/luci/view/admin_web/prometheus/index.htm
 fi
+
+# 添加到手机版后台
+cd /usr/lib/lua/luci/view/admin_mobile
+cp home.htm home.htm.ssbak
+mobile_router_control_line_num=`grep -n "mobile_router_control" home.htm | cut -d : -f 1`
+ul_end_relative_line_num=`tail -n +$mobile_router_control_line_num home.htm | grep -n -m 1 "/ul" | cut -d : -f 1`
+ul_end_line_num=`expr $mobile_router_control_line_num + $ul_end_relative_line_num - 1`
+ul_end_line_num_sub_1=`expr $ul_end_line_num - 1`
+head -n $ul_end_line_num_sub_1 home.htm > new_home.htm
+echo '<li> <a href="<%=luci.dispatcher.build_url('\''admin_web'\'','\''prometheus'\'')%>" target="_blank">安全上网<span class="right-bar"><em class="enter-pointer"></em></span></a> </li>' >> new_home.htm
+tail -n +$ul_end_line_num home.htm >> new_home.htm
+mv new_home.htm home.htm
+cd /tmp/geewan
 echo -e '...[\e[32m安装成功\e[0m]'
 
 echo ''
