@@ -8,17 +8,7 @@ echo 'Done! 成功创建临时目录!'
 echo ''
 echo '==> 下载插件...'
 
-if [ "$1"x = "12515805sx" ]; then
-    echo "=1.2.5.15805s"
-    curl -k https://raw.githubusercontent.com/qiwihui/hiwifi-ss/master/ss.12515805s.tar.gz -o hiwifi-ss.tar.gz
-else
-    echo ">1.2.5.15805s"
-    curl -k https://raw.githubusercontent.com/qiwihui/hiwifi-ss/master/hiwifi-ss.tar.gz -o hiwifi-ss.tar.gz
-#    download_url=$(/usr/bin/curl -k https://api.github.com/repos/qiwihui/hiwifi-ss/releases/latest | grep "browser_download_url.*tar.gz" | cut -d '"' -f 4)
-#    echo ''
-#    echo ${download_url}
-#    curl -OkL ${download_url}
-fi
+curl -k https://raw.githubusercontent.com/qiwihui/hiwifi-ss/master/hiwifi-ss.tar.gz -o hiwifi-ss.tar.gz
 echo 'Done! 下载完成'
 echo ''
 sleep 2
@@ -33,6 +23,11 @@ fi
 echo ''
 echo -n '==> 安装插件...'
 tar xzvf hiwifi-ss.tar.gz -C / >>/dev/null
+# 兼容 1.2.5.15805s 等版本用的 v2/style/net.css，而 1.4.8.20462s 用的是 v2/style/admin_web/net.css
+net_css_in_admin_web=`grep "admin_web/net\.css" /usr/lib/lua/luci/view/admin_web/network/index.htm | wc -l`
+if [ $net_css_in_admin_web -eq 0 ]; then
+    sed -i "s/admin_web\/net\.css/net\.css/g" /usr/lib/lua/luci/view/admin_web/prometheus/index.htm
+fi
 
 # 添加到手机版后台
 cd /usr/lib/lua/luci/view/admin_mobile
