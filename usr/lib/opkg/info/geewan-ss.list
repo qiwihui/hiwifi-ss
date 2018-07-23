@@ -4,6 +4,7 @@
 /etc/rc.d/S99gw-shadowsocks
 /lib/gw-shadowsocks.sh
 /lib/ss-test.lua
+/lib/gfwlist-update.sh
 /usr/bin/dns2socks
 /usr/bin/ss-local
 /usr/bin/ss-redir

@@ -25,8 +25,8 @@ echo -n '==> 安装插件...'
 tar xzvf hiwifi-ss.tar.gz -C / >>/dev/null
 # 兼容 1.2.5.15805s 等版本用的 v2/style/net.css，而 1.4.8.20462s 用的是 v2/style/admin_web/net.css
 net_css_in_admin_web=`grep "admin_web/net\.css" /usr/lib/lua/luci/view/admin_web/network/index.htm | wc -l`
-if [ $net_css_in_admin_web -eq 0 ]; then
-    sed -i "s/admin_web\/net\.css/net\.css/g" /usr/lib/lua/luci/view/admin_web/prometheus/index.htm
+if [ ${net_css_in_admin_web} -eq 0 ]; then
+    sed -i "s!admin_web\/net\.css!net\.css!g" /usr/lib/lua/luci/view/admin_web/prometheus/index.htm
 fi
 
 # 添加到手机版后台

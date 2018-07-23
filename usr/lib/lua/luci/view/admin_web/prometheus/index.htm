@@ -128,6 +128,19 @@ local i18n = require "luci.i18n"
                       </select>
                           </td>
                         </tr>
+
+                      <!--更新Gfwlist按钮-->
+                      <tr>
+                          <th>更新Gfwlist</th>
+                          <td>
+                              <div>
+                                  <button id="gfwlist_update_btn" class="btn" type="button">更新</button>
+                                  <span id="update_status"></span>
+                              </div>
+                          </td>
+                      </tr>
+
+
                         <tr>
                           <th>加速DNS</th>
                           <td>
@@ -547,6 +560,25 @@ local i18n = require "luci.i18n"
         refresh_status()
 
         get_ss_version()
+
+
+      // 更新Gfwlist
+      $("#gfwlist_update_btn").click(function() {
+          var request_data = {};
+          var status = "<span>更新中...</span>";
+          $("#update_status").html(status)
+          $.getJSON('<%=luci.dispatcher.build_url("api", "prometheus","gfwlist_update")%>', request_data, function(rsp) {
+              var latest_version = "";
+              if (rsp.has_updated == "0") {
+                  console.log("not_update")
+                  status = "<span style='color:red'>更新失败</span>";
+              } else {
+                  console.log("has_updated")
+                  status = "<span style='color:green'>成功更新</span>";
+              }
+              $("#update_status").html(status)
+          })
+      })
 
         // UDP 转发开关
         $("#udp_relay_switch").click(function() {
