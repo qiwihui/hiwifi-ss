@@ -1,39 +1,51 @@
 #!/bin/sh
 
 SUCCESS=0
+logFile='/root/gfwlist-update.log'
+logTime=`date "+%Y-%m-%d %H:%M:%S"`
+
+if [ ! -f ${logFile} ]; then
+    touch ${logFile}
+fi
 
 doDownload(){
     cd /etc/gw-shadowsocks/
-    echo "gfwlist2dnsmasq.sh is downloading..."
     curl -s -o gfwlist2dnsmasq.sh https://raw.githubusercontent.com/cokebar/gfwlist2dnsmasq/master/gfwlist2dnsmasq.sh
     if [ $? != 0 ]; then
-        SUCCESS=0
+        echo -e "[ERROR] gfwlist2dnsmasq.sh download failed." >> ${logFile}
         exit 1
     fi
-    echo "gfwlist2dnsmasq.sh had been downloaded."
 }
 
 doUpdate(){
     cd /etc/gw-shadowsocks
-    echo "gw-shadowsocks.dnslist is updating..."
     if [ -f "/etc/gw-shadowsocks/gw-shadowsocks.dnslist" ]; then
         mv gw-shadowsocks.dnslist gw-shadowsocks.dnslist_bkp
-        echo "gw-shadowsocks.dnslist backup successfully."
 
         rm -rf gw-shadowsocks.dnslist
-        /etc/gw-shadowsocks/gfwlist2dnsmasq.sh -i --port 53535 -o gw-shadowsocks.dnslist
-        SUCCESS=1
+        /etc/gw-shadowsocks/gfwlist2dnsmasq.sh -i --port 53535 -o gw-shadowsocks.dnslist>/dev/null 2>&1
+
+        if [ $? != 0 ]; then
+            echo -e "[ERROR] ${logTime} gw-shadowsocks.dnslist update failed." >> ${logFile}
+        else
+            echo -e "[INFO] ${logTime} gw-shadowsocks.dnslist update successfully." >> ${logFile}
+            SUCCESS=1
+        fi
         # Todo Check if the previous list if the same as the new one
     else
-        /etc/gw-shadowsocks/gfwlist2dnsmasq.sh -i --port 53535 -o gw-shadowsocks.dnslist
-        SUCCESS=1
+        /etc/gw-shadowsocks/gfwlist2dnsmasq.sh -i --port 53535 -o gw-shadowsocks.dnslist>/dev/null 2>&1
+        if [ $? != 0 ]; then
+            echo -e "[ERROR] ${logTime} gw-shadowsocks.dnslist update failed." >> ${logFile}
+        else
+            echo -e "[INFO] ${logTime} gw-shadowsocks.dnslist update successfully." >> ${logFile}
+            SUCCESS=1
+        fi
     fi
 }
 
 if [ -f "/etc/gw-shadowsocks/gfwlist2dnsmasq.sh" ]; then
     doUpdate
 else
-    echo "gfwlist2dnsmasq.sh can't be found."
     doDownload
     doUpdate
 fi

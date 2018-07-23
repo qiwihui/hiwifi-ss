@@ -567,14 +567,14 @@ local i18n = require "luci.i18n"
           var request_data = {};
           var status = "<span>更新中...</span>";
           $("#update_status").html(status)
-          $.getJSON('<%=luci.dispatcher.build_url("api", "prometheus","gfwlist_update")%>', request_data, function(rsp) {
-              var latest_version = "";
-              if (rsp.has_updated == "0") {
-                  console.log("not_update")
-                  status = "<span style='color:red'>更新失败</span>";
-              } else {
+          $.getJSON('<%=luci.dispatcher.build_url("api", "prometheus","gfwlist_update")%>', function(rsp) {
+              console.log(rsp)
+              if (rsp.update_status == "success") {
                   console.log("has_updated")
-                  status = "<span style='color:green'>成功更新</span>";
+                  status = "<span style='color:green'>成功更新!</span>";
+              } else {
+                  console.log("not_update")
+                  status = "<span style='color:red'>更新失败...查看/root/gfwlist-update.log</span>";
               }
               $("#update_status").html(status)
           })

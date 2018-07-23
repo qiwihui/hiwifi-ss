@@ -210,11 +210,7 @@ end
 function gfwlist_update()
     local result = {}
     local output = luci.sys.exec('/lib/gfwlist-update.sh')
-    local update_date = luci.sys.exec('date +%Y-%m-%d\' \'%H:%M:%S')
-    if output == 'success' then
-        result["has_updated"] = 1
-        result["latest_version"] = update_date
-    end
+    result["update_status"] = output
     json_return(result)
 end
 
