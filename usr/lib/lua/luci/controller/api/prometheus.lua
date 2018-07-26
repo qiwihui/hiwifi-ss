@@ -35,6 +35,7 @@ function index()
     entry({ "api", "prometheus", "upgrade_ss" }, call("upgrade_ss"), _(""), 608)
     entry({ "api", "prometheus", "set_ss_adv" }, call("set_ss_adv"), _(""), 609)
     entry({ "api", "prometheus", "get_ss_adv" }, call("get_ss_adv"), _(""), 610)
+    entry({ "api", "prometheus", "gfwlist_update" }, call("gfwlist_update"), _(""), 611)
 end
 
 
@@ -204,6 +205,13 @@ function get_ss_status()
 end
 
 function prometheus_upgrade()
+end
+
+function gfwlist_update()
+    local result = {}
+    local output = luci.sys.exec('/lib/gfwlist-update.sh')
+    result["update_status"] = output
+    json_return(result)
 end
 
 function set_ss_adv()
