@@ -1,7 +1,7 @@
 #!/bin/sh
 
 SUCCESS=0
-logFile='/root/gfwlist-update.log'
+logFile='/var/log/gfwlist-update.log'
 logTime=`date "+%Y-%m-%d %H:%M:%S"`
 
 if [ ! -f ${logFile} ]; then
@@ -23,23 +23,19 @@ doUpdate(){
         mv gw-shadowsocks.dnslist gw-shadowsocks.dnslist_bkp
 
         rm -rf gw-shadowsocks.dnslist
-        /etc/gw-shadowsocks/gfwlist2dnsmasq.sh -i --port 53535 -o gw-shadowsocks.dnslist>/dev/null 2>&1
+    fi
+    # Todo Check if the previous list if the same as the new one
+    doGenerate
+}
 
-        if [ $? != 0 ]; then
-            echo -e "[ERROR] ${logTime} gw-shadowsocks.dnslist update failed." >> ${logFile}
-        else
-            echo -e "[INFO] ${logTime} gw-shadowsocks.dnslist update successfully." >> ${logFile}
-            SUCCESS=1
-        fi
-        # Todo Check if the previous list if the same as the new one
+doGenerate(){
+    chmod +x /etc/gw-shadowsocks/gfwlist2dnsmasq.sh
+    /etc/gw-shadowsocks/gfwlist2dnsmasq.sh -i --port 53535 -o gw-shadowsocks.dnslist>/dev/null 2>&1
+    if [ $? != 0 ]; then
+        echo -e "[ERROR] ${logTime} gw-shadowsocks.dnslist update failed." >> ${logFile}
     else
-        /etc/gw-shadowsocks/gfwlist2dnsmasq.sh -i --port 53535 -o gw-shadowsocks.dnslist>/dev/null 2>&1
-        if [ $? != 0 ]; then
-            echo -e "[ERROR] ${logTime} gw-shadowsocks.dnslist update failed." >> ${logFile}
-        else
-            echo -e "[INFO] ${logTime} gw-shadowsocks.dnslist update successfully." >> ${logFile}
-            SUCCESS=1
-        fi
+        echo -e "[INFO] ${logTime} gw-shadowsocks.dnslist update successfully." >> ${logFile}
+        SUCCESS=1
     fi
 }
 
