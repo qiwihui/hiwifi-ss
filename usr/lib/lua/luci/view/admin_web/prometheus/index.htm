@@ -136,21 +136,14 @@ local i18n = require "luci.i18n"
                         <tr>
                           <th>加速DNS</th>
                           <td>
-                            <select name="dnsserver" class="J_selectOriginal input">
-                              <option value="8.8.4.4">谷歌(8.8.4.4)</option>
-                              <option value="60.32.112.42">日本(60.32.112.42)</option>
-                              <option value="168.95.1.1">台湾(168.95.1.1)</option>
-                              <option value="202.181.224.2">香港(202.181.224.2)</option>
-                              <option value="168.126.63.1">韩国(168.126.63.1)</option>
-                              <option value="208.67.222.222">openDns(208.67.222.222)</option>
-                            </select>
+                            <input type="text" class="input" name="dnsserver" tabindex="6" value="8.8.4.4" id="dnsserver" />
                           </td>
                         </tr>
                         <tr>
                           <th>UDP转发</th>
                           <td>
                             <div>
-                              <input type="checkbox" name="udp_relay" value="0" tabindex="6" id="udp_relay_switch" class="toggle toggle-round-flat">
+                              <input type="checkbox" name="udp_relay" value="0" tabindex="7" id="udp_relay_switch" class="toggle toggle-round-flat">
                               <label for="udp_relay_switch"></label>
                             </div>
                           </td>
@@ -159,7 +152,7 @@ local i18n = require "luci.i18n"
                           <th>混淆模式</th>
                           <td>
                             <div>
-                              <input type="checkbox" name="plugin_enable" value="0" tabindex="6" id="plugin_enable_switch" class="toggle toggle-round-flat">
+                              <input type="checkbox" name="plugin_enable" value="0" tabindex="8" id="plugin_enable_switch" class="toggle toggle-round-flat">
                               <label for="plugin_enable_switch"></label>
                             </div>
                           </td>
@@ -167,7 +160,7 @@ local i18n = require "luci.i18n"
                         <tr>
                           <th>插件选项</th>
                           <td>
-                            <input type="text" class="input" name="plugin_opts" tabindex="7" value="obfs=http;obfs-host=www.bing.com" id="plugin_opts"
+                            <input type="text" class="input" name="plugin_opts" tabindex="9" value="obfs=http;obfs-host=www.bing.com" id="plugin_opts"
                             />
                           </td>
                         </tr>
@@ -766,7 +759,7 @@ local i18n = require "luci.i18n"
               $("input[name='timeout']").val(rsp.timeout);
               $("select[name='defaultroute']").val(rsp.defaultroute);
               $("select[name='method']").val(rsp.method);
-              $("select[name='dnsserver']").val(rsp.dnsserver);
+              $("input[name='dnsserver']").val(rsp.dnsserver);
               $("input[name='udp_relay']").val(rsp.udp_relay);
               $("input[name='plugin_enable']").val(rsp.plugin_enable);
               $("input[name='plugin_opts']").val(rsp.plugin_opts);
