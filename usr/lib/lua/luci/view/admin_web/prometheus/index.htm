@@ -139,14 +139,15 @@ local i18n = require "luci.i18n"
                             <input type="text" class="input" name="dnsserver" tabindex="6" value="8.8.4.4" id="dnsserver" />
                             <span class="icon icon22 J_infoTip G-handle" onmouseover="spoiler_toggle('dnsserver_tip')" onmouseout="spoiler_toggle('dnsserver_tip')"></span>
                             <div class="G-tip-pop" id="dnsserver_tip" style="width: 180px; height: auto; left: 230px; top: 35px; display: none;">
-                                谷歌(8.8.4.4)<br/>
-                                日本(60.32.112.42)<br/>
-                                台湾(168.95.1.1)<br/>
-                                香港(202.181.224.2)<br/>
-                                韩国(168.126.63.1)<br/>
-                                openDns(208.67.222.222)<br/>
-                                腾讯(119.29.29.29)<br/>
-                                114(114.114.114.114)<br/>
+                              谷歌(8.8.4.4)
+                              <br/> 日本(60.32.112.42)
+                              <br/> 台湾(168.95.1.1)
+                              <br/> 香港(202.181.224.2)
+                              <br/> 韩国(168.126.63.1)
+                              <br/> openDns(208.67.222.222)
+                              <br/> 腾讯(119.29.29.29)
+                              <br/> 114(114.114.114.114)
+                              <br/>
                             </div>
                           </td>
                         </tr>
@@ -160,7 +161,7 @@ local i18n = require "luci.i18n"
                           </td>
                         </tr>
                         <tr>
-                          <th>混淆模式</th>
+                          <th>混淆模式(obfs_simple)</th>
                           <td>
                             <div>
                               <input type="checkbox" name="plugin_enable" value="0" tabindex="8" id="plugin_enable_switch" class="toggle toggle-round-flat">
@@ -176,11 +177,32 @@ local i18n = require "luci.i18n"
                           </td>
                         </tr>
                         <tr>
-                          <th>状态:</th>
-                          <th>
-                            <span id="con_status">检查中 ...</span>
-                          </th>
+                          <th>KCPTUN</th>
+                          <td>
+                            <div>
+                              <input type="checkbox" name="kcptun_enable" value="0" tabindex="10" id="kcptun_enable_switch" class="toggle toggle-round-flat">
+                              <label for="kcptun_enable_switch"></label>
+                            </div>
+                          </td>
                         </tr>
+                        <tr>
+                          <th>KCP参数</th>
+                          <td>
+                            <input type="text" class="input" name="kcptun_opts" tabindex="11" value=":@kcptun_port -key @kcptun_password --mtu 1400 --sndwnd 128 --rcvwnd 512 -dscp 46 -mode fast2 -crypt salsa20"
+                              id="kcptun_opts" />
+                              <span class="icon icon22 J_infoTip G-handle" onmouseover="spoiler_toggle('kcptun_opts_tip')" onmouseout="spoiler_toggle('kcptun_opts_tip')"></span>
+                              <div class="G-tip-pop" id="kcptun_opts_tip" style="width: 180px; height: auto; left: 230px; top: 35px; display: none;">
+                                修改 @kcptun_port 和 @kcptun_password
+                              </div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <tr>
+                            <th>状态:</th>
+                            <th>
+                              <span id="con_status">检查中 ...</span>
+                            </th>
+                          </tr>
                       </table>
                     </form>
                     <!--保存按钮-->
@@ -567,6 +589,7 @@ local i18n = require "luci.i18n"
         }
 
         /* 提示 */
+
         .G-main-panel-bd .icon {
           width: 14px;
           height: 14px;
@@ -631,6 +654,19 @@ local i18n = require "luci.i18n"
             }
             console.log(is_plugin_enable)
             $("input[name='plugin_enable']").val(plugin_enable);
+          })
+
+          // KCPTUN
+          $("#kcptun_enable_switch").click(function(){
+            var is_kcptun_enable = $(this).prop("checked");
+            var kcptun_enable = "";
+            if (is_kcptun_enable){
+              kcptun_enable="1";
+            }else{
+              kcptun_enable="0";
+            }
+            console.log(is_kcptun_enable)
+            $("input[name='kcptun_enable']").val(kcptun_enable);
           })
 
           // 开启或者关闭
@@ -698,6 +734,10 @@ local i18n = require "luci.i18n"
                 name: "plugin_enable",
                 value: '0'
               })
+            }
+            // kcptun
+            if ($("#kcptun_enable_switch").prop("checked")==false){
+              request_data.push({name: "kcptun_enable", value: '0'})
             }
 
             $.getJSON('<%=luci.dispatcher.build_url("api", "prometheus","set_ss_cfg")%>', request_data, function (rsp) {
@@ -783,6 +823,8 @@ local i18n = require "luci.i18n"
               $("input[name='udp_relay']").val(rsp.udp_relay);
               $("input[name='plugin_enable']").val(rsp.plugin_enable);
               $("input[name='plugin_opts']").val(rsp.plugin_opts);
+              $("input[name='kcptun_enable']").val(rsp.kcptun_enable);
+              $("input[name='kcptun_opts']").val(rsp.kcptun_opts);
               // udp 开关
               var udp_relay = rsp.udp_relay;
               if (udp_relay == '1') {
@@ -796,6 +838,13 @@ local i18n = require "luci.i18n"
                 $("#plugin_enable_switch").prop('checked', true);
               } else {
                 $("#plugin_enable_switch").prop('checked', false);
+              }
+                    // KCPTUN开关
+              var kcptun_enable = rsp.kcptun_enable;
+              if (kcptun_enable == '1'){
+                $("#kcptun_enable_switch").prop('checked', true);
+              }else{
+                $("#kcptun_enable_switch").prop('checked', false);
               }
               // 功能开关
               var enable = rsp.enable;
