@@ -137,6 +137,17 @@ local i18n = require "luci.i18n"
                           <th>加速DNS</th>
                           <td>
                             <input type="text" class="input" name="dnsserver" tabindex="6" value="8.8.4.4" id="dnsserver" />
+                            <span class="icon icon22 J_infoTip G-handle" onmouseover="spoiler_toggle('dnsserver_tip')" onmouseout="spoiler_toggle('dnsserver_tip')"></span>
+                            <div class="G-tip-pop" id="dnsserver_tip" style="width: 180px; height: auto; left: 230px; top: 35px; display: none;">
+                                谷歌(8.8.4.4)<br/>
+                                日本(60.32.112.42)<br/>
+                                台湾(168.95.1.1)<br/>
+                                香港(202.181.224.2)<br/>
+                                韩国(168.126.63.1)<br/>
+                                openDns(208.67.222.222)<br/>
+                                腾讯(119.29.29.29)<br/>
+                                114(114.114.114.114)<br/>
+                            </div>
                           </td>
                         </tr>
                         <tr>
@@ -553,6 +564,15 @@ local i18n = require "luci.i18n"
           outline: 0;
           -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px rgba(102, 175, 233, .6);
           box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px rgba(102, 175, 233, .6);
+        }
+
+        /* 提示 */
+        .G-main-panel-bd .icon {
+          width: 14px;
+          height: 14px;
+          display: inline-block;
+          vertical-align: middle;
+          margin-left: 5px;
         }
       </style>
       <script type="text/javascript">
