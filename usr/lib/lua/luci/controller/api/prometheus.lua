@@ -30,12 +30,12 @@ function index()
     entry({ "api", "prometheus", "start_ss" }, call("start_ss"), _(""), 606)
     -- get_ss_status  获取 ss 状态
     entry({ "api", "prometheus", "get_ss_status" }, call("get_ss_status"), _(""), 607)
-    --   升级
-    entry({ "api", "prometheus", "check_ss_updates" }, call("check_ss_updates"), _(""), 608)
     entry({ "api", "prometheus", "upgrade_ss" }, call("upgrade_ss"), _(""), 608)
     entry({ "api", "prometheus", "set_ss_adv" }, call("set_ss_adv"), _(""), 609)
     entry({ "api", "prometheus", "get_ss_adv" }, call("get_ss_adv"), _(""), 610)
     entry({ "api", "prometheus", "gfwlist_update" }, call("gfwlist_update"), _(""), 611)
+    -- 升级
+    entry({ "api", "prometheus", "check_ss_updates" }, call("check_ss_updates"), _(""), 612)
 end
 
 
@@ -51,23 +51,23 @@ end
 
 
 function check_ss_updates()
-    local latest_version = luci.sys.exec('curl -k https://api.github.com/repos/qiwihui/hiwifi-ss/releases/latest -s | grep "tag_name" | awk "{ print $2 }" | sed s/\"//g | sed s/,//g')
+    local latest_version = luci.sys.exec("/usr/bin/curl -k https://api.github.com/repos/qiwihui/hiwifi-ss/releases/latest -s | grep 'tag_name' | awk '{ print $2 }' | sed s/\"//g | sed s/,//g")
+    local result = {}
+    result["code"] = 0
+    result["latest_version"] = latest_version
     if VERSION ~= latest_version then
-        result["code"] = 0
         result["has_updates"] = 1
-        result["latest_version"] = latest_version
-        json_return(result)
     else
-        result["code"] = 0
         result["has_updates"] = 0
-        result["latest_version"] = latest_version
-        json_return(result)
     end
+    json_return(result)
+
 end
 
 function upgrade_ss()
     luci.sys.exec("cd /tmp && curl -k -o shadow.sh https://raw.githubusercontent.com/qiwihui/hiwifi-ss/master/shadow.sh && sh shadow.sh && rm shadow.sh")
     -- todo check if upgraded?
+    local result = {}
     result['code'] = 0
 	result['version'] = "success"
 	json_return(result)

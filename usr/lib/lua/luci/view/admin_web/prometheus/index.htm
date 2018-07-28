@@ -310,6 +310,12 @@ local i18n = require "luci.i18n"
                           <span id="ss_version">获取中 ...</span>
                         </td>
                       </tr>
+                      <tr>
+                          <td style="width: 40px">最新版本</td>
+                          <td style="width: 80px">
+                            <span id="ss_latest_version">获取中 ...</span>
+                          </td>
+                        </tr>
                     </table>
                   </div>
                 </div>
@@ -602,16 +608,11 @@ local i18n = require "luci.i18n"
         "use strict";
         var t;
         $(function () {
-
           get_ss_config()
-
           get_adv_config()
-
           refresh_status()
-
           get_ss_version()
-
-
+          check_ss_updates()
           // 更新Gfwlist
           $("#gfwlist_update_btn").click(function () {
             var request_data = {};
@@ -874,7 +875,13 @@ local i18n = require "luci.i18n"
         function check_ss_updates() {
           // 刷新状态
           var request_data = {};
-          $.getJSON('<%=luci.dispatcher.build_url("api", "prometheus","check_ss_updates")%>', request_data, function (rsp) { })
+          $.getJSON('<%=luci.dispatcher.build_url("api", "prometheus","check_ss_updates")%>', request_data, function (rsp) {
+            var version = ''
+            if (rsp.code == 0) {
+              version = rsp.latest_version
+            }
+            $("#ss_latest_version").html(version);
+          })
         }
 
         function upgrade_ss() {
