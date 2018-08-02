@@ -2,7 +2,7 @@
 
 > We shall fight on the beaches.
 
-极路由+ss配置, 适应新版极路由，支持的极路由版本有(__因为没办法测试所有的极路由，所以你能运行的极路由不在这个列表，请在[issue#38](https://github.com/qiwihui/hiwifi-ss/issues/38)中回复，谢谢！__):
+极路由+shadow配置, 适应新版极路由，支持的极路由版本(__因为没办法测试所有的极路由，所以你能运行的极路由不在这个列表，请在[issue#38](https://github.com/qiwihui/hiwifi-ss/issues/38)中回复，谢谢！__):
 
 现在项目使用的是大陆白名单模式，关于适用大陆白名单和gfwlsit的处理，见[issue#37](https://github.com/qiwihui/hiwifi-ss/issues/37)。项目中的gfw规则使用项目 [cokebar/gfwlist2dnsmasq](https://github.com/cokebar/gfwlist2dnsmasq) 生成的规则修改而成，最后更新日期为2017.08.08。
 
@@ -16,13 +16,19 @@
     cd /tmp && curl -k -o shadow.sh https://raw.githubusercontent.com/qiwihui/hiwifi-ss/master/shadow.sh && sh shadow.sh && rm shadow.sh
     ```
 
+2. 重启路由器
+
 ### 其他方法
 
 因为作者能力有限，很多功能不能及时跟上，所以大家可以尝试其他的解决方案，比如 [Paull/hiwifi.easucks](https://github.com/Paull/hiwifi.easucks)
 
 ## 开发者选择
 
-### 本地更新dnsmasq.conf
+### 编译极路由版本的shadowsocks-libev, obfs_simple
+
+见项目 [qiwihui/hiwifi-ss-compile](https://github.com/qiwihui/hiwifi-ss-compile)
+
+### 本地更新dnsmasq.conf(项目已支持一键更新)
 
 使用项目 [gfwlist2dnsmasq](https://github.com/cokebar/gfwlist2dnsmasq.git) 中的脚本即可
 
@@ -75,7 +81,7 @@ tar xzvf /tmp/hiwifi-ss.tar.gz -C /
 
 0. 支持哪些加密方法？
 
-  理论上 ss-local 3.1.2 能支持的算法都支持。
+  理论上 ss-local 3.2.0 能支持的算法都支持。
 
 1. 安装后显示`请求的接口不存在`?
 
