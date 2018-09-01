@@ -59,10 +59,13 @@ echo ''
 echo '==> 清理临时文件...'
 if test -e /var/run/luci-indexcache; then
     rm /var/run/luci-indexcache && echo 'Done! 清理完成 ' && echo '';
+    rm -rf /tmp/geewan
 else
     echo 'luci-cache does not exist! 无法找到luci-cache,请确定是否是极路由环境' && echo ''
+    rm -rf /tmp/geewan
+    exit 1
 fi
-rm -rf /tmp/geewan
+
 sleep 2
 echo ''
 echo '插件成功安装!'
@@ -71,3 +74,4 @@ echo '中国第一封电子邮件'
 echo '从北京发往德国'
 echo '越过长城，走向世界'
 echo 'Done! Hello World! 一切就绪,你好世界!'
+exit 0

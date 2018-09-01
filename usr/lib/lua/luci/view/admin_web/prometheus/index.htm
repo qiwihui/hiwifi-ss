@@ -295,6 +295,12 @@ local i18n = require "luci.i18n"
                           <div id="update_status"></div>
                         </td>
                       </tr>
+                      <tr>
+                        <td>
+                          <a href="javascript:;" class="btn J_button" id="upgrade_ss_btn">更新插件</a>
+                          <!--<div id="ss_latest_version"></div>-->
+                        </td>
+                      </tr>
                     </table>
                   </div>
                 </div>
@@ -613,6 +619,7 @@ local i18n = require "luci.i18n"
           refresh_status()
           get_ss_version()
           check_ss_updates()
+
           // 更新Gfwlist
           $("#gfwlist_update_btn").click(function () {
             var request_data = {};
@@ -629,6 +636,11 @@ local i18n = require "luci.i18n"
               }
               $("#update_status").html(status)
             })
+          })
+
+          // 更新插件
+          $("#upgrade_ss_btn").click(function () {
+            console.log("click upgrade_ss_btn")
           })
 
           // UDP 转发开关
@@ -878,6 +890,7 @@ local i18n = require "luci.i18n"
           $.getJSON('<%=luci.dispatcher.build_url("api", "prometheus","check_ss_updates")%>', request_data, function (rsp) {
             var version = ''
             if (rsp.code == 0) {
+              console.log("get version"+rsp.latest_version)
               version = rsp.latest_version
             }
             $("#ss_latest_version").html(version);
@@ -892,7 +905,7 @@ local i18n = require "luci.i18n"
             if (rsp.code == 0) {
               popDialog({
                 type: "G-text",
-                title: ['设置成功 :)'],
+                title: ['插件更新成功！ :)'],
                 content: ""
               }).time(2000);
             } else {
