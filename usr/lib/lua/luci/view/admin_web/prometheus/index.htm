@@ -297,8 +297,8 @@ local i18n = require "luci.i18n"
                       </tr>
                       <tr>
                         <td>
-                          <a href="javascript:;" class="btn J_button" id="upgrade_ss_btn">更新插件</a>
-                          <!--<div id="ss_latest_version"></div>-->
+                          <a href="javascript:;" class="btn J_button" id="upgrade_ss_btn">更新hiwifi-ss插件</a>
+                          <div id="upgrade_status"></div>
                         </td>
                       </tr>
                     </table>
@@ -622,16 +622,15 @@ local i18n = require "luci.i18n"
 
           // 更新Gfwlist
           $("#gfwlist_update_btn").click(function () {
-            var request_data = {};
             var status = "<span>更新中...</span>";
-            $("#update_status").html(status)
+            $("#update_status").html(status);
             $.getJSON('<%=luci.dispatcher.build_url("api", "prometheus","gfwlist_update")%>', function (rsp) {
-              console.log(rsp)
+              console.log(rsp);
               if (rsp.update_status == "success") {
-                console.log("has_updated")
+                console.log("has_updated");
                 status = "<span style='color:green'>成功更新!</span>";
               } else {
-                console.log("not_update")
+                console.log("not_update");
                 status = "<span style='color:red'>更新失败...查看/var/log/gfwlist-update.log</span>";
               }
               $("#update_status").html(status)
@@ -639,8 +638,18 @@ local i18n = require "luci.i18n"
           })
 
           // 更新插件
-          $("#upgrade_ss_btn").click(function () {
-            console.log("click upgrade_ss_btn")
+            $("#upgrade_ss_btn").click(function () {
+            console.log("click upgrade_ss_btn");
+            // var ss_version = $("#ss_version").val();
+            // var ss_latest_version = $("#ss_latest_version").val();
+            // var msg = "当前hiwifi-ss插件版本为"+ss_version+"，确定要升级为"+ss_latest_version+"吗？";
+            var msg = "确定要升级吗？";
+            if (confirm(msg) === true){
+                upgrade_ss();
+                return true;
+            }else{
+                return false;
+            }
           })
 
           // UDP 转发开关
@@ -876,8 +885,8 @@ local i18n = require "luci.i18n"
           // 刷新状态
           var request_data = {};
           $.getJSON('<%=luci.dispatcher.build_url("api", "prometheus","get_ss_version")%>', request_data, function (rsp) {
-            var version = ''
-            if (rsp.code == 0) {
+            var version = '';
+            if (rsp.code === 0) {
               version = rsp.version
             }
             $("#ss_version").html(version);
@@ -888,10 +897,10 @@ local i18n = require "luci.i18n"
           // 刷新状态
           var request_data = {};
           $.getJSON('<%=luci.dispatcher.build_url("api", "prometheus","check_ss_updates")%>', request_data, function (rsp) {
-            var version = ''
-            if (rsp.code == 0) {
-              console.log("get version"+rsp.latest_version)
-              version = rsp.latest_version
+            var version = '';
+            if (rsp.code === 0) {
+              console.log("get version"+rsp.latest_version);
+              version = rsp.latest_version;
             }
             $("#ss_latest_version").html(version);
           })
@@ -900,21 +909,31 @@ local i18n = require "luci.i18n"
         function upgrade_ss() {
           // 刷新状态
           var request_data = {};
+          var status = "<span>更新中...</span>";
+          $("#upgrade_status").html(status);
+          popDialog({
+              type: "G-text",
+              title: ['插件正在升级中，请稍后...'],
+              content: ""
+          }).time(10000);
           //	TODO 根据版本升级
           $.getJSON('<%=luci.dispatcher.build_url("api", "prometheus","upgrade_ss")%>', request_data, function (rsp) {
             if (rsp.code == 0) {
+              status = "<span style='color:green'>成功更新!</span>";
               popDialog({
                 type: "G-text",
-                title: ['插件更新成功！ :)'],
+                title: ['插件更新成功！请刷新此页面 :) '],
                 content: ""
               }).time(2000);
             } else {
+              status = "<span style='color:red'>更新失败...</span>";
               popDialog({
                 type: "G-text",
                 title: ['操作失败 :('],
                 content: rsp.msg
               }).time(2000);
             }
+            $("#upgrade_status").html(status);
             $("#loading_ss_setup").hide();
             $("#submit_btn").attr("disabled", false);
           })
