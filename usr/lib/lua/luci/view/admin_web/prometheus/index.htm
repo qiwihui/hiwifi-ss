@@ -8,731 +8,469 @@
 local ver  = require "luci.version"
 local i18n = require "luci.i18n"
 %>
-  <% include('admin_web/header') %>
-    <script type="text/javascript" src="<%=resource%>/v2/js/boot_loader/jquery.min.js?v=<%=ver.svnRevNum%>"></script>
-    <link rel="stylesheet" type="text/css" href="<%=resource%>/v2/style/admin_web/net.css?v=<%=ver.svnRevNum%>">
-    <div id="bd">
-      <div class="com-main clearfix">
-        <!-- 右侧提示 -->
-        <div id="right_part" class="G-rightSide">
-          <div>
-            <h2 class="left-tit">小提示</h2>
-            <div class="side-bd save-tip m-t-20">
-              <p> 1. 首次安装请重启路由。 </p>
-              <p> 2. 保存配置和开关功能是分开的。 </p>
-            </div>
-            <div class="G-power-panel">
-              <a href="javascript:;" class="icon power G-handle J_system_restart"></a>
-              <p class="J_system_restart G-handle">
-                <%=i18n.translate("g_reboot")%>
-              </p>
-            </div>
-          </div>
+<% include('admin_web/header') %>
+<head>
+<script type="text/javascript" src="<%=resource%>/v2/js/boot_loader/jquery.min.js?v=<%=ver.svnRevNum%>"></script>
+<!--<script type="text/javascript" src="<%=resource%>/v2/js/admin_web/hiwifi-ss.js"></script>-->
+<link rel="stylesheet" type="text/css" href="<%=resource%>/v2/style/admin_web/net.css?v=<%=ver.svnRevNum%>">
+<!--<link rel="stylesheet" type="text/css" href="<%=resource%>/v2/style/admin_web/hiwifi-ss.css">-->
+</head>
+
+<body>
+<div id="bd">
+  <div class="com-main clearfix">
+    <!-- 右侧提示 -->
+    <div id="right_part" class="G-rightSide">
+      <div>
+        <h2 class="left-tit">小提示</h2>
+        <div class="side-bd save-tip m-t-20">
+          <p> 1. 首次安装请重启路由。 </p>
+          <p> 2. 保存配置和开关功能是分开的。 </p>
         </div>
-        <!-- 左侧菜单 -->
-        <% include('admin_web/menu/menu_left') %>
+        <div class="G-power-panel">
+          <a href="javascript:;" class="icon power G-handle J_system_restart"></a>
+          <p class="J_system_restart G-handle">
+            <%=i18n.translate("g_reboot")%>
+          </p>
+        </div>
+      </div>
+    </div>
+    <!-- 左侧菜单 -->
+    <% include('admin_web/menu/menu_left') %>
 
-          <!-- 中间配置 -->
-          <div class="G-main" id="middle_part">
-            <div id="ss_setup">
-              <div class="G-form-main">
-                <!--开关-->
-                <div class="G-gray-panel">
-                  <div class="G-main-panel-bd">
-                    <table class="G-form-table" id="ss_setup_switch">
-                      <tr>
-                        <td style="width: 60px;vertical-align: middle">开关</td>
-                        <td style="width: 80px;vertical-align: middle">
-                          <input type="checkbox" name="enable" value="0" id="switch_btn" class="toggle toggle-round-flat">
-                          <label for="switch_btn"></label>
-                        </td>
-                        <td style="vertical-align: middle">
-                          <div class="G-panel-loading" style="width:20px;height: 20px;min-height: 1px;margin-left: 5px;display: none;" id="loading_ss_switch"></div>
-                        </td>
-                      </tr>
-                    </table>
-                  </div>
-                </div>
-                <!--配置-->
-                <div class="G-gray-panel m-t-20">
-                  <div class="G-main-panel-hd">服务器配置</div>
-                  <div class="G-main-panel-bd">
-                    <form id="form1">
-                      <table class="G-form-table" id="ss_setup_table">
-                        <col width="80" />
-                        <tr>
-                          <th>服务器地址</th>
-                          <td>
-                            <input type="text" class="input" name="server" tabindex="1" value="" id="ss_server" autocomplete="username" />
-                          </td>
-                        </tr>
-                        <tr>
-                          <th>服务端口</th>
-                          <td>
-                            <input type="text" class="input" name="server_port" tabindex="2" value="" id="ss_server_port" />
-                          </td>
-                        </tr>
-                        <tr>
-                          <th>本地端口</th>
-                          <td>
-                            <input type="text" class="input" name="local_port" tabindex="3" value="61080" id="ss_local_port" disabled/>
-                          </td>
-                        </tr>
-                        <tr>
-                          <th>密码</th>
-                          <td>
-                            <div class="G-password-bar">
-                              <a href="javascript:;" class="password-handle J_password_icon"></a>
-                              <input type="text" name="" class="input G-password-on" tabindex="4" style="display: none;" />
-                              <input type="password" name="password" class="input G-password-off" tabindex="4" id="password" style="width: 190px" autocomplete="current-password"
-                              />
-                              <input type="checkbox" id="show_passwd" value="true" class="checkbox" />
-                              <label for="show_passwd">
-                                <%:显示%>
-                              </label>
-                            </div>
-                          </td>
-                        </tr>
-                        <tr>
-                          <th>超时时间</th>
-                          <td>
-                            <input type="text" class="input" name="timeout" tabindex="5" value="300" id="ss_timeout" />
-                          </td>
-                        </tr>
-                        <tr>
-                          <th>加密方式</th>
-                          <td>
-                            <select name="method" class="J_selectOriginal input">
-                              <option value="aes-256-cfb">aes-256-cfb</option>
-                              <option value="aes-192-cfb">aes-192-cfb</option>
-                              <option value="aes-128-cfb">aes-128-cfb</option>
-                              <option value="aes-256-gcm">aes-256-gcm</option>
-                              <option value="aes-192-gcm">aes-192-gcm</option>
-                              <option value="aes-128-gcm">aes-128-gcm</option>
-                              <option value="aes-256-ctr">aes-256-ctr</option>
-                              <option value="aes-192-ctr">aes-192-ctr</option>
-                              <option value="aes-128-ctr">aes-128-ctr</option>
-                              <option value="chacha20">chacha20</option>
-                              <option value="chacha20-ietf">chacha20-ietf</option>
-                              <option value="chacha20-ietf-poly1305">chacha20-ietf-poly1305</option>
-                              <option value="rc4-md5">rc4-md5</option>
-                              <option value="bf-cfb">bf-cfb</option>
-                              <option value="camellia-256-cfb">camellia-256-cfb</option>
-                              <option value="camellia-192-cfb">camellia-192-cfb</option>
-                              <option value="camellia-128-cfb">camellia-128-cfb</option>
-                              <option value="cast5-cfb">salsa20</option>
-                            </select>
-                          </td>
-                        </tr>
-                        <tr>
-                          <th>运行模式</th>
-                          <td>
-                            <select name="defaultroute" class="J_selectOriginal input">
-                              <option value="0">智能模式</option>
-                              <option value="1">全局模式</option>
-                            </select>
-                          </td>
-                        </tr>
-                        <tr>
-                          <th>加速DNS</th>
-                          <td>
-                            <input type="text" class="input" name="dnsserver" tabindex="6" value="8.8.4.4" id="dnsserver" />
-                            <span class="icon icon22 J_infoTip G-handle" onmouseover="spoiler_toggle('dnsserver_tip')" onmouseout="spoiler_toggle('dnsserver_tip')"></span>
-                            <div class="G-tip-pop" id="dnsserver_tip" style="width: 180px; height: auto; left: 230px; top: 35px; display: none;">
-                              谷歌(8.8.4.4)
-                              <br/> 日本(60.32.112.42)
-                              <br/> 台湾(168.95.1.1)
-                              <br/> 香港(202.181.224.2)
-                              <br/> 韩国(168.126.63.1)
-                              <br/> openDns(208.67.222.222)
-                              <br/> 腾讯(119.29.29.29)
-                              <br/> 114(114.114.114.114)
-                              <br/>
-                            </div>
-                          </td>
-                        </tr>
-                        <tr>
-                          <th>UDP转发</th>
-                          <td>
-                            <div>
-                              <input type="checkbox" name="udp_relay" value="0" tabindex="7" id="udp_relay_switch" class="toggle toggle-round-flat">
-                              <label for="udp_relay_switch"></label>
-                            </div>
-                          </td>
-                        </tr>
-                        <tr>
-                          <th>混淆模式(obfs_simple)</th>
-                          <td>
-                            <div>
-                              <input type="checkbox" name="plugin_enable" value="0" tabindex="8" id="plugin_enable_switch" class="toggle toggle-round-flat">
-                              <label for="plugin_enable_switch"></label>
-                            </div>
-                          </td>
-                        </tr>
-                        <tr>
-                          <th>插件选项</th>
-                          <td>
-                            <input type="text" class="input" name="plugin_opts" tabindex="9" value="obfs=http;obfs-host=www.bing.com" id="plugin_opts"
-                            />
-                          </td>
-                        </tr>
-                        <tr>
-                          <th>KCPTUN</th>
-                          <td>
-                            <div>
-                              <input type="checkbox" name="kcptun_enable" value="0" tabindex="10" id="kcptun_enable_switch" class="toggle toggle-round-flat">
-                              <label for="kcptun_enable_switch"></label>
-                            </div>
-                          </td>
-                        </tr>
-                        <tr>
-                          <th>KCP参数</th>
-                          <td>
-                            <input type="text" class="input" name="kcptun_opts" tabindex="11" value=":@kcptun_port -key @kcptun_password --mtu 1400 --sndwnd 128 --rcvwnd 512 -dscp 46 -mode fast2 -crypt salsa20"
-                              id="kcptun_opts" />
-                              <span class="icon icon22 J_infoTip G-handle" onmouseover="spoiler_toggle('kcptun_opts_tip')" onmouseout="spoiler_toggle('kcptun_opts_tip')"></span>
-                              <div class="G-tip-pop" id="kcptun_opts_tip" style="width: 180px; height: auto; left: 230px; top: 35px; display: none;">
-                                修改 @kcptun_port 和 @kcptun_password
-                              </div>
-                          </td>
-                        </tr>
-                        <tr>
-                          <tr>
-                            <th>状态:</th>
-                            <th>
-                              <span id="con_status">检查中 ...</span>
-                            </th>
-                          </tr>
-                      </table>
-                    </form>
-                    <!--保存按钮-->
-                    <div class="panel-btn-bar" id="shadowsocks_btn_box">
-                      <a href="javascript:;" class="btn" id="submit_btn">保存</a>
-                      <div class="G-panel-loading" style="width:20px;height: 20px;min-height: 1px;margin-left: 5px;display: none;" id="loading_ss_setup"></div>
-                    </div>
-                    <!--提醒-->
-                    <div style="color:gray;" id="prompt_box">
-                      <p style="margin:auto;line-height:20px;height:auto;">避免冲突，请关闭所有翻墙软件，并且检查网卡是否为自动获取ip和DNS</p>
-                    </div>
-                  </div>
-                </div>
-                <!--高级功能-->
-                <div class="G-gray-panel m-t-20">
-                  <div class="G-main-panel-hd">高级功能</div>
-                  <div class="G-main-panel-bd">
-                    <table width="100%" align="center" cellpadding="4" class="G-form-table">
-                      <tr id="ss_config_addr">
-                        <td colspan="3" style="border-top: 0 none;">
-                          <a href="javascript:spoiler_toggle('script_addr')">
-                            <span>☞ 白名单</span>
-                          </a>
-                          <div id="script_addr" style="display:none;">
-                            <p>列表中的IP或域名会强制使用代理解析</p>
-                            <p>（每行一条，以#开头的作为备注不生效）</p>
-                            <p>例如：</p>
-                            <p>100.100.100.100</p>
-                            <p>baidu.com</p>
-                            <textarea rows="10" class="form-input" data-type="addr_list" placeholder=""></textarea>
-                          </div>
+      <!-- 中间配置 -->
+      <div class="G-main" id="middle_part">
+        <div id="ss_setup">
+          <div class="G-form-main">
+            <!--开关-->
+            <div class="G-gray-panel">
+              <div class="G-main-panel-bd">
+                <table class="G-form-table" id="ss_setup_switch">
+                  <tr>
+                    <td style="width: 60px;vertical-align: middle">开关</td>
+                    <td style="width: 80px;vertical-align: middle">
+                      <input type="checkbox" name="enable" value="0" id="switch_btn" class="toggle toggle-round-flat">
+                      <label for="switch_btn"></label>
+                    </td>
+                    <td style="vertical-align: middle">
+                      <div class="G-panel-loading" style="width:20px;height: 20px;min-height: 1px;margin-left: 5px;display: none;" id="loading_ss_switch"></div>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+            <!--配置-->
+            <div class="G-gray-panel m-t-20">
+              <div class="G-main-panel-hd">服务器配置</div>
+              <div class="G-main-panel-bd">
+                <form id="form1">
+                  <table class="G-form-table" id="ss_setup_table">
+                    <col width="80" />
+                    <tr>
+                      <th>服务器地址</th>
+                      <td>
+                        <label for="ss_server"></label><input type="text" class="input" name="server" tabindex="1" value="" id="ss_server" autocomplete="username" />
+                      </td>
+                    </tr>
+                    <tr>
+                      <th>服务端口</th>
+                      <td>
+                        <label for="ss_server_port"></label><input type="text" class="input" name="server_port" tabindex="2" value="" id="ss_server_port" />
+                      </td>
+                    </tr>
+                    <tr>
+                      <th>本地端口</th>
+                      <td>
+                        <label for="ss_local_port"></label><input type="text" class="input" name="local_port" tabindex="3" value="61080" id="ss_local_port" disabled/>
+                      </td>
+                    </tr>
+                    <tr>
+                      <th>密码</th>
+                      <td>
+                        <div class="G-password-bar">
+                          <a href="javascript:" class="password-handle J_password_icon"></a>
+                          <label>
+                            <input type="text" name="" class="input G-password-on" tabindex="4" style="display: none;" />
+                          </label>
+                          <label for="password"></label><input type="password" name="password" class="input G-password-off" tabindex="4" id="password" style="width: 190px" autocomplete="current-password"
+                          />
+                          <input type="checkbox" id="show_passwd" value="true" class="checkbox" />
+                          <label for="show_passwd">
+                            <%:显示%>
+                          </label>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <th>超时时间</th>
+                      <td>
+                        <label for="ss_timeout"></label><input type="text" class="input" name="timeout" tabindex="5" value="300" id="ss_timeout" />
+                      </td>
+                    </tr>
+                    <tr>
+                      <th>加密方式</th>
+                      <td>
+                        <label>
+                          <select name="method" class="J_selectOriginal input">
+                            <option value="aes-256-cfb">aes-256-cfb</option>
+                            <option value="aes-192-cfb">aes-192-cfb</option>
+                            <option value="aes-128-cfb">aes-128-cfb</option>
+                            <option value="aes-256-gcm">aes-256-gcm</option>
+                            <option value="aes-192-gcm">aes-192-gcm</option>
+                            <option value="aes-128-gcm">aes-128-gcm</option>
+                            <option value="aes-256-ctr">aes-256-ctr</option>
+                            <option value="aes-192-ctr">aes-192-ctr</option>
+                            <option value="aes-128-ctr">aes-128-ctr</option>
+                            <option value="chacha20">chacha20</option>
+                            <option value="chacha20-ietf">chacha20-ietf</option>
+                            <option value="chacha20-ietf-poly1305">chacha20-ietf-poly1305</option>
+                            <option value="rc4-md5">rc4-md5</option>
+                            <option value="bf-cfb">bf-cfb</option>
+                            <option value="camellia-256-cfb">camellia-256-cfb</option>
+                            <option value="camellia-192-cfb">camellia-192-cfb</option>
+                            <option value="camellia-128-cfb">camellia-128-cfb</option>
+                            <option value="cast5-cfb">salsa20</option>
+                          </select>
+                        </label>
+                      </td>
+                    </tr>
+                    <tr>
+                      <th>运行模式</th>
+                      <td>
+                        <label>
+                          <select name="defaultroute" class="J_selectOriginal input">
+                            <option value="0">智能模式</option>
+                            <option value="1">全局模式</option>
+                          </select>
+                        </label>
+                      </td>
+                    </tr>
+                    <tr>
+                      <th>加速DNS</th>
+                      <td>
+                        <label for="dnsserver"></label><input type="text" class="input" name="dnsserver" tabindex="6" value="8.8.4.4" id="dnsserver" />
+                        <span class="icon icon22 J_infoTip G-handle" onmouseover="spoiler_toggle('dnsserver_tip')" onmouseout="spoiler_toggle('dnsserver_tip')"></span>
+                        <div class="G-tip-pop" id="dnsserver_tip" style="width: 180px; height: auto; left: 230px; top: 35px; display: none;">
+                          谷歌(8.8.4.4)
+                          <br/> 日本(60.32.112.42)
+                          <br/> 台湾(168.95.1.1)
+                          <br/> 香港(202.181.224.2)
+                          <br/> 韩国(168.126.63.1)
+                          <br/> openDns(208.67.222.222)
+                          <br/> 腾讯(119.29.29.29)
+                          <br/> 114(114.114.114.114)
                           <br/>
-                        </td>
-                      </tr>
-                      <tr id="ss_config_lan">
-                        <td colspan="3" style="border-top: 0 none;">
-                          <a href="javascript:spoiler_toggle('script_lan')">
-                            <span>☞ 黑名单</span>
-                          </a>
-                          <div id="script_lan" style="display:none;">
-                            <p>内网(LAN)设置绕过SS，不使用SS访问外网</p>
-                            <p>（每一个ip/mac地址一行，以#开头的作为备注不生效）</p>
-                            <p>例如：</p>
-                            <p>192.168.199.101</p>
-                            <p>e012ab34ef00</p>
-                            <textarea rows="10" class="form-input" data-type="lan_list" placeholder=""></textarea>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <th>UDP转发</th>
+                      <td>
+                        <div>
+                          <input type="checkbox" name="udp_relay" value="0" tabindex="7" id="udp_relay_switch" class="toggle toggle-round-flat">
+                          <label for="udp_relay_switch"></label>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <th>混淆模式(obfs_simple)</th>
+                      <td>
+                        <div>
+                          <input type="checkbox" name="plugin_enable" value="0" tabindex="8" id="plugin_enable_switch" class="toggle toggle-round-flat">
+                          <label for="plugin_enable_switch"></label>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <th>插件选项</th>
+                      <td>
+                        <label for="plugin_opts"></label><input type="text" class="input" name="plugin_opts" tabindex="9" value="obfs=http;obfs-host=www.bing.com" id="plugin_opts"
+                        />
+                      </td>
+                    </tr>
+                    <tr>
+                      <th>KCPTUN</th>
+                      <td>
+                        <div>
+                          <input type="checkbox" name="kcptun_enable" value="0" tabindex="10" id="kcptun_enable_switch" class="toggle toggle-round-flat">
+                          <label for="kcptun_enable_switch"></label>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <th>KCP参数</th>
+                      <td>
+                        <label for="kcptun_opts"></label><input type="text" class="input" name="kcptun_opts" tabindex="11" value=":@kcptun_port -key @kcptun_password --mtu 1400 --sndwnd 128 --rcvwnd 512 -dscp 46 -mode fast2 -crypt salsa20"
+                                                                id="kcptun_opts" />
+                          <span class="icon icon22 J_infoTip G-handle" onmouseover="spoiler_toggle('kcptun_opts_tip')" onmouseout="spoiler_toggle('kcptun_opts_tip')"></span>
+                          <div class="G-tip-pop" id="kcptun_opts_tip" style="width: 180px; height: auto; left: 230px; top: 35px; display: none;">
+                            修改 @kcptun_port 和 @kcptun_password
                           </div>
-                          <br/>
-                        </td>
-                      </tr>
-                      <tr id="ss_config_wan">
-                        <td colspan="3" style="border-top: 0 none;">
-                          <a href="javascript:spoiler_toggle('script_wan')">
-                            <span>☞ 代理转发</span>
-                          </a>
-                          <div id="script_wan" style="display:none;">
-                            <div class="alert alert-info" style="margin-top: 10px;">
-                              <p>强制WAN的IP转发或忽略代理中转设置 ：</p>
-                              <p>以@开头的 IP 或 域名 使用 代理中转 走SS</p>
-                              <p>以!开头的 IP 或 域名 忽略 代理中转 不走SS</p>
-                              <p>以+开头的 网段/掩码 的走SS 详见下面样板</p>
-                              <p>以-开头的 网段/掩码 不走SS 详见下面样板</p>
-                              <p>优先级: 走SS > 不走SS</p>
-                              <p>（每一个域名、IP一行，以#开头的作为备注不生效）</p>
-                              <textarea rows="15" class="form-input" data-type="wan_list" placeholder=""></textarea>
-                            </div>
-                          </div>
-                        </td>
-                      </tr>
+                      </td>
+                    </tr>
+                    <tr>
                       <tr>
-                        <td>
-                          <div class="panel-btn-bar" id="shadowsocks_btn_box">
-                            <a href="javascript:;" class="btn" id="adv_btn">保存高级设置</a>
-                            <div class="G-panel-loading" style="width:20px;height: 20px;min-height: 1px;margin-left: 5px;display: none;" id="loading_ss_setup2"></div>
-                          </div>
-                        </td>
+                        <th>状态:</th>
+                        <th>
+                          <span id="con_status">检查中 ...</span>
+                        </th>
                       </tr>
-                    </table>
-
-                  </div>
+                  </table>
+                </form>
+                <!--保存按钮-->
+                <div class="panel-btn-bar" id="save_ss_setup">
+                  <a href="javascript:" class="btn" id="submit_btn">保存</a>
+                  <div class="G-panel-loading" style="width:20px;height: 20px;min-height: 1px;margin-left: 5px;display: none;" id="loading_ss_setup"></div>
                 </div>
-                <div class="G-gray-panel m-t-20">
-                  <div class="G-main-panel-hd">系统更新</div>
-                  <div class="G-main-panel-bd">
-                    <table class="G-form-table" id="ss_upgrade">
-                      <!--更新Gfwlist按钮-->
-                      <tr>
-                        <td>
-                          <a href="javascript:;" class="btn J_button" id="gfwlist_update_btn">更新GFWList</a>
-                          <div id="update_status"></div>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          <a href="javascript:;" class="btn J_button" id="upgrade_ss_btn">更新hiwifi-ss插件</a>
-                          <div id="upgrade_status"></div>
-                        </td>
-                      </tr>
-                    </table>
-                  </div>
-                </div>
-                <!--系统信息-->
-                <div class="G-gray-panel m-t-20">
-                  <div class="G-main-panel-hd">系统信息</div>
-                  <!--系统版本-->
-                  <div class="G-main-panel-bd">
-                    <table class="G-form-table" id="ss_upgrade">
-                      <tr>
-                        <td style="width: 40px">当前版本</td>
-                        <td style="width: 80px">
-                          <span id="ss_version">获取中 ...</span>
-                        </td>
-                      </tr>
-                      <tr>
-                          <td style="width: 40px">最新版本</td>
-                          <td style="width: 80px">
-                            <span id="ss_latest_version">获取中 ...</span>
-                          </td>
-                        </tr>
-                    </table>
-                  </div>
+                <!--提醒-->
+                <div style="color:gray;" id="prompt_box">
+                  <p style="margin:auto;line-height:20px;height:auto;">避免冲突，请关闭所有翻墙软件，并且检查网卡是否为自动获取ip和DNS</p>
                 </div>
               </div>
             </div>
+            <!--高级功能-->
+            <div class="G-gray-panel m-t-20">
+              <div class="G-main-panel-hd">高级功能</div>
+              <div class="G-main-panel-bd">
+                <table width="100%" align="center" cellpadding="4" class="G-form-table">
+                  <tr id="ss_config_addr">
+                    <td colspan="3" style="border-top: 0 none;">
+                      <a href="javascript:spoiler_toggle('script_addr')">
+                        <span>☞ 白名单</span>
+                      </a>
+                      <div id="script_addr" style="display:none;">
+                        <p>列表中的IP或域名会强制使用代理解析</p>
+                        <p>（每行一条，以#开头的作为备注不生效）</p>
+                        <p>例如：</p>
+                        <p>100.100.100.100</p>
+                        <p>baidu.com</p>
+                        <textarea rows="10" class="form-input" data-type="addr_list" placeholder=""></textarea>
+                      </div>
+                      <br/>
+                    </td>
+                  </tr>
+                  <tr id="ss_config_lan">
+                    <td colspan="3" style="border-top: 0 none;">
+                      <a href="javascript:spoiler_toggle('script_lan')">
+                        <span>☞ 黑名单</span>
+                      </a>
+                      <div id="script_lan" style="display:none;">
+                        <p>内网(LAN)设置绕过SS，不使用SS访问外网</p>
+                        <p>（每一个ip/mac地址一行，以#开头的作为备注不生效）</p>
+                        <p>例如：</p>
+                        <p>192.168.199.101</p>
+                        <p>e012ab34ef00</p>
+                        <textarea rows="10" class="form-input" data-type="lan_list" placeholder=""></textarea>
+                      </div>
+                      <br/>
+                    </td>
+                  </tr>
+                  <tr id="ss_config_wan">
+                    <td colspan="3" style="border-top: 0 none;">
+                      <a href="javascript:spoiler_toggle('script_wan')">
+                        <span>☞ 代理转发</span>
+                      </a>
+                      <div id="script_wan" style="display:none;">
+                        <div class="alert alert-info" style="margin-top: 10px;">
+                          <p>强制WAN的IP转发或忽略代理中转设置 ：</p>
+                          <p>以@开头的 IP 或 域名 使用 代理中转 走SS</p>
+                          <p>以!开头的 IP 或 域名 忽略 代理中转 不走SS</p>
+                          <p>以+开头的 网段/掩码 的走SS 详见下面样板</p>
+                          <p>以-开头的 网段/掩码 不走SS 详见下面样板</p>
+                          <p>优先级: 走SS > 不走SS</p>
+                          <p>（每一个域名、IP一行，以#开头的作为备注不生效）</p>
+                          <textarea rows="15" class="form-input" data-type="wan_list" placeholder=""></textarea>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div class="panel-btn-bar" id="save_ss_setup2">
+                        <a href="javascript:" class="btn" id="adv_btn">保存高级设置</a>
+                        <div class="G-panel-loading" style="width:20px;height: 20px;min-height: 1px;margin-left: 5px;display: none;" id="loading_ss_setup2"></div>
+                      </div>
+                    </td>
+                  </tr>
+                </table>
+
+              </div>
+            </div>
+            <div class="G-gray-panel m-t-20">
+              <div class="G-main-panel-hd">系统更新</div>
+              <div class="G-main-panel-bd">
+                <table class="G-form-table" id="ss_upgrade_tbl">
+                  <!--更新Gfwlist按钮-->
+                  <tr>
+                    <td>
+                      <a href="javascript:" class="btn J_button" id="gfwlist_update_btn">更新GFWList</a>
+                      <div id="update_status"></div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <a href="javascript:" class="btn J_button" id="upgrade_ss_btn">更新hiwifi-ss插件</a>
+                      <div id="upgrade_status"></div>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+            <!--系统信息-->
+            <div class="G-gray-panel m-t-20">
+              <div class="G-main-panel-hd">系统信息</div>
+              <!--系统版本-->
+              <div class="G-main-panel-bd">
+                <table class="G-form-table" id="ss_upgrade">
+                  <tr>
+                    <td style="width: 40px">当前版本</td>
+                    <td style="width: 80px">
+                      <span id="ss_version">获取中 ...</span>
+                    </td>
+                  </tr>
+                  <tr>
+                      <td style="width: 40px">最新版本</td>
+                      <td style="width: 80px">
+                        <span id="ss_latest_version">获取中 ...</span>
+                      </td>
+                    </tr>
+                </table>
+              </div>
+            </div>
           </div>
+        </div>
       </div>
-      <style>
-        /* sliders */
+  </div>
+</div>
 
-        .toggle {
-          position: absolute;
-          margin-left: -9999px;
-          visibility: hidden;
-        }
+<!--Below js should be placed in another file-->
+<script>
+    // TODO js should be placed in another file
+    "use strict";
+    var t;
+    $(document).ready(function(){
+        get_ss_config()
+        get_adv_config()
+        refresh_status()
+        get_ss_version()
+        check_ss_updates()
 
-        .toggle+label {
-          display: block;
-          position: relative;
-          cursor: pointer;
-          outline: none;
-          user-select: none;
-        }
-
-        input.toggle-round-flat+label {
-          padding: 2px;
-          width: 54px;
-          height: 26px;
-          background-color: #dddddd;
-          border-radius: 34px;
-          transition: background 0.4s;
-        }
-
-        input.toggle-round-flat+label:before,
-        input.toggle-round-flat+label:after {
-          display: block;
-          position: absolute;
-          content: "";
-        }
-
-        input.toggle-round-flat+label:before {
-          top: 2px;
-          left: 2px;
-          bottom: 2px;
-          right: 2px;
-          background-color: #fff;
-          border-radius: 34px;
-          transition: background 0.4s;
-        }
-
-        input.toggle-round-flat+label:after {
-          top: 4px;
-          left: 4px;
-          bottom: 4px;
-          width: 21px;
-          background-color: #dddddd;
-          border-radius: 34px;
-          transition: margin 0.4s, background 0.4s;
-        }
-
-        input.toggle-round-flat:checked+label {
-          background-color: #5a9fec;
-        }
-
-        input.toggle-round-flat:checked+label:after {
-          margin-left: 29px;
-          background-color: #5a9fec;
-        }
-
-        table.zone td.tor {
-          text-align: right;
-          width: 120px;
-          line-height: 14px;
-        }
-
-        #ss_setup .G-form-table td {
-          height: 5px;
-          font-size: 14px;
-          line-height: 1.6;
-        }
-
-        #form1 table {
-          margin: auto;
-          width: auto;
-        }
-
-        #con_status {
-          width: 300px;
-          padding-top: 14px;
-        }
-
-        .G-panel-loading {
-          display: inline-block;
-        }
-
-        #prompt_box {
-          margin-top: 15px;
-        }
-
-        .G-page-mask {
-          background: #000;
-          opacity: 0.3;
-          position: absolute;
-          z-index: 9;
-          width: 100%;
-          top: 0;
-          left: 0;
-        }
-
-        .G-dialog {
-          background: #fff;
-          position: absolute;
-          z-index: 99;
-          -moz-background-clip: padding;
-          -webkit-background-clip: padding-box;
-          background-clip: padding-box;
-          -moz-box-shadow: 2px 4px 10px rgba(0, 0, 0, 0.2);
-          -webkit-box-shadow: 2px 4px 10px rgba(0, 0, 0, 0.2);
-          box-shadow: 2px 4px 10px rgba(0, 0, 0, 0.2);
-        }
-
-        .G-dialog .dialog-hd {
-          border-bottom: 1px solid #dce1e5;
-          height: 16px;
-          line-height: 16px;
-          padding-bottom: 9px;
-          margin-bottom: 20px;
-          font-size: 14px;
-          color: #8e9aa9;
-        }
-
-        .G-dialog .dialog-wrap {
-          padding: 20px;
-          position: relative;
-        }
-
-        .G-dialog .dialog-wrap .dialog-close {
-          width: 13px;
-          height: 13px;
-          display: block;
-          background: url("/turbo-static/turbo/v2/img/dialog-close.png") no-repeat;
-          position: absolute;
-          right: 20px;
-        }
-
-        .G-select-copy {
-          padding-right: 24px;
-          background: url("/turbo-static/turbo/v2/img/select-arrow.png") no-repeat right center;
-          display: inline-block;
-          line-height: 34px;
-          position: relative;
-          vertical-align: middle;
-          border: 1px #c7c7c7 solid;
-          height: 34px;
-          text-indent: 5px;
-          color: #5a6779;
-          outline: none;
-          font-size: 14px;
-          font-family: "STHeitiSC-Light", "Microsoft Yahei", Helvetica, Arial, sans-serif;
-        }
-
-        .G-select-copy span {
-          white-space: nowrap;
-          overflow: hidden;
-          display: block;
-        }
-
-        .G-select-copy .option-list {
-          position: absolute;
-          top: 34px;
-          background: #fff;
-          width: 100%;
-          border: 1px #c7c7c7 solid;
-          left: -1px;
-          border-top: none;
-          z-index: 99;
-        }
-
-        .G-select-copy .option-list li a {
-          height: 28px;
-          line-height: 28px;
-          padding: 0 5px;
-          color: #5a6779;
-          display: block;
-        }
-
-        .G-select-copy .option-list li a:hover {
-          background: #f4f7fa;
-        }
-
-        .m-t-20 {
-          margin-top: 20px;
-        }
-
-        .G-main-panel-bd {
-          padding: 8px 10px;
-        }
-
-        .G-gray-panel .G-main-panel-hd {
-          padding: 8px 10px;
-        }
-
-        .J_selectOriginal {
-          padding-right: 24px;
-          display: inline-block;
-          line-height: 34px;
-          position: relative;
-          vertical-align: middle;
-          border: 1px #c7c7c7 solid;
-          height: 34px;
-          text-indent: 5px;
-          color: #5a6779;
-          outline: none;
-          font-size: 14px;
-          font-family: "STHeitiSC-Light", "Microsoft Yahei", Helvetica, Arial, sans-serif;
-        }
-
-        .J_selectOriginal span {
-          white-space: nowrap;
-          overflow: hidden;
-          display: block;
-        }
-
-        .J_selectOriginal .option-list {
-          position: absolute;
-          top: 34px;
-          background: #fff;
-          width: 100%;
-          border: 1px #c7c7c7 solid;
-          left: -1px;
-          border-top: none;
-          z-index: 99;
-        }
-
-        .J_selectOriginal .option-list li a {
-          height: 28px;
-          line-height: 28px;
-          padding: 0 5px;
-          color: #5a6779;
-          display: block;
-        }
-
-        .J_selectOriginal .option-list li a:hover {
-          background: #f4f7fa;
-        }
-
-        .G-form-table input[type=text] {
-          width: 220px;
-          /*background-color: #f4f7fa;*/
-        }
-
-        /*输入框*/
-
-        .form-input {
-          resize: none;
-          background: transparent;
-          color: #8e9aa9;
-          border: 1.5px solid #dce1e5;
-          box-sizing: border-box;
-          width: 100%;
-          padding: 4px 8px;
-          font-size: 14px;
-          border-radius: 4px;
-          line-height: 1.42857143;
-          -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
-          box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
-          -webkit-transition: border-color ease-in-out .15s, -webkit-box-shadow ease-in-out .15s;
-          -o-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
-          transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s
-        }
-
-        .form-input:focus {
-          border-color: #66afe9;
-          outline: 0;
-          -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px rgba(102, 175, 233, .6);
-          box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px rgba(102, 175, 233, .6);
-        }
-
-        /* 提示 */
-
-        .G-main-panel-bd .icon {
-          width: 14px;
-          height: 14px;
-          display: inline-block;
-          vertical-align: middle;
-          margin-left: 5px;
-        }
-      </style>
-      <script type="text/javascript">
-        "use strict";
-        var t;
-        $(function () {
-          get_ss_config()
-          get_adv_config()
-          refresh_status()
-          get_ss_version()
-          check_ss_updates()
-
-          // 更新Gfwlist
-          $("#gfwlist_update_btn").click(function () {
+        // 更新Gfwlist
+        $("#gfwlist_update_btn").click(function () {
             var status = "<span>更新中...</span>";
             $("#update_status").html(status);
-            $.getJSON('<%=luci.dispatcher.build_url("api", "prometheus","gfwlist_update")%>', function (rsp) {
-              console.log(rsp);
-              if (rsp.update_status == "success") {
-                console.log("has_updated");
-                status = "<span style='color:green'>成功更新!</span>";
-              } else {
-                console.log("not_update");
-                status = "<span style='color:red'>更新失败...查看/var/log/gfwlist-update.log</span>";
-              }
-              $("#update_status").html(status)
+            $.getJSON('<%=luci.dispatcher.build_url("api", "prometheus", "gfwlist_update")%>', function (rsp) {
+                console.log(rsp);
+                if (rsp.update_status == "success") {
+                    console.log("has_updated");
+                    status = "<span style='color:green'>成功更新!</span>";
+                } else {
+                    console.log("not_update");
+                    status = "<span style='color:red'>更新失败...查看/var/log/gfwlist-update.log</span>";
+                }
+                $("#update_status").html(status)
             })
-          })
+        })
 
-          // 更新插件
-            $("#upgrade_ss_btn").click(function () {
-            console.log("click upgrade_ss_btn");
-            // var ss_version = $("#ss_version").val();
-            // var ss_latest_version = $("#ss_latest_version").val();
-            // var msg = "当前hiwifi-ss插件版本为"+ss_version+"，确定要升级为"+ss_latest_version+"吗？";
-            var msg = "确定要升级吗？";
-            if (confirm(msg) === true){
-                upgrade_ss();
-                return true;
-            }else{
-                return false;
+        // 更新插件
+        $("#upgrade_ss_btn").click(function () {
+            var ss_version = $("#ss_version").text();
+            var ss_latest_version = $("#ss_latest_version").text();
+            if ( ss_version.substring(1) < ss_latest_version.substring(1) ) {
+                var msg = "当前hiwifi-ss插件版本为"+ss_version+"，确定要升级为"+ss_latest_version+"吗？";
+                if (confirm(msg) === true){
+                    upgrade_ss();
+                }
+            } else{
+                popDialog({
+                    type: "G-text",
+                    title: ['已经是最新版本，无需升级 :)'],
+                    content: ""
+                }).time(2000);
             }
-          })
+        })
 
-          // UDP 转发开关
-          $("#udp_relay_switch").click(function () {
+        // UDP 转发开关
+        $("#udp_relay_switch").click(function () {
             var is_udp_relay = $(this).prop("checked");
             var udp_relay = "";
             if (is_udp_relay) {
-              udp_relay = "1";
+                udp_relay = "1";
             } else {
-              udp_relay = "0";
+                udp_relay = "0";
             }
             console.log(udp_relay)
             $("input[name='udp_relay']").val(udp_relay);
-          })
+        })
 
-          // 混淆
-          $("#plugin_enable_switch").click(function () {
+        // 混淆
+        $("#plugin_enable_switch").click(function () {
             var is_plugin_enable = $(this).prop("checked");
             var plugin_enable = "";
             if (is_plugin_enable) {
-              plugin_enable = "1";
+                plugin_enable = "1";
             } else {
-              plugin_enable = "0";
+                plugin_enable = "0";
             }
             console.log(is_plugin_enable)
             $("input[name='plugin_enable']").val(plugin_enable);
-          })
+        })
 
-          // KCPTUN
-          $("#kcptun_enable_switch").click(function(){
+        // KCPTUN
+        $("#kcptun_enable_switch").click(function(){
             var is_kcptun_enable = $(this).prop("checked");
             var kcptun_enable = "";
             if (is_kcptun_enable){
-              kcptun_enable="1";
+                kcptun_enable="1";
             }else{
-              kcptun_enable="0";
+                kcptun_enable="0";
             }
             console.log(is_kcptun_enable)
             $("input[name='kcptun_enable']").val(kcptun_enable);
-          })
+        })
 
-          // 开启或者关闭
-          $("#switch_btn").click(function () {
+        // 开启或者关闭
+        $("#switch_btn").click(function () {
             var enable = "";
             // 点击之后状态
             var is_on = $(this).prop("checked")
             if (is_on) {
-              enable = "1";
+                enable = "1";
             } else {
-              enable = "0";
+                enable = "0";
             }
             $("#loading_ss_switch").show();
 
             var request_data = {
-              enable: enable
+                enable: enable
             }
             $.getJSON('<%=luci.dispatcher.build_url("api", "prometheus","set_ss_switch")%>', request_data, function (rsp) {
-              is_on = rsp.enable
-              if (is_on == '1' || is_on == 1) {
-                // 开
-                switch_status(1);
-                refresh_status()
-              } else {
-                // 光
-                switch_status(0);
-                refresh_status()
-              }
-              $("#loading_ss_switch").hide();
-              $("#con_status").html("检查中 ...");
+                is_on = rsp.enable
+                if (is_on == '1' || is_on == 1) {
+                    // 开
+                    switch_status(1);
+                    refresh_status()
+                } else {
+                    // 光
+                    switch_status(0);
+                    refresh_status()
+                }
+                $("#loading_ss_switch").hide();
+                $("#con_status").html("检查中 ...");
             });
-          })
+        })
 
-          // 查看密码
-          $("#show_passwd").click(function () {
+        // 查看密码
+        $("#show_passwd").click(function () {
             if ($(this).prop('checked')) {
-              $('#password').clone().attr('type', 'text').insertAfter('#password').prev().remove();
+                $('#password').clone().attr('type', 'text').insertAfter('#password').prev().remove();
             } else {
-              $('#password').clone().attr('type', 'password').insertAfter('#password').prev().remove();
+                $('#password').clone().attr('type', 'password').insertAfter('#password').prev().remove();
             }
-          })
+        })
 
-          // 提交配置修改
-          $("#submit_btn").click(function () {
+        // 提交配置修改
+        $("#submit_btn").click(function () {
 
             $("#loading_ss_setup").show();
             $("#submit_btn").attr("disabled", true);
@@ -740,10 +478,10 @@ local i18n = require "luci.i18n"
             var request_data = $("#form1").serializeArray();
             // 修正 serializeArray 对 unchecked 的忽略
             if ($("#udp_relay_switch").prop("checked") == false) {
-              request_data.push({
-                name: "udp_relay",
-                value: '0'
-              })
+                request_data.push({
+                    name: "udp_relay",
+                    value: '0'
+                })
             }
             // 或者
             //    var serialized = $('input:checkbox').map(function() {
@@ -752,36 +490,36 @@ local i18n = require "luci.i18n"
             //    request_data = request_data.concat(serialized)
 
             if ($("#plugin_enable_switch").prop("checked") == false) {
-              request_data.push({
-                name: "plugin_enable",
-                value: '0'
-              })
+                request_data.push({
+                    name: "plugin_enable",
+                    value: '0'
+                })
             }
             // kcptun
             if ($("#kcptun_enable_switch").prop("checked")==false){
-              request_data.push({name: "kcptun_enable", value: '0'})
+                request_data.push({name: "kcptun_enable", value: '0'})
             }
 
             $.getJSON('<%=luci.dispatcher.build_url("api", "prometheus","set_ss_cfg")%>', request_data, function (rsp) {
-              if (rsp.code == 0) {
-                popDialog({
-                  type: "G-text",
-                  title: ['设置成功 :)'],
-                  content: ""
-                }).time(2000);
-              } else {
-                popDialog({
-                  type: "G-text",
-                  title: ['操作失败 :('],
-                  content: rsp.msg
-                }).time(2000);
-              }
-              $("#loading_ss_setup").hide();
-              $("#submit_btn").attr("disabled", false);
+                if (rsp.code == 0) {
+                    popDialog({
+                        type: "G-text",
+                        title: ['设置成功 :)'],
+                        content: ""
+                    }).time(2000);
+                } else {
+                    popDialog({
+                        type: "G-text",
+                        title: ['操作失败 :('],
+                        content: rsp.msg
+                    }).time(2000);
+                }
+                $("#loading_ss_setup").hide();
+                $("#submit_btn").attr("disabled", false);
             })
-          });
+        });
 
-          $('#adv_btn').click(function () {
+        $('#adv_btn').click(function () {
             var data = {};
             data['act'] = 'adv_save';
             data['addrs'] = $('[data-type=addr_list]').val();
@@ -791,312 +529,595 @@ local i18n = require "luci.i18n"
             $("#adv_btn").attr("disabled", true);
 
             $.ajax({
-              'url': '<%=luci.dispatcher.build_url("api", "prometheus","set_ss_adv")%>',
-              'type': 'post',
-              'data': data,
-              'dataType': 'json',
-              'success': function (data) {
-                if (data.code == 0) {
-                  popDialog({
-                    type: "G-text",
-                    title: ['保存成功 :)'],
-                    content: ""
-                  }).time(2000);
-                } else {
-                  popDialog({
-                    type: "G-text",
-                    title: ['保存失败 :('],
-                    content: data.msg
-                  }).time(2000);
+                'url': '<%=luci.dispatcher.build_url("api", "prometheus","set_ss_adv")%>',
+                'type': 'post',
+                'data': data,
+                'dataType': 'json',
+                'success': function (data) {
+                    if (data.code == 0) {
+                        popDialog({
+                            type: "G-text",
+                            title: ['保存成功 :)'],
+                            content: ""
+                        }).time(2000);
+                    } else {
+                        popDialog({
+                            type: "G-text",
+                            title: ['保存失败 :('],
+                            content: data.msg
+                        }).time(2000);
+                    }
+                    $("#loading_ss_setup2").hide();
+                    $("#adv_btn").attr("disabled", false);
                 }
-                $("#loading_ss_setup2").hide();
-                $("#adv_btn").attr("disabled", false);
-              }
             })
-          })
         })
+    });
 
-        // 切换开关状态
-        function switch_status(status) {
-          if (status == 1 || status == "1") {
-            $("#shadowsocks_btn_box").removeAttr('disabled');
+    // 切换开关状态
+    function switch_status(status) {
+        if (status == 1 || status == "1") {
+            $("#save_ss_setup").removeAttr('disabled');
             // 15秒
             t = setInterval("refresh_status()", 15000);
-          } else {
-            $("#shadowsocks_btn_box").attr('disabled', 'disabled');
+        } else {
+            $("#save_ss_setup").attr('disabled', 'disabled');
             clearInterval(t);
-          }
         }
+    }
 
-        function get_ss_config() {
-          var request_data = {
+    function get_ss_config() {
+        var request_data = {
             config: 1
-          };
-          $.getJSON('<%=luci.dispatcher.build_url("api", "prometheus","get_ss_cfg")%>', request_data, function (rsp) {
+        };
+        $.getJSON('<%=luci.dispatcher.build_url("api", "prometheus","get_ss_cfg")%>', request_data, function (rsp) {
             $("#submit_btn").attr("disabled", false);
             if (rsp.code == 0) {
-              $("input[name='server_port']").val(rsp.server_port);
-              $("input[name='password']").val(rsp.password);
-              $("input[name='server']").val(rsp.server);
-              $("input[name='timeout']").val(rsp.timeout);
-              $("select[name='defaultroute']").val(rsp.defaultroute);
-              $("select[name='method']").val(rsp.method);
-              $("input[name='dnsserver']").val(rsp.dnsserver);
-              $("input[name='udp_relay']").val(rsp.udp_relay);
-              $("input[name='plugin_enable']").val(rsp.plugin_enable);
-              $("input[name='plugin_opts']").val(rsp.plugin_opts);
-              $("input[name='kcptun_enable']").val(rsp.kcptun_enable);
-              $("input[name='kcptun_opts']").val(rsp.kcptun_opts);
-              // udp 开关
-              var udp_relay = rsp.udp_relay;
-              if (udp_relay == '1') {
-                $("#udp_relay_switch").prop('checked', true);
-              } else {
-                $("#udp_relay_switch").prop('checked', false);
-              }
-              // 混淆开关
-              var plugin_enable = rsp.plugin_enable;
-              if (plugin_enable == '1') {
-                $("#plugin_enable_switch").prop('checked', true);
-              } else {
-                $("#plugin_enable_switch").prop('checked', false);
-              }
-                    // KCPTUN开关
-              var kcptun_enable = rsp.kcptun_enable;
-              if (kcptun_enable == '1'){
-                $("#kcptun_enable_switch").prop('checked', true);
-              }else{
-                $("#kcptun_enable_switch").prop('checked', false);
-              }
-              // 功能开关
-              var enable = rsp.enable;
-              if (enable == "1") {
-                $("#switch_btn").prop("checked", true);
-                switch_status(1);
-              } else {
-                $("#switch_btn").prop("checked", false);
-                switch_status(0);
-              }
+                $("input[name='server_port']").val(rsp.server_port);
+                $("input[name='password']").val(rsp.password);
+                $("input[name='server']").val(rsp.server);
+                $("input[name='timeout']").val(rsp.timeout);
+                $("select[name='defaultroute']").val(rsp.defaultroute);
+                $("select[name='method']").val(rsp.method);
+                $("input[name='dnsserver']").val(rsp.dnsserver);
+                $("input[name='udp_relay']").val(rsp.udp_relay);
+                $("input[name='plugin_enable']").val(rsp.plugin_enable);
+                $("input[name='plugin_opts']").val(rsp.plugin_opts);
+                $("input[name='kcptun_enable']").val(rsp.kcptun_enable);
+                $("input[name='kcptun_opts']").val(rsp.kcptun_opts);
+                // udp 开关
+                var udp_relay = rsp.udp_relay;
+                if (udp_relay == '1') {
+                    $("#udp_relay_switch").prop('checked', true);
+                } else {
+                    $("#udp_relay_switch").prop('checked', false);
+                }
+                // 混淆开关
+                var plugin_enable = rsp.plugin_enable;
+                if (plugin_enable == '1') {
+                    $("#plugin_enable_switch").prop('checked', true);
+                } else {
+                    $("#plugin_enable_switch").prop('checked', false);
+                }
+                // KCPTUN开关
+                var kcptun_enable = rsp.kcptun_enable;
+                if (kcptun_enable == '1'){
+                    $("#kcptun_enable_switch").prop('checked', true);
+                }else{
+                    $("#kcptun_enable_switch").prop('checked', false);
+                }
+                // 功能开关
+                var enable = rsp.enable;
+                if (enable == "1") {
+                    $("#switch_btn").prop("checked", true);
+                    switch_status(1);
+                } else {
+                    $("#switch_btn").prop("checked", false);
+                    switch_status(0);
+                }
             }
-          })
-        }
+        })
+    }
 
-        function get_ss_version() {
-          // 刷新状态
-          var request_data = {};
-          $.getJSON('<%=luci.dispatcher.build_url("api", "prometheus","get_ss_version")%>', request_data, function (rsp) {
+    function get_ss_version() {
+        // 刷新状态
+        var request_data = {};
+        $.getJSON('<%=luci.dispatcher.build_url("api", "prometheus","get_ss_version")%>', request_data, function (rsp) {
             var version = '';
             if (rsp.code === 0) {
-              version = rsp.version
+                version = rsp.version
             }
             $("#ss_version").html(version);
-          })
-        }
+        })
+    }
 
-        function check_ss_updates() {
-          // 刷新状态
-          var request_data = {};
-          $.getJSON('<%=luci.dispatcher.build_url("api", "prometheus","check_ss_updates")%>', request_data, function (rsp) {
+    function check_ss_updates() {
+        // 刷新状态
+        var request_data = {};
+        $.getJSON('<%=luci.dispatcher.build_url("api", "prometheus","check_ss_updates")%>', request_data, function (rsp) {
             var version = '';
             if (rsp.code === 0) {
-              console.log("get version"+rsp.latest_version);
-              version = rsp.latest_version;
+                version = rsp.latest_version;
             }
             $("#ss_latest_version").html(version);
-          })
-        }
+        })
+    }
 
-        function upgrade_ss() {
-          // 刷新状态
-          var request_data = {};
-          var status = "<span>更新中...</span>";
-          $("#upgrade_status").html(status);
-          popDialog({
-              type: "G-text",
-              title: ['插件正在升级中，请稍后...'],
-              content: ""
-          }).time(10000);
-          //	TODO 根据版本升级
-          $.getJSON('<%=luci.dispatcher.build_url("api", "prometheus","upgrade_ss")%>', request_data, function (rsp) {
+    function upgrade_ss() {
+        // 刷新状态
+        var request_data = {};
+        var status = "<span>更新中...</span>";
+        $("#upgrade_status").html(status);
+        popDialog({
+            type: "G-text",
+            title: ['插件正在升级中，请稍后...'],
+            content: ""
+        }).time(10000);
+        $.getJSON('<%=luci.dispatcher.build_url("api", "prometheus","upgrade_ss")%>', request_data, function (rsp) {
             if (rsp.code == 0) {
-              status = "<span style='color:green'>成功更新!</span>";
-              popDialog({
-                type: "G-text",
-                title: ['插件更新成功！请刷新此页面 :) '],
-                content: ""
-              }).time(2000);
+                status = "<span style='color:green'>成功更新!</span>";
+                popDialog({
+                    type: "G-text",
+                    title: ['插件更新成功！请刷新此页面 :) '],
+                    content: ""
+                }).time(2000);
             } else {
-              status = "<span style='color:red'>更新失败...</span>";
-              popDialog({
-                type: "G-text",
-                title: ['操作失败 :('],
-                content: rsp.msg
-              }).time(2000);
+                status = "<span style='color:red'>更新失败...</span>";
+                popDialog({
+                    type: "G-text",
+                    title: ['操作失败 :('],
+                    content: rsp.msg
+                }).time(2000);
             }
             $("#upgrade_status").html(status);
             $("#loading_ss_setup").hide();
             $("#submit_btn").attr("disabled", false);
-          })
-        }
+        })
+    }
 
-        function refresh_status() {
-          // 刷新状态
-          var request_data = {};
-          $.getJSON('<%=luci.dispatcher.build_url("api", "prometheus","get_ss_status")%>', request_data, function (rsp) {
+    function refresh_status() {
+        // 刷新状态
+        var request_data = {};
+        $.getJSON('<%=luci.dispatcher.build_url("api", "prometheus","get_ss_status")%>', request_data, function (rsp) {
             var status = "";
             if (rsp.code == 0) {
-              if (rsp.status == "stopped") {
-                status = "<span style='color:red'>未运行</span>";
-              } else if (rsp.status == "running") {
-                if (rsp.accel == "yes")
-                  status = "运行中 <span style='color:green'>连接正常</span>";
-                else
-                  status = "运行中 <span style='color:red'>连接错误</span>";
-              } else {
-                status = "未知";
-              }
+                if (rsp.status == "stopped") {
+                    status = "<span style='color:red'>未运行</span>";
+                } else if (rsp.status == "running") {
+                    if (rsp.accel == "yes")
+                        status = "运行中 <span style='color:green'>连接正常</span>";
+                    else
+                        status = "运行中 <span style='color:red'>连接错误</span>";
+                } else {
+                    status = "未知";
+                }
             } else {
-              status = "<span style='color:red'>获取状态错误</span>"
+                status = "<span style='color:red'>获取状态错误</span>"
             }
             $("#con_status").html(status);
-          })
-        };
-        // 弹出框
-        function popDialog(content_object) {
-          var support_cancel = true;
-          var window_height = $(window).height();
-          var window_width = $(window).width();
-          var pop_dialog_id = "hiwifi_pop_dialog";
-          var background_grey_id = "hiwifi_dialog_background";
-          if (!content_object) {
+        })
+    };
+    // 弹出框
+    function popDialog(content_object) {
+        var support_cancel = true;
+        var window_height = $(window).height();
+        var window_width = $(window).width();
+        var pop_dialog_id = "hiwifi_pop_dialog";
+        var background_grey_id = "hiwifi_dialog_background";
+        if (!content_object) {
             $("#hiwifi_pop_dialog").hide();
             $("#hiwifi_dialog_background").hide();
             return;
-          }
-          var bg_gray = {};
-          var confirm_dialog = {};
-          var content_div = document.createElement("div");
-          var center_div = document.createElement("div");
-          var title_div = document.createElement("div");
-          var footer_div = document.createElement("div");
-          var background_height = $(document).height();
+        }
+        var bg_gray = {};
+        var confirm_dialog = {};
+        var content_div = document.createElement("div");
+        var center_div = document.createElement("div");
+        var title_div = document.createElement("div");
+        var footer_div = document.createElement("div");
+        var background_height = $(document).height();
 
-          if ($("#hiwifi_dialog_background").length === 0) {
+        if ($("#hiwifi_dialog_background").length === 0) {
             bg_gray = document.createElement("div");
             $(bg_gray).addClass("G-page-mask").css({
-              "width": "100%",
-              "height": background_height,
-              "z-index": 9998,
-              "display": "none"
+                "width": "100%",
+                "height": background_height,
+                "z-index": 9998,
+                "display": "none"
             }).attr('id', background_grey_id).addClass('J_dialog_support_cancel');
             $("body").append(bg_gray);
-          } else {
+        } else {
             $("#" + background_grey_id).css({
-              "width": "100%",
-              "height": background_height
+                "width": "100%",
+                "height": background_height
             });
-          }
+        }
 
-          if ($("#hiwifi_pop_dialog").length === 0) {
+        if ($("#hiwifi_pop_dialog").length === 0) {
             console.log("dialog==0")
             confirm_dialog = document.createElement("div");
             $(confirm_dialog).addClass("G-dialog").css({
-              "minWidth": 380,
-              "minHeight": 100,
-              "position": "fixed",
-              "z-index": 9999,
-              "left": (window_width - 400) / 2,
-              "top": (window_height - 400) / 2,
-              "display": "none"
+                "minWidth": 380,
+                "minHeight": 100,
+                "position": "fixed",
+                "z-index": 9999,
+                "left": (window_width - 400) / 2,
+                "top": (window_height - 400) / 2,
+                "display": "none"
             }).attr('id', pop_dialog_id);
             $("body").append(confirm_dialog);
-          } else {
+        } else {
             console.log("dialog>0")
             window_height = $(window).height();
             window_width = $(window).width();
             $("#" + pop_dialog_id).addClass("G-dialog").css({
-              "left": (window_width - 400) / 2,
-              "top": (window_height - 400) / 2
+                "left": (window_width - 400) / 2,
+                "top": (window_height - 400) / 2
             });
-          }
-          //标题部分的填充--通用
-          if (typeof content_object.title === "string") {
+        }
+        //标题部分的填充--通用
+        if (typeof content_object.title === "string") {
             $(title_div).append('<p>' + content_object.title + '</p>');
-          } else if ($.isArray(content_object.title)) {
+        } else if ($.isArray(content_object.title)) {
             $.each(content_object.title, function (index, value) {
-              $(title_div).append('<p>' + value + '</p>');
+                $(title_div).append('<p>' + value + '</p>');
             });
-          }
-          if (content_object.content && content_object.title) {
+        }
+        if (content_object.content && content_object.title) {
             $(title_div).addClass("dialog-hd");
-          } else {
+        } else {
             $(title_div).addClass("dialog-bd");
-          }
-          $(footer_div).append('</div>');
-          //以下为每种类型的填充
-          //默认为confirm,支持模式有:confirm,update,limit,level,G-text,add
-          content_object.type = content_object.type || "confirm";
-          //以下模式不支持点击灰色背景，取消dialog
+        }
+        $(footer_div).append('</div>');
+        //以下为每种类型的填充
+        //默认为confirm,支持模式有:confirm,update,limit,level,G-text,add
+        content_object.type = content_object.type || "confirm";
+        //以下模式不支持点击灰色背景，取消dialog
 
-          if (content_object.type === "update" || content_object.type === "G-text") {
+        if (content_object.type === "update" || content_object.type === "G-text") {
             support_cancel = false;
-          } else {
+        } else {
             $(content_div).prepend('<a href="javascript:;" class="dialog-close J_dialog_support_cancel"></a>');
-          }
-          if (content_object.content) {
+        }
+        if (content_object.content) {
             $(center_div).addClass("dialog-bd").append(content_object.content || "");
-          }
+        }
 
-          $(content_div).addClass("dialog-wrap " + content_object.type + "-dialog").append(title_div).append(center_div).append(footer_div);
+        $(content_div).addClass("dialog-wrap " + content_object.type + "-dialog").append(title_div).append(center_div).append(footer_div);
 
-          $("#hiwifi_pop_dialog").empty().append(content_div).show();
-          $(".J_dialog_support_cancel").data("support_cancel", support_cancel).show();
+        $("#hiwifi_pop_dialog").empty().append(content_div).show();
+        $(".J_dialog_support_cancel").data("support_cancel", support_cancel).show();
 
-          var that = {
+        var that = {
             time: function (time) {
-              time = time || 1000;
-              setTimeout(function () {
-                popDialog();
-              }, time);
-              return this;
+                time = time || 1000;
+                setTimeout(function () {
+                    popDialog();
+                }, time);
+                return this;
             },
             closeCallback: function (callback) {
-              if (typeof callback === "function") {
-                callback();
-              }
-              return this;
+                if (typeof callback === "function") {
+                    callback();
+                }
+                return this;
             }
-          };
-          return that;
-        }
+        };
+        return that;
+    }
 
-        function spoiler_toggle(element) {
-          if (document.getElementById(element).style.display == "none") {
+    function spoiler_toggle(element) {
+        if (document.getElementById(element).style.display == "none") {
             document.getElementById(element).style.display = "";
-          } else {
+        } else {
             document.getElementById(element).style.display = "none";
-          }
         }
+    }
 
-        function get_adv_config() {
-          var request_data = {};
-          $.ajax({
+    function get_adv_config() {
+        var request_data = {};
+        $.ajax({
             'url': '<%=luci.dispatcher.build_url("api", "prometheus","get_ss_adv")%>',
             'type': 'get',
             'dataType': 'json',
             'success': function (data) {
-              if (data.code == 0) {
-                data.lans && $('[data-type=lan_list]').val(data.lans.replace(/^\s+/g, '').replace(/\s+$/g, '').replace(/\\n/g, "\n"));
-                data.wans && $('[data-type=wan_list]').val(data.wans.replace(/^\s+/g, '').replace(/\s+$/g, '').replace(/\\n/g, "\n"));
-                data.addrs && $('[data-type=addr_list]').val(data.addrs.replace(/^\s+/g, '').replace(/\s+$/g, '').replace(/\\n/g, "\n"));
-              } else {
-                popDialog({
-                  type: "G-text",
-                  title: ['获取数据失败 :('],
-                  content: data.msg
-                }).time(2000);
-              }
+                if (data.code == 0) {
+                    data.lans && $('[data-type=lan_list]').val(data.lans.replace(/^\s+/g, '').replace(/\s+$/g, '').replace(/\\n/g, "\n"));
+                    data.wans && $('[data-type=wan_list]').val(data.wans.replace(/^\s+/g, '').replace(/\s+$/g, '').replace(/\\n/g, "\n"));
+                    data.addrs && $('[data-type=addr_list]').val(data.addrs.replace(/^\s+/g, '').replace(/\s+$/g, '').replace(/\\n/g, "\n"));
+                } else {
+                    popDialog({
+                        type: "G-text",
+                        title: ['获取数据失败 :('],
+                        content: data.msg
+                    }).time(2000);
+                }
             }
-          })
-        }
-      </script>
+        })
+    }
+</script>
+
+<!--Below css should be placed in another file-->
+<style>
+  /* sliders */
+
+  .toggle {
+    position: absolute;
+    margin-left: -9999px;
+    visibility: hidden;
+  }
+
+  .toggle+label {
+    display: block;
+    position: relative;
+    cursor: pointer;
+    outline: none;
+    user-select: none;
+  }
+
+  input.toggle-round-flat+label {
+    padding: 2px;
+    width: 54px;
+    height: 26px;
+    background-color: #dddddd;
+    border-radius: 34px;
+    transition: background 0.4s;
+  }
+
+  input.toggle-round-flat+label:before,
+  input.toggle-round-flat+label:after {
+    display: block;
+    position: absolute;
+    content: "";
+  }
+
+  input.toggle-round-flat+label:before {
+    top: 2px;
+    left: 2px;
+    bottom: 2px;
+    right: 2px;
+    background-color: #fff;
+    border-radius: 34px;
+    transition: background 0.4s;
+  }
+
+  input.toggle-round-flat+label:after {
+    top: 4px;
+    left: 4px;
+    bottom: 4px;
+    width: 21px;
+    background-color: #dddddd;
+    border-radius: 34px;
+    transition: margin 0.4s, background 0.4s;
+  }
+
+  input.toggle-round-flat:checked+label {
+    background-color: #5a9fec;
+  }
+
+  input.toggle-round-flat:checked+label:after {
+    margin-left: 29px;
+    background-color: #5a9fec;
+  }
+
+  table.zone td.tor {
+    text-align: right;
+    width: 120px;
+    line-height: 14px;
+  }
+
+  #ss_setup .G-form-table td {
+    height: 5px;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  #form1 table {
+    margin: auto;
+    width: auto;
+  }
+
+  #con_status {
+    width: 300px;
+    padding-top: 14px;
+  }
+
+  .G-panel-loading {
+    display: inline-block;
+  }
+
+  #prompt_box {
+    margin-top: 15px;
+  }
+
+  .G-page-mask {
+    background: #000;
+    opacity: 0.3;
+    position: absolute;
+    z-index: 9;
+    width: 100%;
+    top: 0;
+    left: 0;
+  }
+
+  .G-dialog {
+    background: #fff;
+    position: absolute;
+    z-index: 99;
+    -moz-background-clip: padding;
+    -webkit-background-clip: padding-box;
+    background-clip: padding-box;
+    -moz-box-shadow: 2px 4px 10px rgba(0, 0, 0, 0.2);
+    -webkit-box-shadow: 2px 4px 10px rgba(0, 0, 0, 0.2);
+    box-shadow: 2px 4px 10px rgba(0, 0, 0, 0.2);
+  }
+
+  .G-dialog .dialog-hd {
+    border-bottom: 1px solid #dce1e5;
+    height: 16px;
+    line-height: 16px;
+    padding-bottom: 9px;
+    margin-bottom: 20px;
+    font-size: 14px;
+    color: #8e9aa9;
+  }
+
+  .G-dialog .dialog-wrap {
+    padding: 20px;
+    position: relative;
+  }
+
+  .G-dialog .dialog-wrap .dialog-close {
+    width: 13px;
+    height: 13px;
+    display: block;
+    background: url("/turbo-static/turbo/v2/img/dialog-close.png") no-repeat;
+    position: absolute;
+    right: 20px;
+  }
+
+  .G-select-copy {
+    padding-right: 24px;
+    background: url("/turbo-static/turbo/v2/img/select-arrow.png") no-repeat right center;
+    display: inline-block;
+    line-height: 34px;
+    position: relative;
+    vertical-align: middle;
+    border: 1px #c7c7c7 solid;
+    height: 34px;
+    text-indent: 5px;
+    color: #5a6779;
+    outline: none;
+    font-size: 14px;
+    font-family: "STHeitiSC-Light", "Microsoft Yahei", Helvetica, Arial, sans-serif;
+  }
+
+  .G-select-copy span {
+    white-space: nowrap;
+    overflow: hidden;
+    display: block;
+  }
+
+  .G-select-copy .option-list {
+    position: absolute;
+    top: 34px;
+    background: #fff;
+    width: 100%;
+    border: 1px #c7c7c7 solid;
+    left: -1px;
+    border-top: none;
+    z-index: 99;
+  }
+
+  .G-select-copy .option-list li a {
+    height: 28px;
+    line-height: 28px;
+    padding: 0 5px;
+    color: #5a6779;
+    display: block;
+  }
+
+  .G-select-copy .option-list li a:hover {
+    background: #f4f7fa;
+  }
+
+  .m-t-20 {
+    margin-top: 20px;
+  }
+
+  .G-main-panel-bd {
+    padding: 8px 10px;
+  }
+
+  .G-gray-panel .G-main-panel-hd {
+    padding: 8px 10px;
+  }
+
+  .J_selectOriginal {
+    padding-right: 24px;
+    display: inline-block;
+    line-height: 34px;
+    position: relative;
+    vertical-align: middle;
+    border: 1px #c7c7c7 solid;
+    height: 34px;
+    text-indent: 5px;
+    color: #5a6779;
+    outline: none;
+    font-size: 14px;
+    font-family: "STHeitiSC-Light", "Microsoft Yahei", Helvetica, Arial, sans-serif;
+  }
+
+  .J_selectOriginal span {
+    white-space: nowrap;
+    overflow: hidden;
+    display: block;
+  }
+
+  .J_selectOriginal .option-list {
+    position: absolute;
+    top: 34px;
+    background: #fff;
+    width: 100%;
+    border: 1px #c7c7c7 solid;
+    left: -1px;
+    border-top: none;
+    z-index: 99;
+  }
+
+  .J_selectOriginal .option-list li a {
+    height: 28px;
+    line-height: 28px;
+    padding: 0 5px;
+    color: #5a6779;
+    display: block;
+  }
+
+  .J_selectOriginal .option-list li a:hover {
+    background: #f4f7fa;
+  }
+
+  .G-form-table input[type=text] {
+    width: 220px;
+    /*background-color: #f4f7fa;*/
+  }
+
+  /*输入框*/
+
+  .form-input {
+    resize: none;
+    background: transparent;
+    color: #8e9aa9;
+    border: 1.5px solid #dce1e5;
+    box-sizing: border-box;
+    width: 100%;
+    padding: 4px 8px;
+    font-size: 14px;
+    border-radius: 4px;
+    line-height: 1.42857143;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+    -webkit-transition: border-color ease-in-out .15s, -webkit-box-shadow ease-in-out .15s;
+    -o-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+    transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s
+  }
+
+  .form-input:focus {
+    border-color: #66afe9;
+    outline: 0;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px rgba(102, 175, 233, .6);
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px rgba(102, 175, 233, .6);
+  }
+
+  /* 提示 */
+
+  .G-main-panel-bd .icon {
+    width: 14px;
+    height: 14px;
+    display: inline-block;
+    vertical-align: middle;
+    margin-left: 5px;
+  }
+</style>
+
+</body>
