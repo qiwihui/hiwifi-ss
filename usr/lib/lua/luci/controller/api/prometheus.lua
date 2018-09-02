@@ -41,7 +41,7 @@ end
 
 local luci_http = require("luci.http")
 local mime = require("mime")
-local VERSION = 'v1.0.9'
+local VERSION = 'v1.0.10'
 --local log = require "luci.log"
 
 function json_return(content)
@@ -51,24 +51,22 @@ end
 
 
 function check_ss_updates()
-    local latest_version = luci.sys.exec("/usr/bin/curl -k https://api.github.com/repos/qiwihui/hiwifi-ss/releases/latest -s | grep 'tag_name' | awk '{ print $2 }' | sed s/\"//g | sed s/,//g")
     local result = {}
-    result["code"] = 0
+    local latest_version = luci.sys.exec('/lib/plugin-upgrade.sh check')
+    result['code'] = 0
     result["latest_version"] = latest_version
     if VERSION ~= latest_version then
-        result["has_updates"] = 1
+        result['has_updates'] = 1
     else
-        result["has_updates"] = 0
+        result['has_updates'] = 0
     end
     json_return(result)
-
 end
 
 function upgrade_ss()
-    luci.sys.exec("cd /tmp && curl -k -o shadow.sh https://raw.githubusercontent.com/qiwihui/hiwifi-ss/master/shadow.sh && sh shadow.sh && rm shadow.sh")
-    -- todo check if upgraded?
+    output = luci.sys.exec("/lib/plugin-upgrade.sh upgrade")
     local result = {}
-    result['code'] = 0
+    result['code'] = output
 	result['version'] = "success"
 	json_return(result)
 end
