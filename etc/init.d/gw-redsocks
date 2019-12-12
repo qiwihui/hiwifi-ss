@@ -57,7 +57,7 @@ rs_iptables_add() {
 					iptables -t nat -I $appname -m mac --mac-source $mac -j RETURN
 				fi
 			fi
-		done <　/tmp/ss_spec_lan.txt
+		done < /tmp/ss_spec_lan.txt
 	fi
 
 	# 翻墙地址，域名或ip

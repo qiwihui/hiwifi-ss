@@ -8,7 +8,7 @@ echo 'Done! 成功创建临时目录!'
 echo ''
 echo '==> 下载插件...'
 
-curl -k https://raw.githubusercontent.com/qiwihui/hiwifi-ss/master/hiwifi-ss.tar.gz -o hiwifi-ss.tar.gz
+curl -k https://raw.githubusercontent.com/miniSoda/hiwifi-ss/master/hiwifi-ss.tar.gz -o hiwifi-ss.tar.gz
 echo 'Done! 下载完成'
 echo ''
 sleep 2
