@@ -145,7 +145,7 @@ tar xzvf /tmp/hiwifi-ss.tar.gz -C /
 
   - [x] 升级 ss-libev 版本
   - [x] 支持 ss-libev 混淆 （simple-obfs）
-  - [ ] 支持 SSR
+  - [ ] 支持 udp2raw
 
 ### 贡献
 
