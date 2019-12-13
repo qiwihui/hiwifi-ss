@@ -9,6 +9,7 @@
 /usr/bin/ss-local
 /usr/bin/ss-redir
 /usr/bin/ss-tunnel
+/usr/bin/udp2raw
 /usr/lib/lua/geewan.lua
 /usr/lib/lua/luci/log.lua
 /usr/lib/lua/luci/controller/prometheus/shadowsocks.lua

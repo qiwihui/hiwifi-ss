@@ -59,15 +59,23 @@ start() {
 		    params="$params -u"
 		fi
 
-        service_start /usr/bin/ss-local -s $server -p $server_port -b 0.0.0.0 -l $local_port -k $password -t $timeout -m $method $params
-        service_start /usr/bin/ss-redir -s $server -p $server_port -b 0.0.0.0 -l $rs_port -k $password -t $timeout -m $method $params
         #/etc/init.d/dnscrypt-proxy start
 		
 		if [ "$kcptun_enable" == '1' ]; then
-			kcp_params="-l :$server_port -r $server$kcptun_opts"
+			udp2raw_params="-c -l 127.0.0.1:18085 -r $server:$udp2raw_opts"
+			service_start /usr/bin/udp2raw $udp2raw_params > /var/log/udp2raw_ss.log
+
+			kcp_params="-l :$server_port -r 127.0.0.1:18085 $kcptun_opts"
 			service_start /usr/bin/kcptun $kcp_params > /var/log/kcptun_ss.log
+
+			service_start /usr/bin/ss-local -s 127.0.0.1 -p $server_port -b 0.0.0.0 -l $local_port -k $password -t $timeout -m $method $params
+		else
+			service_start /usr/bin/ss-local -s $server -p $server_port -b 0.0.0.0 -l $local_port -k $password -t $timeout -m $method $params
+        	service_start /usr/bin/ss-redir -s $server -p $server_port -b 0.0.0.0 -l $rs_port -k $password -t $timeout -m $method $params
 		fi
+
 		
+
 		service_start /usr/bin/dns2socks 127.0.0.1:$local_port $dnsserver 127.0.0.1:53535 -d -q
 		/etc/init.d/gw-redsocks start
 	fi

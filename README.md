@@ -85,13 +85,13 @@ tar xzvf /tmp/hiwifi-ss.tar.gz -C /
 
 1. 安装后显示`请求的接口不存在`?
 
-  请重启路由器. [issue#28](https://github.com/qiwihui/hiwifi-ss/issues/28)
+  请重启路由器. [issue#28](https://github.com/minisoda/hiwifi-ss/issues/28)
 
 2. 适用极路由版本有哪些?
 
-  see [issue#38](https://github.com/qiwihui/hiwifi-ss/issues/38)
+  see [issue#38](https://github.com/minisoda/hiwifi-ss/issues/38)
 
-3. 如何卸载脚本?([issue#12](https://github.com/qiwihui/hiwifi-ss/issues/12))
+3. 如何卸载脚本?([issue#12](https://github.com/minisoda/hiwifi-ss/issues/12))
 
   将`/usr/lib/lua/luci/view/admin_web/network/index.htm.ssbak` 重命名为 `/usr/lib/lua/luci/view/admin_web/network/index.htm`, 并移除ss: `opkg remove geewan-ss`
 
@@ -145,7 +145,7 @@ tar xzvf /tmp/hiwifi-ss.tar.gz -C /
 
   - [x] 升级 ss-libev 版本
   - [x] 支持 ss-libev 混淆 （simple-obfs）
-  - [ ] 支持 SSR
+  - [ ] 支持 udp2raw
 
 ### 贡献
 
