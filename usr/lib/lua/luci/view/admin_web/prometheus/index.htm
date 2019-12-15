@@ -188,7 +188,7 @@ local i18n = require "luci.i18n"
                         <tr>
                           <th>KCP参数</th>
                           <td>
-                            <input type="text" class="input" name="kcptun_opts" tabindex="11" value=" -key @kcptun_password --mtu 1200 --sndwnd 512 --rcvwnd 25000 -dscp 0 -mode fast3 -crypt none -sockbuf 16777217"
+                            <input type="text" class="input" name="kcptun_opts" tabindex="11" value="-key @kcptun_password --mtu 1200 --sndwnd 512 --rcvwnd 25000 -dscp 0 -mode fast3 -crypt none -sockbuf 16777217"
                               id="kcptun_opts" />
                               <span class="icon icon22 J_infoTip G-handle" onmouseover="spoiler_toggle('kcptun_opts_tip')" onmouseout="spoiler_toggle('kcptun_opts_tip')"></span>
                               <div class="G-tip-pop" id="kcptun_opts_tip" style="width: 180px; height: auto; left: 230px; top: 35px; display: none;">
@@ -837,6 +837,7 @@ local i18n = require "luci.i18n"
               $("input[name='plugin_opts']").val(rsp.plugin_opts);
               $("input[name='kcptun_enable']").val(rsp.kcptun_enable);
               $("input[name='kcptun_opts']").val(rsp.kcptun_opts);
+              $("input[name='udp2raw_opts']").val(rsp.udp2raw_opts);
               // udp 开关
               var udp_relay = rsp.udp_relay;
               if (udp_relay == '1') {

@@ -46,6 +46,8 @@ start() {
 		# kcptun
 		config_get kcptun_enable "$section" 'kcptun_enable'
 		config_get kcptun_opts "$section" 'kcptun_opts'
+		# udp2raw
+		config_get udp2raw_opts "$section" 'udp2raw_opts'
 
         params=''
 
@@ -63,12 +65,12 @@ start() {
 		
 		if [ "$kcptun_enable" == '1' ]; then
 			udp2raw_params="-c -l 127.0.0.1:18085 -r $server:$udp2raw_opts"
-			service_start /usr/bin/udp2raw $udp2raw_params > /var/log/udp2raw_ss.log
+			service_start /usr/bin/udp2raw $udp2raw_params  > /var/log/udp2raw_ss.log 2>&1 &
 
 			kcp_params="-l :$server_port -r 127.0.0.1:18085 $kcptun_opts"
 			service_start /usr/bin/kcptun $kcp_params > /var/log/kcptun_ss.log
-
 			service_start /usr/bin/ss-local -s 127.0.0.1 -p $server_port -b 0.0.0.0 -l $local_port -k $password -t $timeout -m $method $params
+			service_start /usr/bin/ss-redir -s 127.0.0.1 -p $server_port -b 0.0.0.0 -l $rs_port -k $password -t $timeout -m $method $params
 		else
 			service_start /usr/bin/ss-local -s $server -p $server_port -b 0.0.0.0 -l $local_port -k $password -t $timeout -m $method $params
         	service_start /usr/bin/ss-redir -s $server -p $server_port -b 0.0.0.0 -l $rs_port -k $password -t $timeout -m $method $params
@@ -89,6 +91,8 @@ stop() {
 	service_stop /usr/bin/ss-local
 	service_stop /usr/bin/ss-redir
 	service_stop /usr/bin/kcptun
+
+	service_stop /usr/bin/udp2raw
 }
 
 restart() {

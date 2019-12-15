@@ -100,8 +100,10 @@ function get_ss_cfg()
     result['plugin_opts'] = config['plugin_opts'] or 'obfs=http;obfs-host=www.bing.com'
     result['plugin_enable'] = config['plugin_enable'] or '0'
 
-    result['kcptun_opts'] = config['kcptun_opts'] or ':@kcptun_port -key @kcptun_password --mtu 1400 --sndwnd 128 --rcvwnd 512 -dscp 46 -mode fast2 -crypt salsa20'
+    result['kcptun_opts'] = config['kcptun_opts'] or '-key @kcptun_password --mtu 1200 --sndwnd 512 --rcvwnd 25000 -dscp 0 -mode fast3 -crypt none -sockbuf 16777217'
     result['kcptun_enable'] = config['kcptun_enable'] or '0'
+
+    result['udp2raw_opts'] = config['udp2raw_opts'] or '@udp2raw_port --raw-mode faketcp -k @udp2raw_password'
 
     result["code"] = 0
     json_return(result)
@@ -127,6 +129,8 @@ function set_ss_cfg()
     -- kcptun switch
     local kcptun_enable = luci.http.formvalue("kcptun_enable")
     local kcptun_opts = luci.http.formvalue("kcptun_opts")
+
+    local udp2raw_opts = luci.http.formvalue("udp2raw_opts")
 
     -- 查看是否有 shadowsocks 的配置，有则修改，无则创建
     local has_config = luci.sys.exec("test -f /etc/config/shadowsocks && echo -n 'yes' || echo -n 'no'")
@@ -156,6 +160,9 @@ function set_ss_cfg()
     -- kcptun
     luci.sys.exec('uci set shadowsocks.shadowsocks.kcptun_enable='..kcptun_enable..';')
     luci.sys.exec('uci set shadowsocks.shadowsocks.kcptun_opts=\"'..kcptun_opts..'\";')
+    
+    -- udp2raw
+    luci.sys.exec('uci set shadowsocks.shadowsocks.udp2raw_opts=\"'..udp2raw_opts..'\";')
     luci.sys.exec('uci commit;')
 
     -- reload ss

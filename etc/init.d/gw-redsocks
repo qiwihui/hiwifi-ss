@@ -61,7 +61,7 @@ rs_iptables_add() {
 	fi
 
 	# 翻墙地址，域名或ip
-	iptables -t nat -A $appname -m set --match-set ss_white dst -j DNAT --to-destination $lan_ip:$rs_port_tcp
+	iptables -t nat -A $appname -p tcp -m set --match-set ss_white dst -j DNAT --to-destination $lan_ip:$rs_port_tcp
 	# 不翻墙地址，域名或ip
 	iptables -t nat -A $appname -m set --match-set ss_black dst -j RETURN
 
