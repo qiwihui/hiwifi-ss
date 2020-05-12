@@ -167,6 +167,7 @@ local i18n = require "luci.i18n"
                               <select name="plugin" class="J_selectOriginal input">
                                 <option value="">无</option>
                                 <option value="obfs-local">obfs_simple</option>
+                                <option value="v2ray-plugin">v2ray-plugin</option>
                                 <option value="kcptun">kcptun</option>
                               </select>
                             </div>
@@ -176,6 +177,18 @@ local i18n = require "luci.i18n"
                           <th>插件选项</th>
                           <td>
                             <input type="text" class="input" name="plugin_opts" tabindex="9" value="" id="plugin_opts" />
+                            <span class="icon icon22 J_infoTip G-handle" onmouseover="spoiler_toggle('plugin_tip')" onmouseout="spoiler_toggle('plugin_tip')"></span>
+                            <div class="G-tip-pop" id="plugin_tip" style="width: 250px; height: auto; left: 230px; top: 35px; display: none;">
+                              <div style="font-weight: bolder;">示例:</div>
+                              <dl>
+                                <dt> <a href="https://github.com/shadowsocks/simple-obfs" target="_blank">obfs_simple</a></dt>
+                                <dd>obfs=http;obfs-host=www.bing.com</dd>
+                                <dt><a href="https://github.com/shadowsocks/v2ray-plugin" target="_blank">v2ray-plugin</a></dt>
+                                <dd>tls;host=mydomain.me</dd>
+                                <dt><a href="https://github.com/shadowsocks/kcptun" target="_blank">kcptrun</a></dt>
+                                <dd>key=xxx;crypt=aes;mode=normal</dd>
+                              </dl>
+                            </div>
                           </td>
                         </tr>
                         <tr>
