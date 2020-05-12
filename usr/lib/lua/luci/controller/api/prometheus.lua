@@ -97,11 +97,9 @@ function get_ss_cfg()
     result['dnsserver'] = config['dnsserver'] or '8.8.4.4'
     result['udp_relay'] = config['udp_relay'] or '0'
 
-    result['plugin_opts'] = config['plugin_opts'] or 'obfs=http;obfs-host=www.bing.com'
-    result['plugin_enable'] = config['plugin_enable'] or '0'
+    result['plugin'] = config['plugin'] or ''
+    result['plugin_opts'] = config['plugin_opts'] or ''
 
-    result['kcptun_opts'] = config['kcptun_opts'] or ':@kcptun_port -key @kcptun_password --mtu 1400 --sndwnd 128 --rcvwnd 512 -dscp 46 -mode fast2 -crypt salsa20'
-    result['kcptun_enable'] = config['kcptun_enable'] or '0'
 
     result["code"] = 0
     json_return(result)
@@ -120,13 +118,10 @@ function set_ss_cfg()
     local dnsserver = luci.http.formvalue("dnsserver")
     local udp_relay = luci.http.formvalue("udp_relay")
     -- simple obfs switch
-    local plugin_enable = luci.http.formvalue("plugin_enable")
+    local plugin = luci.http.formvalue("plugin")
 --    local plugin = luci.http.formvalue("plugin")
     local plugin_opts = luci.http.formvalue("plugin_opts")
 
-    -- kcptun switch
-    local kcptun_enable = luci.http.formvalue("kcptun_enable")
-    local kcptun_opts = luci.http.formvalue("kcptun_opts")
 
     -- 查看是否有 shadowsocks 的配置，有则修改，无则创建
     local has_config = luci.sys.exec("test -f /etc/config/shadowsocks && echo -n 'yes' || echo -n 'no'")
@@ -137,7 +132,7 @@ function set_ss_cfg()
         luci.sys.exec('uci set shadowsocks.shadowsocks.local_port="61080";')
         luci.sys.exec('uci set shadowsocks.shadowsocks.rs_port=3088;')
         -- default obfs config
-        luci.sys.exec('uci set shadowsocks.shadowsocks.plugin_enable="0";')
+        luci.sys.exec('uci set shadowsocks.shadowsocks.plugin="";')
     end
 
     luci.sys.exec('uci set shadowsocks.shadowsocks.server='..server..';')
@@ -149,13 +144,9 @@ function set_ss_cfg()
     luci.sys.exec('uci set shadowsocks.shadowsocks.timeout='..timeout..';')
     luci.sys.exec('uci set shadowsocks.shadowsocks.udp_relay='..udp_relay..';')
     -- simple obfs
-    luci.sys.exec('uci set shadowsocks.shadowsocks.plugin_enable='..plugin_enable..';')
-    luci.sys.exec('uci set shadowsocks.shadowsocks.plugin="obfs-local";')
+    luci.sys.exec('uci set shadowsocks.shadowsocks.plugin='..plugin..';')
     luci.sys.exec('uci set shadowsocks.shadowsocks.plugin_opts=\"'..plugin_opts..'\";')
 
-    -- kcptun
-    luci.sys.exec('uci set shadowsocks.shadowsocks.kcptun_enable='..kcptun_enable..';')
-    luci.sys.exec('uci set shadowsocks.shadowsocks.kcptun_opts=\"'..kcptun_opts..'\";')
     luci.sys.exec('uci commit;')
 
     -- reload ss
